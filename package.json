@@ -35,7 +35,8 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
-    "fudge": "^0.1.5",
+    "fudge": "^0.1.6",
+    "gl-matrix": "^2.3.2",
     "webglue": "^1.0.0"
   }
 }

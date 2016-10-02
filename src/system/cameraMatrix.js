@@ -21,7 +21,7 @@ export default class CameraMatrixSystem {
       this.data[entity.id] = {
         viewValid: false,
         projectionValid: false,
-        aspect: -1,
+        aspect: 1,
         projection: null,
         projectionView: null
       };
@@ -54,10 +54,10 @@ export default class CameraMatrixSystem {
     data.aspect = aspect;
     data.projectionValid = true;
 
-    const { zoom, fov, near, far } = data;
+    const { zoom, fov, near, far } = camera;
     switch (camera.type) {
     case 'persp':
-      mat4.persp(data.projection, fov, aspect, near, far);
+      mat4.perspective(data.projection, fov, aspect, near, far);
       break;
     case 'ortho':
       mat4.ortho(data.projection, -aspect * zoom, aspect * zoom, -zoom, zoom,

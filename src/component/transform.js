@@ -5,11 +5,11 @@ let tmp = vec3.create();
 let tmpQuat = quat.create();
 
 export default {
-  component: data => Object.assign({}, data, {
+  component: data => Object.assign({}, {
     position: vec3.create(),
     scale: vec3.fromValues(1, 1, 1),
     rotation: quat.create()
-  }),
+  }, data),
   actions: {
     setPosition: signal((entity, target) => {
       vec3.copy(entity.transform.position, target);
@@ -25,15 +25,15 @@ export default {
       quat.copy(entity.transform.rotation, target);
     }),
     rotateX: function (entity, target) {
-      vec3.rotateX(tmpQuat, entity.transform.position, target);
+      quat.rotateX(tmpQuat, entity.transform.rotation, target);
       this.actions.transform.setRotation(entity, tmpQuat);
     },
     rotateY: function (entity, target) {
-      vec3.rotateY(tmpQuat, entity.transform.position, target);
+      quat.rotateY(tmpQuat, entity.transform.rotation, target);
       this.actions.transform.setRotation(entity, tmpQuat);
     },
     rotateZ: function (entity, target) {
-      vec3.rotateZ(tmpQuat, entity.transform.position, target);
+      quat.rotateZ(tmpQuat, entity.transform.rotation, target);
       this.actions.transform.setRotation(entity, tmpQuat);
     }
   }
