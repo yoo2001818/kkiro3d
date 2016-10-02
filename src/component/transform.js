@@ -5,13 +5,11 @@ let tmp = vec3.create();
 let tmpQuat = quat.create();
 
 export default {
-  component: class TransformComponent {
-    constructor(data) {
-      this.position = data.position || vec3.create();
-      this.scale = data.scale || vec3.fromValues(1, 1, 1);
-      this.rotation = data.rotation || quat.create();
-    }
-  },
+  component: data => Object.assign({}, data, {
+    position: vec3.create(),
+    scale: vec3.fromValues(1, 1, 1),
+    rotation: quat.create()
+  }),
   actions: {
     setPosition: signal((entity, target) => {
       vec3.copy(entity.transform.position, target);
