@@ -1,0 +1,66 @@
+{
+  "rules": {
+    "indent": [
+      2,
+      2
+    ],
+    "quotes": [
+      2,
+      "single"
+    ],
+    "linebreak-style": [
+      2,
+      "unix"
+    ],
+    "semi": [
+      2,
+      "always"
+    ],
+    "max-len": [
+      1,
+      80,
+      2
+    ],
+    "keyword-spacing": 2,
+    "no-multiple-empty-lines": [
+      1,
+      {
+        "max": 2
+      }
+    ],
+    "strict": [
+      2,
+      "never"
+    ],
+    "no-console": 0,
+    "curly": [
+      2,
+      "multi-line"
+    ],
+    "react/prop-types": 1,
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
+    "react/react-in-jsx-scope": 2
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true,
+    "mocha": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "extends": "eslint:recommended",
+  "globals": {
+    "__SERVER__": true,
+    "__CLIENT__": true,
+    "__DEVELOPMENT__": true
+  }
+}

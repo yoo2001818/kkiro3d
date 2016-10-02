@@ -1,0 +1,41 @@
+{
+  "name": "kkiro3d",
+  "version": "0.1.0",
+  "description": "3D game engine written in JavaScript",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kkiro",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.16.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "css-loader": "^0.25.0",
+    "del": "^2.2.2",
+    "eslint": "^3.7.0",
+    "eslint-plugin-react": "^6.3.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^3.0.1",
+    "gulp-util": "^3.0.7",
+    "html-webpack-plugin": "^2.22.0",
+    "import-glob-loader": "^1.1.0",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.10.1",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "uglify-loader": "^1.3.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2"
+  },
+  "dependencies": {
+    "fudge": "^0.1.5",
+    "webglue": "^1.0.0"
+  }
+}
