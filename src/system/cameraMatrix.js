@@ -53,6 +53,7 @@ export default class CameraMatrixSystem {
     if (data.projection == null) data.projection = mat4.create();
     data.aspect = aspect;
     data.projectionValid = true;
+    data.viewValid = false;
 
     const { zoom, fov, near, far } = camera;
     switch (camera.type) {
