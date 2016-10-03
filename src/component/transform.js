@@ -1,5 +1,5 @@
 import { quat, vec3 } from 'gl-matrix';
-import { signal } from 'fudge';
+import { signalRaw } from 'fudge';
 
 let tmp = vec3.create();
 let tmpQuat = quat.create();
@@ -11,17 +11,17 @@ export default {
     rotation: quat.create()
   }, data),
   actions: {
-    setPosition: signal((entity, target) => {
+    setPosition: signalRaw(([entity, target]) => {
       vec3.copy(entity.transform.position, target);
     }),
     translate: function (entity, target) {
       vec3.add(tmp, entity.transform.position, target);
       this.actions.transform.setPosition(entity, tmp);
     },
-    setScale: signal((entity, target) => {
+    setScale: signalRaw(([entity, target]) => {
       vec3.copy(entity.transform.scale, target);
     }),
-    setRotation: signal((entity, target) => {
+    setRotation: signalRaw(([entity, target]) => {
       quat.copy(entity.transform.rotation, target);
     }),
     rotateX: function (entity, target) {

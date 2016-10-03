@@ -1,4 +1,4 @@
-import { signal } from 'fudge';
+import { signalRaw } from 'fudge';
 
 export default {
   component: {
@@ -7,10 +7,10 @@ export default {
     // TODO castShadow receiveShadow visible
   },
   actions: {
-    setGeometry: signal((entity, target) => {
+    setGeometry: signalRaw(([entity, target]) => {
       entity.mesh.geometry = target;
     }),
-    setMaterial: signal((entity, target) => {
+    setMaterial: signalRaw(([entity, target]) => {
       entity.mesh.material = target;
     })
   }

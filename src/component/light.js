@@ -1,4 +1,4 @@
-import { signal } from 'fudge';
+import { signalRaw } from 'fudge';
 
 export default {
   component: {
@@ -10,17 +10,17 @@ export default {
     attenuation: 0.0001
   },
   actions: {
-    setType: signal((entity, type) => {
+    setType: signalRaw(([entity, type]) => {
       entity.light.type = type;
     }),
-    setColor: signal((entity, color) => {
+    setColor: signalRaw(([entity, color]) => {
       entity.light.color = color;
     }),
-    setIntensity: signal((entity, ambient, diffuse, specular, attenuation) => {
+    setIntensity: signalRaw(([entity, ambient, diffuse, specular, attenu]) => {
       entity.light.ambient = ambient;
       entity.light.diffuse = diffuse;
       entity.light.specular = specular;
-      entity.light.attenuation = attenuation;
+      entity.light.attenuation = attenu;
     })
   }
 };

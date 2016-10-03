@@ -11,10 +11,10 @@ export default class MatrixSystem {
   constructor(engine) {
     this.engine = engine;
     this.hooks = {
-      'transform.*': (entity) => {
+      'transform.*!': ([entity]) => {
         this.data[entity.id].valid = 0;
       },
-      'entity.add.transform:post': (entity) => {
+      'entity.add.transform:post!': ([entity]) => {
         this.data[entity.id] = {
           valid: 0,
           matrix: null,
@@ -22,7 +22,7 @@ export default class MatrixSystem {
           inverse: null
         };
       },
-      'entity.remove.transform:post': (entity) => {
+      'entity.remove.transform:post!': ([entity]) => {
         this.data[entity.id] = null;
       }
     };

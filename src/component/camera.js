@@ -1,4 +1,4 @@
-import { signal } from 'fudge';
+import { signalRaw } from 'fudge';
 
 export default {
   component: {
@@ -9,13 +9,13 @@ export default {
     zoom: 1
   },
   actions: {
-    setPersp: signal((entity, fov, near, far) => {
+    setPersp: signalRaw(([entity, fov, near, far]) => {
       entity.camera.type = 'persp';
       entity.camera.fov = fov;
       entity.camera.near = near;
       entity.camera.far = far;
     }),
-    setOrtho: signal((entity, zoom, near, far) => {
+    setOrtho: signalRaw(([entity, zoom, near, far]) => {
       entity.camera.type = 'ortho';
       entity.camera.zoom = zoom;
       entity.camera.near = near;

@@ -4,11 +4,11 @@ export default class CameraMatrixSystem {
   constructor() {
     this.data = [];
     this.hooks = {
-      'transform.*': (entity) => {
+      'transform.*!': ([entity]) => {
         let data = this.data[entity.id];
         if (data != null) data.viewValid = false;
       },
-      'camera.*': (entity) => {
+      'camera.*!': ([entity]) => {
         let data = this.data[entity.id];
         if (data != null) data.projectionValid = false;
       }
@@ -17,7 +17,7 @@ export default class CameraMatrixSystem {
   attach(engine) {
     this.engine = engine;
     this.family = engine.systems.family.get('camera', 'transform');
-    this.family.onAdd.add(entity => {
+    this.family.onAdd.addRaw(([entity]) => {
       this.data[entity.id] = {
         viewValid: false,
         projectionValid: false,
@@ -26,7 +26,7 @@ export default class CameraMatrixSystem {
         projectionView: null
       };
     });
-    this.family.onRemove.add(entity => {
+    this.family.onRemove.addRaw(([entity]) => {
       this.data[entity.id] = null;
     });
   }
