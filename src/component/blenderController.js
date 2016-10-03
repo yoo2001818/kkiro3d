@@ -35,6 +35,7 @@ export default {
       vec3.copy(entity.blenderController.center, pos);
     }),
     setCamera: function (entity, perspective) {
+      if (entity.camera == null) return;
       if (perspective) {
         this.actions.camera.setPersp(entity, Math.PI / 180 * 70, 0.3, 300);
       } else {

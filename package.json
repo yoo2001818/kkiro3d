@@ -37,6 +37,6 @@
   "dependencies": {
     "fudge": "^0.1.8",
     "gl-matrix": "^2.3.2",
-    "webglue": "^1.0.0"
+    "webglue": "^1.0.1"
   }
 }
