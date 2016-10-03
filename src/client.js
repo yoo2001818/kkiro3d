@@ -12,6 +12,7 @@ import MatrixSystem from './system/matrix';
 import CameraMatrixSystem from './system/cameraMatrix';
 import BlenderControllerSystem from './system/blenderController';
 import RendererSystem from './system/renderer';
+import MousePickSystem from './system/mousePick';
 
 import BlenderInput from './blenderInput';
 
@@ -46,6 +47,10 @@ let engine = new Engine({
     phong: renderer.shaders.create(
       require('./shader/phong.vert'),
       require('./shader/phong.frag')
+    ),
+    border: renderer.shaders.create(
+      require('./shader/minimalBias.vert'),
+      require('./shader/monoColor.frag')
     )
   }, {
     test: {
@@ -61,6 +66,7 @@ let engine = new Engine({
       }
     }
   }),
+  mousePick: MousePickSystem,
   test: function TestSystem (engine) {
     this.entities = engine.systems.family.get('transform').entities;
     let camera;
