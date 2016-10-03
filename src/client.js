@@ -1,14 +1,19 @@
 import Renderer from 'webglue/lib/renderer';
 import box from 'webglue/lib/geom/box';
+import calcNormals from 'webglue/lib/geom/calcNormals';
 import { Engine } from 'fudge';
 
 import transform from './component/transform';
 import light from './component/light';
 import camera from './component/camera';
 import mesh from './component/mesh';
+import blenderController from './component/blenderController';
 import MatrixSystem from './system/matrix';
 import CameraMatrixSystem from './system/cameraMatrix';
+import BlenderControllerSystem from './system/blenderController';
 import RendererSystem from './system/renderer';
+
+import BlenderInput from './blenderInput';
 
 // Canvas init
 let canvas = document.createElement('canvas');
@@ -30,21 +35,30 @@ let gl = canvas.getContext('webgl', { antialias: true }) ||
 let renderer = new Renderer(gl);
 
 let engine = new Engine({
-  transform, light, camera, mesh
+  transform, light, camera, mesh, blenderController
 }, {
   matrix: MatrixSystem,
   cameraMatrix: CameraMatrixSystem,
+  blenderController: BlenderControllerSystem,
   renderer: new RendererSystem(renderer, {
-    box: renderer.geometries.create(box())
+    box: renderer.geometries.create(calcNormals(box()))
   }, {
-    test: renderer.shaders.create(
-      require('./shader/minimal.vert'),
-      require('./shader/monoColor.frag')
+    phong: renderer.shaders.create(
+      require('./shader/phong.vert'),
+      require('./shader/phong.frag')
     )
   }, {
     test: {
-      shader: 'test',
-      uColor: '#ffffffff'
+      shader: 'phong',
+      uniforms: {
+        uMaterial: {
+          ambient: '#aaaaaa',
+          diffuse: '#aaaaaa',
+          specular: '#444444',
+          reflectivity: '#8c292929',
+          shininess: 90
+        }
+      }
     }
   }),
   test: function TestSystem (engine) {
@@ -61,10 +75,11 @@ let engine = new Engine({
           transform: {
             position: [0, 0, 5]
           },
-          camera: {}
+          camera: {},
+          blenderController: {}
         });
       },
-      'external.update': (delta) => {
+      'external.update!': ([delta]) => {
         engine.actions.transform.rotateY(box, delta);
         // engine.actions.transform.translate(box, [delta / 30, 0, 0]);
       }
@@ -73,6 +88,8 @@ let engine = new Engine({
 });
 
 engine.start();
+
+let blenderInput = new BlenderInput(canvas, document, engine);
 
 let prevTime = -1;
 // let timer = 0;

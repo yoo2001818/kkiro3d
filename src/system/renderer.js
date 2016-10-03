@@ -14,21 +14,26 @@ export default class RendererSystem {
         let world = {
           uniforms: {
             uDirectionalLight: {
-              direction: [-0.590945, 0.216439, -0.777132],
+              direction: [-0.590945, 0.216439, 0.777132],
               color: '#ffffff',
               intensity: [0.3, 0.7, 1.0]
-            }
+            },
+            uPointLight: [{}]
           }
         };
         // TODO Lights
-        world.passes = this.meshes.map(entity => ({
-          shader: this.shaders[this.materials[entity.mesh.material].shader],
-          geometry: this.geometries[entity.mesh.geometry],
-          uniforms: Object.assign({}, this.materials[entity.mesh.material], {
-            uModel: this.engine.systems.matrix.get(entity),
-            uNormal: this.engine.systems.matrix.getNormal(entity)
-          })
-        }));
+        world.passes = this.meshes.map(entity => {
+          let material = this.materials[entity.mesh.material];
+          let shader = this.shaders[material.shader];
+          return Object.assign({}, material, {
+            shader: shader,
+            geometry: this.geometries[entity.mesh.geometry],
+            uniforms: Object.assign({}, material.uniforms, {
+              uModel: this.engine.systems.matrix.get(entity),
+              uNormal: this.engine.systems.matrix.getNormal(entity)
+            })
+          });
+        });
         // Finally, run that through camera
         let camera = this.cameras[0];
         let cameraMatrix = this.engine.systems.cameraMatrix;
