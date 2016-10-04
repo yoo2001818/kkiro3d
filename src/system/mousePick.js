@@ -1,6 +1,25 @@
+function packColor(id) {
+  // Get R, G, B, A (using little endian)
+  // Why do we use Float32Array? Because it's OpenGL.
+  let output = new Float32Array(4);
+  output[0] = (id & 0xFF) / 256;
+  output[1] = ((id >>> 8) & 0xFF) / 256;
+  output[2] = ((id >>> 16) & 0xFF) / 256;
+  output[3] = ((id >>> 24) & 0xFF) / 256;
+  return output;
+}
+
+function unpackColor(data) {
+  let output = 0;
+  output |= data[0];
+  output |= data[1] << 8;
+  output |= data[2] << 16;
+  output |= data[3] << 24;
+  return output;
+}
+
 export default class MousePickSystem {
   constructor() {
-    this.pickTexture = null;
     this.selected = 0;
   }
   attach(engine) {
@@ -8,20 +27,22 @@ export default class MousePickSystem {
     // Let's attach mesh handler..
     let renderer = engine.systems.renderer;
     let webglue = renderer.renderer;
-    let gl = renderer.renderer.gl;
+    let gl = webglue.gl;
     renderer.handlers.mesh.push((data, entity) => {
       if (entity.id !== this.selected) return data;
-      return [Object.assign({}, data, {
-        options: {
-          cull: gl.FRONT,
-          depthMask: true
-        },
-        uniforms: Object.assign({}, data.uniforms, {
-          uBias: [0.1, 0],
-          uColor: '#ffffff'
-        }),
-        shader: renderer.shaders['border']
-      }), data];
+      return Object.assign(data, {
+        passes: [{
+          options: {
+            cull: gl.FRONT
+            // depthMask: true
+          },
+          uniforms: Object.assign({}, data.uniforms, {
+            uBias: [0.1, 0],
+            uColor: '#ffffff'
+          }),
+          shader: renderer.shaders['border']
+        }, {}]
+      });
     });
     // Create mouse pick framebuffer and shader
     this.pickShader = webglue.shaders.create(
@@ -38,6 +59,30 @@ export default class MousePickSystem {
 
   }
   pick(x, y) {
-
+    // Render mouse pick framebuffer..
+    let renderer = this.engine.systems.renderer;
+    let webglue = renderer.renderer;
+    let gl = webglue.gl;
+    renderer.render({
+      viewport: [(data) => Object.assign(data, {
+        options: {
+          clearColor: new Float32Array([0, 0, 0, 1]),
+          clearDepth: 1,
+          cull: gl.BACK,
+          depth: gl.LEQUAL
+        },
+        shaderHandler: () => this.pickShader,
+        framebuffer: this.pickFramebuffer
+      })],
+      mesh: [(data, entity) => {
+        data.uniforms.uColor = packColor(entity.id);
+        return data;
+      }]
+    });
+    // Then extract the pixel from framebuffer
+    let pixel = new Uint8Array(4);
+    this.pickFramebuffer.readPixelsRGBA(x,
+      this.pickFramebuffer.height - y, 1, 1, pixel);
+    this.selected = unpackColor(pixel);
   }
 }

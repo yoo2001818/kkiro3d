@@ -72,9 +72,15 @@ let engine = new Engine({
     let camera;
     let box;
     this.hooks = {
-      'external.start': () => {
+      'external.start!': () => {
         box = engine.actions.entity.create({
           transform: {},
+          mesh: { geometry: 'box', material: 'test' }
+        });
+        engine.actions.entity.create({
+          transform: {
+            position: [3, 0, 0]
+          },
           mesh: { geometry: 'box', material: 'test' }
         });
         camera = engine.actions.entity.create({
@@ -96,6 +102,11 @@ let engine = new Engine({
 engine.start();
 
 let blenderInput = new BlenderInput(canvas, document, engine);
+
+canvas.addEventListener('mousedown', (e) => {
+  if (e.button !== 0) return;
+  engine.systems.mousePick.pick(e.clientX, e.clientY);
+});
 
 let prevTime = -1;
 // let timer = 0;
