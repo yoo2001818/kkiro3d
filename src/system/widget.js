@@ -29,7 +29,7 @@ export default class WidgetSystem {
           entity.transform.position);
       },
       'transform:setPosition:post!': ([entity]) => {
-        if (entity.id !== engine.systems.select.getId()) return;
+        if (entity.id !== engine.state.global.selected) return;
         engine.actions.transform.setPosition(this.widget,
           entity.transform.position);
       }

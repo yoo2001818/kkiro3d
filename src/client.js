@@ -4,22 +4,12 @@ import channel from 'webglue/lib/geom/channel';
 import translateWidget from 'webglue/lib/geom/translateWidget';
 import calcNormals from 'webglue/lib/geom/calcNormals';
 import loadOBJ from 'webglue/lib/loader/obj';
-import { Engine } from 'fudge';
 
-import transform from './component/transform';
-import light from './component/light';
-import camera from './component/camera';
-import mesh from './component/mesh';
-import select from './component/select';
-import blenderController from './component/blenderController';
-import MatrixSystem from './system/matrix';
-import CameraMatrixSystem from './system/cameraMatrix';
-import BlenderControllerSystem from './system/blenderController';
-import RendererSystem from './system/renderer';
-import SelectSystem from './system/select';
-import WidgetSystem from './system/widget';
+import createEngine from './engine';
 
-import BlenderInput from './blenderInput';
+import RendererView from './view/renderer';
+import BlenderInputView from './view/blenderInput';
+import SelectView from './view/select';
 
 // Canvas init
 let canvas = document.createElement('canvas');
@@ -40,53 +30,7 @@ let gl = canvas.getContext('webgl', { antialias: true }) ||
   canvas.getContext('experimental-webgl');
 let renderer = new Renderer(gl);
 
-let engine = new Engine({
-  transform, light, camera, mesh, blenderController, select
-}, {
-  matrix: MatrixSystem,
-  cameraMatrix: CameraMatrixSystem,
-  blenderController: BlenderControllerSystem,
-  renderer: new RendererSystem(renderer, {
-    box: renderer.geometries.create(calcNormals(box())),
-    teapot: renderer.geometries.create(channel(loadOBJ(
-      require('./geom/wt-teapot.obj')
-    ))),
-    translateWidget: renderer.geometries.create(translateWidget())
-  }, {
-    phong: renderer.shaders.create(
-      require('./shader/phong.vert'),
-      require('./shader/phong.frag')
-    ),
-    border: renderer.shaders.create(
-      require('./shader/minimal.vert'),
-      require('./shader/monoColor.frag')
-    ),
-    widget: renderer.shaders.create(
-      require('./shader/widget.vert'),
-      require('./shader/staticColor.frag')
-    )
-  }, {
-    test: {
-      shader: 'phong',
-      uniforms: {
-        uMaterial: {
-          ambient: '#aaaaaa',
-          diffuse: '#aaaaaa',
-          specular: '#444444',
-          reflectivity: '#8c292929',
-          shininess: 90
-        }
-      }
-    },
-    widget: {
-      shader: 'widget',
-      options: {
-        depth: gl.ALWAYS
-      }
-    }
-  }),
-  select: SelectSystem,
-  widget: WidgetSystem,
+let engine = createEngine({}, {
   test: function TestSystem (engine) {
     this.entities = engine.systems.family.get('transform').entities;
     let camera;
@@ -119,17 +63,58 @@ let engine = new Engine({
   }
 });
 
-engine.start();
-
-let blenderInput = new BlenderInput(canvas, document, engine);
+let rendererView = new RendererView(engine, renderer, {
+  box: renderer.geometries.create(calcNormals(box())),
+  teapot: renderer.geometries.create(channel(loadOBJ(
+    require('./geom/wt-teapot.obj')
+  ))),
+  translateWidget: renderer.geometries.create(translateWidget())
+}, {
+  phong: renderer.shaders.create(
+    require('./shader/phong.vert'),
+    require('./shader/phong.frag')
+  ),
+  border: renderer.shaders.create(
+    require('./shader/minimal.vert'),
+    require('./shader/monoColor.frag')
+  ),
+  widget: renderer.shaders.create(
+    require('./shader/widget.vert'),
+    require('./shader/staticColor.frag')
+  )
+}, {
+  test: {
+    shader: 'phong',
+    uniforms: {
+      uMaterial: {
+        ambient: '#aaaaaa',
+        diffuse: '#aaaaaa',
+        specular: '#444444',
+        reflectivity: '#8c292929',
+        shininess: 90
+      }
+    }
+  },
+  widget: {
+    shader: 'widget',
+    options: {
+      depth: gl.ALWAYS
+    }
+  }
+});
+let blenderInputView = new BlenderInputView(engine,
+  rendererView, canvas, document);
+let selectView = new SelectView(engine, rendererView);
 
 canvas.addEventListener('mousedown', (e) => {
   if (e.button !== 0) return;
-  engine.systems.select.selectPos(e.clientX, e.clientY);
+  selectView.selectPos(e.clientX, e.clientY);
 });
 
 let prevTime = -1;
 // let timer = 0;
+
+engine.start();
 
 function update(time) {
   if (prevTime === -1) prevTime = time;

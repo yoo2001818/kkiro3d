@@ -3,20 +3,22 @@ import { vec3, quat } from 'gl-matrix';
 let tempQuat = quat.create();
 
 export default class BlenderInput {
-  constructor(node, keyNode, engine) {
+  constructor(engine, renderer, node, keyNode) {
     this.mouseHeld = false;
     this.mouseX = 0;
     this.mouseY = 0;
     this.rotateDir = 0;
 
     this.engine = engine;
-    let cameras = this.engine.systems.family.get('blenderController').entities;
-    this.camera = cameras[0];
+    this.renderer = renderer;
 
     this.node = node;
     this.keyNode = keyNode;
 
     this.registerEvents();
+  }
+  getCamera() {
+    return this.renderer.viewports[0].camera;
   }
   registerEvents() {
     this.node.addEventListener('mousemove', e => {
@@ -27,11 +29,11 @@ export default class BlenderInput {
       this.mouseY = e.clientY;
       if (e.shiftKey) {
         this.engine.actions.blenderController.translate(
-          this.camera, offsetX / 600, offsetY / 600);
+          this.getCamera(), offsetX / 600, offsetY / 600);
         return;
       }
       this.engine.actions.blenderController.rotate(
-        this.camera, Math.PI / 180 * -offsetX * this.rotateDir / 4,
+        this.getCamera(), Math.PI / 180 * -offsetX * this.rotateDir / 4,
         Math.PI / 180 * -offsetY / 4);
     });
     this.node.addEventListener('contextmenu', e => {
@@ -44,7 +46,7 @@ export default class BlenderInput {
       let upLocal = vec3.create();
       let up = vec3.fromValues(0, 1, 0);
       vec3.transformQuat(upLocal, [0, 1, 0],
-        this.camera.transform.rotation);
+        this.getCamera().transform.rotation);
       let upDot = vec3.dot(up, upLocal);
       this.rotateDir = upDot >= 0 ? 1 : -1;
       // Set position
@@ -61,12 +63,12 @@ export default class BlenderInput {
       if (e.shiftKey) return;
       if (e.keyCode === 32) {
         this.engine.actions.blenderController.lerpCenter(
-          this.camera, [0, 0, 0]);
+          this.getCamera(), [0, 0, 0]);
       }
       // Persp - Ortho swap
       if (e.keyCode === 101 || e.keyCode === 53) {
         this.engine.actions.blenderController.setCamera(
-          this.camera, this.camera.camera.type === 'ortho');
+          this.getCamera(), this.getCamera().camera.type === 'ortho');
       }
       // Front
       if (e.keyCode === 97 || e.keyCode === 49) {
@@ -75,7 +77,7 @@ export default class BlenderInput {
           quat.rotateY(tempQuat, tempQuat, Math.PI);
         }
         this.engine.actions.blenderController.lerpRotation(
-          this.camera, tempQuat);
+          this.getCamera(), tempQuat);
       }
       // Right
       if (e.keyCode === 99 || e.keyCode === 51) {
@@ -85,7 +87,7 @@ export default class BlenderInput {
           quat.rotateY(tempQuat, tempQuat, -Math.PI);
         }
         this.engine.actions.blenderController.lerpRotation(
-          this.camera, tempQuat);
+          this.getCamera(), tempQuat);
       }
       // Top
       if (e.keyCode === 103 || e.keyCode === 55) {
@@ -95,22 +97,24 @@ export default class BlenderInput {
           quat.rotateX(tempQuat, tempQuat, Math.PI);
         }
         this.engine.actions.blenderController.lerpRotation(
-          this.camera, tempQuat);
+          this.getCamera(), tempQuat);
       }
     });
     this.node.addEventListener('wheel', e => {
       let diff = e.deltaY / 50;
       if (e.deltaMode === 0) diff /= 12;
       if (e.shiftKey) {
-        this.engine.actions.blenderController.translate(this.camera, 0, diff);
+        this.engine.actions.blenderController.translate(
+          this.getCamera(), 0, diff);
         e.preventDefault();
         return;
       } else if (e.ctrlKey) {
-        this.engine.actions.blenderController.translate(this.camera, diff, 0);
+        this.engine.actions.blenderController.translate(
+          this.getCamera(), diff, 0);
         e.preventDefault();
         return;
       }
-      this.engine.actions.blenderController.zoom(this.camera, diff);
+      this.engine.actions.blenderController.zoom(this.getCamera(), diff);
       e.preventDefault();
     });
   }

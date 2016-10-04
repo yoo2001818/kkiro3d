@@ -21,47 +21,42 @@ function unpackColor(data) {
 }
 
 export default class SelectSystem {
-  constructor() {
-  }
-  attach(engine) {
+  constructor(engine, renderer) {
     this.engine = engine;
-    // Let's attach mesh handler..
-    let renderer = engine.systems.renderer;
-    if (renderer) {
-      let webglue = renderer.renderer;
-      let gl = webglue.gl;
-      renderer.handlers.mesh.push((data, entity) => {
-        if (entity.id !== this.getId()) return data;
-        let geomName = entity.mesh.geometry;
-        let geometry = this.wireframeGeoms[geomName];
-        if (geometry == null) {
-          geometry = this.wireframeGeoms[geomName] =
-            webglue.geometries.create(wireframe(renderer.geometries[geomName]));
-        }
-        return Object.assign(data, {
-          passes: [{
-            uniforms: Object.assign({}, data.uniforms, {
-              uColor: '#ffa400'
-            }),
-            shader: renderer.shaders['border'],
-            geometry: geometry
-          }, {}]
-        });
+    this.renderer = renderer;
+    let webglue = renderer.webglue;
+    let gl = webglue.gl;
+    renderer.handlers.mesh.push((data, entity) => {
+      if (entity.id !== this.getId()) return data;
+      let geomName = entity.mesh.geometry;
+      let geometry = this.wireframeGeoms[geomName];
+      if (geometry == null) {
+        geometry = this.wireframeGeoms[geomName] =
+          webglue.geometries.create(wireframe(renderer.geometries[geomName]));
+      }
+      return Object.assign(data, {
+        passes: [{
+          uniforms: Object.assign({}, data.uniforms, {
+            uColor: '#ffa400'
+          }),
+          shader: renderer.shaders['border'],
+          geometry: geometry
+        }, {}]
       });
-      // Create mouse pick framebuffer and shader
-      this.pickShader = webglue.shaders.create(
-        require('../shader/minimal.vert'),
-        require('../shader/monoColor.frag')
-      );
-      this.pickTexture = webglue.textures.create(null, {
-        format: gl.RGBA
-      });
-      this.pickFramebuffer = webglue.framebuffers.create({
-        color: this.pickTexture,
-        depth: gl.DEPTH_COMPONENT16 // Automatically use renderbuffer
-      });
-      this.wireframeGeoms = {};
-    }
+    });
+    // Create mouse pick framebuffer and shader
+    this.pickShader = webglue.shaders.create(
+      require('../shader/minimal.vert'),
+      require('../shader/monoColor.frag')
+    );
+    this.pickTexture = webglue.textures.create(null, {
+      format: gl.RGBA
+    });
+    this.pickFramebuffer = webglue.framebuffers.create({
+      color: this.pickTexture,
+      depth: gl.DEPTH_COMPONENT16 // Automatically use renderbuffer
+    });
+    this.wireframeGeoms = {};
   }
   getId() {
     return this.engine.state.global.selected;
@@ -71,10 +66,9 @@ export default class SelectSystem {
   }
   selectPos(x, y) {
     // Render mouse pick framebuffer..
-    let renderer = this.engine.systems.renderer;
-    let webglue = renderer.renderer;
+    let webglue = this.renderer.webglue;
     let gl = webglue.gl;
-    renderer.render({
+    this.renderer.render({
       viewport: [(data) => Object.assign(data, {
         options: {
           clearColor: new Float32Array([0, 0, 0, 1]),

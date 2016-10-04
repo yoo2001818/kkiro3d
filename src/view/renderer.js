@@ -1,6 +1,6 @@
-export default class RendererSystem {
-  constructor(renderer, geometries, shaders, materials) {
-    this.renderer = renderer;
+export default class RendererView {
+  constructor(engine, webglue, geometries, shaders, materials) {
+    this.webglue = webglue;
     // TODO Users should be able to alter this in the game code - not in
     // initialization code.
     this.geometries = geometries;
@@ -20,19 +20,26 @@ export default class RendererSystem {
       viewport: []
     };
 
+    this.engine = engine;
+    this.meshes = engine.systems.family.get('mesh', 'transform').entities;
+    this.lights = engine.systems.family.get('light', 'transform').entities;
+    this.cameras = engine.systems.family.get('camera', 'transform');
+
+    this.cameras.onAdd.add((camera) => {
+      this.viewports.push({
+        camera
+      });
+    });
+
     // TODO This generates render tree every frame; it can be optimized.
-    this.hooks = {
-      'external.update:post': () => {
-        this.render();
-      }
-    };
+    engine.signals.external.update.post.add(this.render.bind(this));
   }
   render(handlers = {}, viewports = this.viewports) {
     let lightHandlers = handlers.light || this.handlers.light;
     let meshHandlers = handlers.mesh || this.handlers.mesh;
     let worldHandlers = handlers.world || this.handlers.world;
     let viewportHandlers = handlers.viewport || this.handlers.viewport;
-    const gl = this.renderer.gl;
+    const gl = this.webglue.gl;
     // Create world graph first.
     let world = {
       uniforms: {
@@ -91,18 +98,6 @@ export default class RendererSystem {
         passes: [worldPasses]
       });
     });
-    this.renderer.render(viewportPasses);
-  }
-  attach(engine) {
-    this.engine = engine;
-    this.meshes = engine.systems.family.get('mesh', 'transform').entities;
-    this.lights = engine.systems.family.get('light', 'transform').entities;
-    this.cameras = engine.systems.family.get('camera', 'transform');
-
-    this.cameras.onAdd.add((camera) => {
-      this.viewports.push({
-        camera
-      });
-    });
+    this.webglue.render(viewportPasses);
   }
 }
