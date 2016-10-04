@@ -1,3 +1,5 @@
+import wireframe from 'webglue/lib/geom/wireframe';
+
 function packColor(id) {
   // Get R, G, B, A (using little endian)
   // Why do we use Float32Array? Because it's OpenGL.
@@ -30,17 +32,19 @@ export default class SelectSystem {
       let gl = webglue.gl;
       renderer.handlers.mesh.push((data, entity) => {
         if (entity.id !== this.getId()) return data;
+        let geomName = entity.mesh.geometry;
+        let geometry = this.wireframeGeoms[geomName];
+        if (geometry == null) {
+          geometry = this.wireframeGeoms[geomName] =
+            webglue.geometries.create(wireframe(renderer.geometries[geomName]));
+        }
         return Object.assign(data, {
           passes: [{
-            options: {
-              cull: gl.FRONT
-              // depthMask: true
-            },
             uniforms: Object.assign({}, data.uniforms, {
-              uBias: [0.1, 0],
-              uColor: '#ffffff'
+              uColor: '#ffa400'
             }),
-            shader: renderer.shaders['border']
+            shader: renderer.shaders['border'],
+            geometry: geometry
           }, {}]
         });
       });
@@ -56,6 +60,7 @@ export default class SelectSystem {
         color: this.pickTexture,
         depth: gl.DEPTH_COMPONENT16 // Automatically use renderbuffer
       });
+      this.wireframeGeoms = {};
     }
   }
   getId() {

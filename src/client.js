@@ -1,7 +1,9 @@
 import Renderer from 'webglue/lib/renderer';
 import box from 'webglue/lib/geom/box';
+import channel from 'webglue/lib/geom/channel';
 import translateWidget from 'webglue/lib/geom/translateWidget';
 import calcNormals from 'webglue/lib/geom/calcNormals';
+import loadOBJ from 'webglue/lib/loader/obj';
 import { Engine } from 'fudge';
 
 import transform from './component/transform';
@@ -46,6 +48,9 @@ let engine = new Engine({
   blenderController: BlenderControllerSystem,
   renderer: new RendererSystem(renderer, {
     box: renderer.geometries.create(calcNormals(box())),
+    teapot: renderer.geometries.create(channel(loadOBJ(
+      require('./geom/wt-teapot.obj')
+    ))),
     translateWidget: renderer.geometries.create(translateWidget())
   }, {
     phong: renderer.shaders.create(
@@ -53,7 +58,7 @@ let engine = new Engine({
       require('./shader/phong.frag')
     ),
     border: renderer.shaders.create(
-      require('./shader/minimalBias.vert'),
+      require('./shader/minimal.vert'),
       require('./shader/monoColor.frag')
     ),
     widget: renderer.shaders.create(
@@ -96,7 +101,7 @@ let engine = new Engine({
           transform: {
             position: [3, 0, 0]
           },
-          mesh: { geometry: 'box', material: 'test' }
+          mesh: { geometry: 'teapot', material: 'test' }
         });
         camera = engine.actions.entity.create({
           transform: {
