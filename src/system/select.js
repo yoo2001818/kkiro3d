@@ -18,47 +18,53 @@ function unpackColor(data) {
   return output;
 }
 
-export default class MousePickSystem {
+export default class SelectSystem {
   constructor() {
-    this.selected = 0;
   }
   attach(engine) {
     this.engine = engine;
     // Let's attach mesh handler..
     let renderer = engine.systems.renderer;
-    let webglue = renderer.renderer;
-    let gl = webglue.gl;
-    renderer.handlers.mesh.push((data, entity) => {
-      if (entity.id !== this.selected) return data;
-      return Object.assign(data, {
-        passes: [{
-          options: {
-            cull: gl.FRONT
-            // depthMask: true
-          },
-          uniforms: Object.assign({}, data.uniforms, {
-            uBias: [0.1, 0],
-            uColor: '#ffffff'
-          }),
-          shader: renderer.shaders['border']
-        }, {}]
+    if (renderer) {
+      let webglue = renderer.renderer;
+      let gl = webglue.gl;
+      renderer.handlers.mesh.push((data, entity) => {
+        if (entity.id !== this.getId()) return data;
+        return Object.assign(data, {
+          passes: [{
+            options: {
+              cull: gl.FRONT
+              // depthMask: true
+            },
+            uniforms: Object.assign({}, data.uniforms, {
+              uBias: [0.1, 0],
+              uColor: '#ffffff'
+            }),
+            shader: renderer.shaders['border']
+          }, {}]
+        });
       });
-    });
-    // Create mouse pick framebuffer and shader
-    this.pickShader = webglue.shaders.create(
-      require('../shader/minimal.vert'),
-      require('../shader/monoColor.frag')
-    );
-    this.pickTexture = webglue.textures.create(null, {
-      format: gl.RGBA
-    });
-    this.pickFramebuffer = webglue.framebuffers.create({
-      color: this.pickTexture,
-      depth: gl.DEPTH_COMPONENT16 // Automatically use renderbuffer
-    });
-
+      // Create mouse pick framebuffer and shader
+      this.pickShader = webglue.shaders.create(
+        require('../shader/minimal.vert'),
+        require('../shader/monoColor.frag')
+      );
+      this.pickTexture = webglue.textures.create(null, {
+        format: gl.RGBA
+      });
+      this.pickFramebuffer = webglue.framebuffers.create({
+        color: this.pickTexture,
+        depth: gl.DEPTH_COMPONENT16 // Automatically use renderbuffer
+      });
+    }
   }
-  pick(x, y) {
+  getId() {
+    return this.engine.state.global.selected;
+  }
+  get() {
+    return this.engine.state.entities[this.getId()];
+  }
+  selectPos(x, y) {
     // Render mouse pick framebuffer..
     let renderer = this.engine.systems.renderer;
     let webglue = renderer.renderer;
@@ -83,6 +89,7 @@ export default class MousePickSystem {
     let pixel = new Uint8Array(4);
     this.pickFramebuffer.readPixelsRGBA(x,
       this.pickFramebuffer.height - y, 1, 1, pixel);
-    this.selected = unpackColor(pixel);
+    this.engine.actions.select.select(
+      this.engine.state.entities[unpackColor(pixel)]);
   }
 }

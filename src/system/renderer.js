@@ -49,6 +49,7 @@ export default class RendererSystem {
       world = v(entity, world, worldPasses);
     }));
     world.passes = this.meshes.map(entity => {
+      if (!entity.mesh.visible) return;
       let material = this.materials[entity.mesh.material];
       let shader = this.shaders[material.shader];
       return meshHandlers.reduce((data, v) => {

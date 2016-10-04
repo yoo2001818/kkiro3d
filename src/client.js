@@ -1,5 +1,6 @@
 import Renderer from 'webglue/lib/renderer';
 import box from 'webglue/lib/geom/box';
+import translateWidget from 'webglue/lib/geom/translateWidget';
 import calcNormals from 'webglue/lib/geom/calcNormals';
 import { Engine } from 'fudge';
 
@@ -7,12 +8,14 @@ import transform from './component/transform';
 import light from './component/light';
 import camera from './component/camera';
 import mesh from './component/mesh';
+import select from './component/select';
 import blenderController from './component/blenderController';
 import MatrixSystem from './system/matrix';
 import CameraMatrixSystem from './system/cameraMatrix';
 import BlenderControllerSystem from './system/blenderController';
 import RendererSystem from './system/renderer';
-import MousePickSystem from './system/mousePick';
+import SelectSystem from './system/select';
+import WidgetSystem from './system/widget';
 
 import BlenderInput from './blenderInput';
 
@@ -36,13 +39,14 @@ let gl = canvas.getContext('webgl', { antialias: true }) ||
 let renderer = new Renderer(gl);
 
 let engine = new Engine({
-  transform, light, camera, mesh, blenderController
+  transform, light, camera, mesh, blenderController, select
 }, {
   matrix: MatrixSystem,
   cameraMatrix: CameraMatrixSystem,
   blenderController: BlenderControllerSystem,
   renderer: new RendererSystem(renderer, {
-    box: renderer.geometries.create(calcNormals(box()))
+    box: renderer.geometries.create(calcNormals(box())),
+    translateWidget: renderer.geometries.create(translateWidget())
   }, {
     phong: renderer.shaders.create(
       require('./shader/phong.vert'),
@@ -51,6 +55,10 @@ let engine = new Engine({
     border: renderer.shaders.create(
       require('./shader/minimalBias.vert'),
       require('./shader/monoColor.frag')
+    ),
+    widget: renderer.shaders.create(
+      require('./shader/widget.vert'),
+      require('./shader/staticColor.frag')
     )
   }, {
     test: {
@@ -64,9 +72,16 @@ let engine = new Engine({
           shininess: 90
         }
       }
+    },
+    widget: {
+      shader: 'widget',
+      options: {
+        depth: gl.ALWAYS
+      }
     }
   }),
-  mousePick: MousePickSystem,
+  select: SelectSystem,
+  widget: WidgetSystem,
   test: function TestSystem (engine) {
     this.entities = engine.systems.family.get('transform').entities;
     let camera;
@@ -105,7 +120,7 @@ let blenderInput = new BlenderInput(canvas, document, engine);
 
 canvas.addEventListener('mousedown', (e) => {
   if (e.button !== 0) return;
-  engine.systems.mousePick.pick(e.clientX, e.clientY);
+  engine.systems.select.selectPos(e.clientX, e.clientY);
 });
 
 let prevTime = -1;
