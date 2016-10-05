@@ -18,7 +18,7 @@ export default class WidgetSystem {
           }
         });
       },
-      'select.select:post!': ([entity]) => {
+      'editor.select:post!': ([entity]) => {
         if (entity == null) {
           engine.actions.mesh.setVisible(this.widget, false);
           return;

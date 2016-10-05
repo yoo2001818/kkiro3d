@@ -5,7 +5,10 @@ import createShaders from '../shader';
 import createMaterials from '../material';
 
 import RendererView from './renderer';
-import BlenderInputView from './blenderInput';
+// import BlenderInputView from './blenderInput';
+
+import ObjectMode from './mode/object';
+import ModeManager from './modeManager';
 
 import selectWireframe from './renderer/filter/selectWireframe';
 
@@ -37,6 +40,15 @@ export default function initView(engine) {
       selectWireframe
     ]
   );
-  let blenderInputView = new BlenderInputView(engine,
-    rendererView, canvas, document);
+
+  let modeManager = new ModeManager(engine, rendererView);
+  modeManager.push(new ObjectMode());
+
+  // Delegate events
+  ['mousedown', 'mousemove', 'mouseup', 'contextmenu'].forEach(
+    v => modeManager.addEventDelegator(canvas, v)
+  );
+  ['keydown', 'keyup'].forEach(
+    v => modeManager.addEventDelegator(document, v)
+  );
 }
