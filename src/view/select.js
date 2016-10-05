@@ -20,10 +20,25 @@ function unpackColor(data) {
   return output;
 }
 
+function createShaderHandler(frag) {
+  let shaders = new Map();
+  return function shaderHandler(shader, uniforms, renderer) {
+    if (shaders.has(shader)) return shaders.get(shader);
+    let newShader = renderer.shaders.create(
+      shader.source.vert,
+      frag
+    );
+    shaders.set(shader, newShader);
+    return newShader;
+  };
+}
+
 export default class SelectSystem {
-  constructor(engine, renderer) {
+  constructor(engine, renderer, node, keyNode) {
     this.engine = engine;
     this.renderer = renderer;
+    this.node = node;
+    this.keyNode = keyNode;
     let webglue = renderer.webglue;
     let gl = webglue.gl;
     renderer.handlers.mesh.push((data, entity) => {
@@ -39,14 +54,13 @@ export default class SelectSystem {
           uniforms: Object.assign({}, data.uniforms, {
             uColor: '#ffa400'
           }),
-          shader: renderer.shaders['border'],
+          shader: this.pickShaderHandler(data.shader, data.uniforms, webglue),
           geometry: geometry
         }, {}]
       });
     });
     // Create mouse pick framebuffer and shader
-    this.pickShader = webglue.shaders.create(
-      require('../shader/minimal.vert'),
+    this.pickShaderHandler = createShaderHandler(
       require('../shader/monoColor.frag')
     );
     this.pickTexture = webglue.textures.create(null, {
@@ -57,6 +71,13 @@ export default class SelectSystem {
       depth: gl.DEPTH_COMPONENT16 // Automatically use renderbuffer
     });
     this.wireframeGeoms = {};
+    this.registerEvents();
+  }
+  registerEvents() {
+    this.node.addEventListener('mousedown', (e) => {
+      if (e.button !== 2) return;
+      this.selectPos(e.clientX, e.clientY);
+    });
   }
   getId() {
     return this.engine.state.global.selected;
@@ -76,7 +97,7 @@ export default class SelectSystem {
           cull: gl.BACK,
           depth: gl.LEQUAL
         },
-        shaderHandler: () => this.pickShader,
+        shaderHandler: this.pickShaderHandler,
         framebuffer: this.pickFramebuffer
       })],
       mesh: [(data, entity) => {
@@ -88,7 +109,11 @@ export default class SelectSystem {
     let pixel = new Uint8Array(4);
     this.pickFramebuffer.readPixelsRGBA(x,
       this.pickFramebuffer.height - y, 1, 1, pixel);
+    let entityId = unpackColor(pixel);
+    if (entityId === this.engine.systems.widget.widget.id) {
+      return true;
+    }
     this.engine.actions.select.select(
-      this.engine.state.entities[unpackColor(pixel)]);
+      this.engine.state.entities[entityId]);
   }
 }

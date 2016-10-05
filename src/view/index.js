@@ -6,7 +6,8 @@ import createMaterials from '../material';
 
 import RendererView from './renderer';
 import BlenderInputView from './blenderInput';
-import SelectView from './select';
+
+import selectWireframe from './renderer/filter/selectWireframe';
 
 export default function initView(engine) {
   // Canvas init
@@ -31,14 +32,11 @@ export default function initView(engine) {
   let rendererView = new RendererView(engine, renderer,
     createGeometries(renderer),
     createShaders(renderer),
-    createMaterials(renderer)
+    createMaterials(renderer),
+    [
+      selectWireframe
+    ]
   );
   let blenderInputView = new BlenderInputView(engine,
     rendererView, canvas, document);
-  let selectView = new SelectView(engine, rendererView);
-
-  canvas.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return;
-    selectView.selectPos(e.clientX, e.clientY);
-  });
 }

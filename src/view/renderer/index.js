@@ -1,5 +1,5 @@
 export default class RendererView {
-  constructor(engine, webglue, geometries, shaders, materials) {
+  constructor(engine, webglue, geometries, shaders, materials, filters = []) {
     this.webglue = webglue;
     // TODO Users should be able to alter this in the game code - not in
     // initialization code.
@@ -7,23 +7,13 @@ export default class RendererView {
     this.shaders = shaders;
     this.materials = materials;
 
-    this.viewports = [];
-
-    this.handlers = {
-      // For special meshes.
-      mesh: [],
-      // For uniforms / shadow, etc.
-      light: [],
-      // For post processing, etc.
-      world: [],
-      // For camera setting, etc.
-      viewport: []
-    };
-
     this.engine = engine;
     this.meshes = engine.systems.family.get('mesh', 'transform').entities;
     this.lights = engine.systems.family.get('light', 'transform').entities;
     this.cameras = engine.systems.family.get('camera', 'transform');
+
+    this.filters = filters.map(v => v(this));
+    this.viewports = [];
 
     this.cameras.onAdd.add((camera) => {
       this.viewports.push({
@@ -34,11 +24,12 @@ export default class RendererView {
     // TODO This generates render tree every frame; it can be optimized.
     engine.signals.external.update.post.add(this.render.bind(this));
   }
-  render(handlers = {}, viewports = this.viewports) {
-    let lightHandlers = handlers.light || this.handlers.light;
-    let meshHandlers = handlers.mesh || this.handlers.mesh;
-    let worldHandlers = handlers.world || this.handlers.world;
-    let viewportHandlers = handlers.viewport || this.handlers.viewport;
+  render(filters = null, override = false, viewports = this.viewports) {
+    let currentFilters = this.filters;
+    if (filters != null) {
+      if (override) currentFilters = filters;
+      else currentFilters = this.filters.concat(filters);
+    }
     const gl = this.webglue.gl;
     // Create world graph first.
     let world = {
@@ -52,15 +43,16 @@ export default class RendererView {
       }
     };
     let worldPasses = [world];
-    this.lights.forEach(entity => lightHandlers.forEach(v => {
-      world = v(entity, world, worldPasses);
+    this.lights.forEach(entity => currentFilters.forEach(v => {
+      if (v.light) world = v.light(entity, world, worldPasses);
     }));
     world.passes = this.meshes.map(entity => {
       if (!entity.mesh.visible) return;
       let material = this.materials[entity.mesh.material];
       let shader = this.shaders[material.shader];
-      return meshHandlers.reduce((data, v) => {
-        return v(data, entity, world, worldPasses);
+      return currentFilters.reduce((data, v) => {
+        if (v.mesh == null) return data;
+        return v.mesh(data, entity, world, worldPasses);
       }, Object.assign({}, material, {
         shader: shader,
         geometry: this.geometries[entity.mesh.geometry],
@@ -70,8 +62,9 @@ export default class RendererView {
         })
       }));
     });
-    world = worldHandlers.reduce((data, v) => {
-      return v(data, worldPasses);
+    world = currentFilters.reduce((data, v) => {
+      if (v.world == null) return data;
+      return v.world(data, worldPasses);
     }, world);
     // Last, make viewports.
     let cameraMatrix = this.engine.systems.cameraMatrix;
@@ -79,8 +72,9 @@ export default class RendererView {
       // TODO Currently, just ignore viewport larger than 1
       if (index >= 1) return null;
       let { camera } = viewport;
-      return viewportHandlers.reduce((data, v) => {
-        return v(data, viewport, index, world, worldPasses);
+      return currentFilters.reduce((data, v) => {
+        if (v.viewport == null) return data;
+        return v.viewport(data, viewport, index, world, worldPasses);
       }, {
         options: {
           clearColor: new Float32Array([0, 0, 0, 1]),

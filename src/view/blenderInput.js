@@ -40,7 +40,7 @@ export default class BlenderInput {
       e.preventDefault();
     });
     this.node.addEventListener('mousedown', e => {
-      if (e.button === 0) return;
+      if (e.button !== 1) return;
       this.mouseHeld = true;
       // Determine if we should go clockwise or anticlockwise.
       let upLocal = vec3.create();
@@ -55,7 +55,7 @@ export default class BlenderInput {
       e.preventDefault();
     });
     this.node.addEventListener('mouseup', e => {
-      if (e.button === 0) return;
+      if (e.button !== 1) return;
       this.mouseHeld = false;
       e.preventDefault();
     });
