@@ -20,8 +20,8 @@ function unpackColor(data) {
   return output;
 }
 
-export default function mousePickFilter(renderer) {
-  // TODO We should share this between filters...
+export default function mousePickEffect(renderer) {
+  // TODO We should share this between effects...
   const webglue = renderer.webglue;
   const gl = webglue.gl;
   // Create mouse pick framebuffer and shader

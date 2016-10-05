@@ -1,8 +1,8 @@
 import createShaderHandler from '../../../util/createShaderHandler';
 import wireframe from 'webglue/lib/geom/wireframe';
 
-export default function selectWireframeFilter(renderer) {
-  // TODO We should share this between filters...
+export default function selectWireframeEffect(renderer) {
+  // TODO We should share this between effects...
   let colorShaderHandler = createShaderHandler(
     require('../../../shader/monoColor.frag')
   );

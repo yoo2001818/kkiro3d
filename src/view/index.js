@@ -10,7 +10,7 @@ import RendererView from './renderer';
 import ObjectMode from './mode/object';
 import ModeManager from './modeManager';
 
-import selectWireframe from './renderer/filter/selectWireframe';
+import selectWireframeEffect from './renderer/effect/selectWireframe';
 
 export default function initView(engine) {
   // Canvas init
@@ -37,7 +37,7 @@ export default function initView(engine) {
     createShaders(renderer),
     createMaterials(renderer),
     [
-      selectWireframe
+      selectWireframeEffect
     ]
   );
 
