@@ -39,6 +39,14 @@ export default class ObjectAction {
     e.preventDefault();
   }
   mousedown(e) {
+    if (e.button === 2) {
+      // Initiate mouse pick
+      let id = this.renderer.effects.mousePick.pick(e.clientX, e.clientY);
+      let entity = this.engine.state.entities[id];
+      if (entity == null) return;
+      this.engine.actions.editor.select(entity);
+      return;
+    }
     if (e.button !== 1) return;
     this.mouseHeld = true;
     // Determine if we should go clockwise or anticlockwise.

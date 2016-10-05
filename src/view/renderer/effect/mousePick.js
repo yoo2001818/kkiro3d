@@ -51,9 +51,9 @@ export default function mousePickEffect(renderer) {
       data.uniforms.uColor = packColor(entity.id);
       return data;
     },
-    pick: (x, y) => {
+    pick: function (x, y) {
       // Render mouse pick framebuffer.. (using itself as a filter)
-      renderer.render([this], true);
+      renderer.render([this]);
       // Then extract the pixel from framebuffer
       let pixel = new Uint8Array(4);
       pickFramebuffer.readPixelsRGBA(x,

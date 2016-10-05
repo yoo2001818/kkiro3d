@@ -10,7 +10,8 @@ import RendererView from './renderer';
 import ObjectMode from './mode/object';
 import ModeManager from './modeManager';
 
-import selectWireframeEffect from './renderer/effect/selectWireframe';
+import selectWireframe from './renderer/effect/selectWireframe';
+import mousePick from './renderer/effect/mousePick';
 
 export default function initView(engine) {
   // Canvas init
@@ -36,16 +37,15 @@ export default function initView(engine) {
     createGeometries(renderer),
     createShaders(renderer),
     createMaterials(renderer),
-    [
-      selectWireframeEffect
-    ]
+    { selectWireframe, mousePick }
   );
+  rendererView.setEffects(['selectWireframe']);
 
   let modeManager = new ModeManager(engine, rendererView);
   modeManager.push(new ObjectMode());
 
   // Delegate events
-  ['mousedown', 'mousemove', 'mouseup', 'contextmenu'].forEach(
+  ['mousedown', 'mousemove', 'mouseup', 'contextmenu', 'wheel'].forEach(
     v => modeManager.addEventDelegator(canvas, v)
   );
   ['keydown', 'keyup'].forEach(
