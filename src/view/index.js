@@ -44,6 +44,8 @@ export default function initView(engine) {
   let modeManager = new ModeManager(engine, rendererView);
   modeManager.push(new ObjectMode());
 
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+
   // Delegate events
   ['mousedown', 'mousemove', 'mouseup', 'contextmenu', 'wheel'].forEach(
     v => modeManager.addEventDelegator(canvas, v)

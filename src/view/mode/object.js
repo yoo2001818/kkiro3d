@@ -1,4 +1,6 @@
 import { vec3, quat } from 'gl-matrix';
+import toNDC from '../../util/toNDC';
+import TranslateMode from './translate';
 
 let tempQuat = quat.create();
 
@@ -44,6 +46,17 @@ export default class ObjectAction {
       let id = this.renderer.effects.mousePick.pick(e.clientX, e.clientY);
       let entity = this.engine.state.entities[id];
       if (entity == null) return;
+      let prevEntity = this.engine.state.entities[this.engine.state.global.
+        selected];
+      if (entity === this.engine.systems.widget.widget ||
+        entity === prevEntity
+      ) {
+        if (prevEntity == null) return;
+        this.manager.push(new TranslateMode(prevEntity,
+          toNDC(e.clientX, e.clientY, this.renderer)
+        ));
+        return;
+      }
       this.engine.actions.editor.select(entity);
       return;
     }

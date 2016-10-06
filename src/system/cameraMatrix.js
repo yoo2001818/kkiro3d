@@ -1,16 +1,20 @@
 import { mat4 } from 'gl-matrix';
 
+const PROJECTION_BIT = 1;
+const PROJECTION_VIEW_BIT = 2;
+const PROJECTION_INVERSE_BIT = 4;
+
 export default class CameraMatrixSystem {
   constructor() {
     this.data = [];
     this.hooks = {
       'transform.*!': ([entity]) => {
         let data = this.data[entity.id];
-        if (data != null) data.viewValid = false;
+        if (data != null) data.valid = data.valid & ~PROJECTION_VIEW_BIT;
       },
       'camera.*!': ([entity]) => {
         let data = this.data[entity.id];
-        if (data != null) data.projectionValid = false;
+        if (data != null) data.valid = 0;
       }
     };
   }
@@ -19,11 +23,11 @@ export default class CameraMatrixSystem {
     this.family = engine.systems.family.get('camera', 'transform');
     this.family.onAdd.addRaw(([entity]) => {
       this.data[entity.id] = {
-        viewValid: false,
-        projectionValid: false,
+        valid: 0,
         aspect: 1,
         projection: null,
-        projectionView: null
+        projectionView: null,
+        projectionInverse: null
       };
     });
     this.family.onRemove.addRaw(([entity]) => {
@@ -49,7 +53,11 @@ export default class CameraMatrixSystem {
       aspect = data.aspect;
     }
 
-    if (data.projectionValid && aspect === data.aspect) return false;
+    if ((data.valid & PROJECTION_BIT) !== 0 && aspect === data.aspect) {
+      return false;
+    }
+    // View and inverse projection is invalidated..
+    data.valid = PROJECTION_BIT;
     if (data.projection == null) data.projection = mat4.create();
     data.aspect = aspect;
     data.projectionValid = true;
@@ -79,12 +87,26 @@ export default class CameraMatrixSystem {
   getProjectionView(entity, input) {
     let data = this.getData(entity);
     let camera = entity.camera;
-    let needUpdate = this.calculateProjection(data, camera, input) ||
-      !data.viewValid;
-    if (!needUpdate) return data.projectionView;
-    if (data.projectionView == null) data.projectionView = mat4.create();
-    data.viewValid = true;
-    return mat4.multiply(data.projectionView, data.projection,
-      this.getView(entity));
+    this.calculateProjection(data, camera, input);
+    if ((data.valid & PROJECTION_VIEW_BIT) === 0) {
+      data.valid |= PROJECTION_VIEW_BIT;
+      if (data.projectionView == null) data.projectionView = mat4.create();
+      mat4.multiply(data.projectionView, data.projection,
+        this.getView(entity));
+    }
+    return data.projectionView;
+  }
+  getProjectionInverse(entity, input) {
+    let data = this.getData(entity);
+    let camera = entity.camera;
+    this.calculateProjection(data, camera, input);
+    if ((data.valid & PROJECTION_INVERSE_BIT) === 0) {
+      data.valid |= PROJECTION_INVERSE_BIT;
+      if (data.projectionInverse == null) {
+        data.projectionInverse = mat4.create();
+      }
+      mat4.invert(data.projectionInverse, data.projection);
+    }
+    return data.projectionInverse;
   }
 }
