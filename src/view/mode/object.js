@@ -6,6 +6,7 @@ let tempQuat = quat.create();
 
 export default class ObjectAction {
   constructor() {
+    this.rightHeld = false;
     this.mouseHeld = false;
     this.mouseX = 0;
     this.mouseY = 0;
@@ -15,6 +16,8 @@ export default class ObjectAction {
     this.manager = manager;
     this.engine = manager.engine;
     this.renderer = manager.renderer;
+    this.rightHeld = false;
+    this.mouseHeld = false;
   }
   exit() {
 
@@ -23,6 +26,15 @@ export default class ObjectAction {
     return this.renderer.viewports[0].camera;
   }
   mousemove(e) {
+    if (this.rightHeld) {
+      let prevEntity = this.engine.state.entities[this.engine.state.global.
+        selected];
+      if (prevEntity == null) return;
+      this.manager.push(new TranslateMode(prevEntity,
+        toNDC(e.clientX, e.clientY, this.renderer)
+      ));
+      return;
+    }
     if (!this.mouseHeld) return;
     let offsetX = e.clientX - this.mouseX;
     let offsetY = e.clientY - this.mouseY;
@@ -46,17 +58,8 @@ export default class ObjectAction {
       let id = this.renderer.effects.mousePick.pick(e.clientX, e.clientY);
       let entity = this.engine.state.entities[id];
       if (entity == null) return;
-      let prevEntity = this.engine.state.entities[this.engine.state.global.
-        selected];
-      if (entity === this.engine.systems.widget.widget ||
-        entity === prevEntity
-      ) {
-        if (prevEntity == null) return;
-        this.manager.push(new TranslateMode(prevEntity,
-          toNDC(e.clientX, e.clientY, this.renderer)
-        ));
-        return;
-      }
+      this.rightHeld = true;
+      if (entity === this.engine.systems.widget.widget) return;
       this.engine.actions.editor.select(entity);
       return;
     }
@@ -75,6 +78,7 @@ export default class ObjectAction {
     e.preventDefault();
   }
   mouseup(e) {
+    if (e.button === 2) this.rightHeld = false;
     if (e.button !== 1) return;
     this.mouseHeld = false;
     e.preventDefault();
