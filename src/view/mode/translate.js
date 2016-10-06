@@ -22,21 +22,6 @@ export default class TranslateMode {
     this.renderer = manager.renderer;
 
     this.camera = this.renderer.viewports[0].camera;
-    // Get relative offset
-    if (this.align) {
-      // We're aligning to axis - Get relative offset from origin to clicked
-      // point
-      // Project current model position to projection space
-      // (to get Z value)
-      let perspPos = vec4.fromValues(0, 0, 0, 1);
-      vec4.transformMat4(perspPos, perspPos,
-        this.engine.systems.matrix.get(this.entity));
-      vec4.transformMat4(perspPos, perspPos,
-        this.engine.systems.cameraMatrix.getProjectionView(this.camera));
-      vec4.scale(perspPos, perspPos, 1 / perspPos[3]);
-      // Last, store relative offset for future use
-      vec2.subtract(this.relativeOffset, [this.mouseX, this.mouseY], perspPos);
-    }
   }
   mousemove(e) {
     let ndc = toNDC(e.clientX, e.clientY, this.renderer);
@@ -64,36 +49,24 @@ export default class TranslateMode {
       // Last, write the pos to transform
       this.engine.actions.transform.setPosition(this.entity, perspPos);
     } else {
-      // How much should it move in viewport space in order to move (1, 0, 0)?
       // Project current model position to projection space
       let perspPos = vec4.fromValues(0, 0, 0, 1);
       vec3.copy(perspPos, this.startPos);
       let addedPos = vec4.create();
-      addedPos[3] = 1;
-      vec3.add(addedPos, perspPos, this.alignAxis);
+      vec3.copy(addedPos, this.alignAxis);
       vec4.transformMat4(perspPos, perspPos,
         this.engine.systems.cameraMatrix.getProjectionView(this.camera));
       vec4.transformMat4(addedPos, addedPos,
         this.engine.systems.cameraMatrix.getProjectionView(this.camera));
-      let centerPos = vec2.create();
-      vec2.copy(centerPos, perspPos);
-      vec2.scale(centerPos, centerPos, 1 / perspPos[3]);
-      let dirPos = vec2.create();
-      vec2.copy(dirPos, addedPos);
-      vec2.scale(dirPos, dirPos, 1 / addedPos[3]);
-      vec2.subtract(dirPos, dirPos, centerPos);
-      let dirNorm = vec2.create();
-      vec2.normalize(dirNorm, dirPos);
-      // Now we've got everything, calculated required transform length
-      // and translate to it
-      let projected = vec2.create();
-      vec2.subtract(projected, ndc, centerPos);
-      vec2.subtract(projected, projected, this.relativeOffset);
-      let dist = vec2.dot(projected, dirNorm);
-      let transSize = dist / vec2.length(dirPos);
+      // Use biggest value of X or Y, since too low value can lead to
+      // division by zero or something
+      let index = Math.abs(addedPos[0]) > Math.abs(addedPos[1]) ? 0 : 1;
+      // n = (x0-w0 x)/(x ω1-x1)
+      let distance = (perspPos[index] - perspPos[3] * ndc[index]) /
+        (addedPos[3] * ndc[index] - addedPos[index]);
       let translation = vec3.create();
       vec3.copy(translation, this.alignAxis);
-      vec3.scale(translation, translation, transSize);
+      vec3.scale(translation, translation, distance);
       let pos = vec3.create();
       vec3.add(pos, translation, this.startPos);
       // Last, write the pos to transform
