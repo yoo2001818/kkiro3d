@@ -20,8 +20,20 @@ export default class TranslateMode {
     this.manager = manager;
     this.engine = manager.engine;
     this.renderer = manager.renderer;
+    this.renderer.effectList.push(this.renderer.effects.axis);
+    this.setEffect();
 
     this.camera = this.renderer.viewports[0].camera;
+  }
+  exit() {
+    // Remove axis effect
+    this.renderer.effectList.splice(this.renderer.effectList.indexOf(
+      this.renderer.effects.axis
+    ), 1);
+  }
+  setEffect() {
+    this.renderer.effects.axis.direction = this.align ? this.alignAxis : null;
+    this.renderer.effects.axis.color = this.alignColor;
   }
   mousemove(e) {
     let ndc = toNDC(e.clientX, e.clientY, this.renderer);
@@ -79,18 +91,22 @@ export default class TranslateMode {
   keydown(e) {
     if (e.keyCode === 67) {
       this.align = false;
+      this.setEffect();
     } else if (e.keyCode === 88) {
       this.align = true;
       this.alignColor = '#ff0000';
       this.alignAxis = [1, 0, 0];
+      this.setEffect();
     } else if (e.keyCode === 89) {
       this.align = true;
       this.alignColor = '#00ff00';
       this.alignAxis = [0, 1, 0];
+      this.setEffect();
     } else if (e.keyCode === 90) {
       this.align = true;
       this.alignColor = '#0000ff';
       this.alignAxis = [0, 0, 1];
+      this.setEffect();
     }
   }
 }

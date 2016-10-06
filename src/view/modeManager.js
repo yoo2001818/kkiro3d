@@ -14,6 +14,7 @@ export default class ModeManager {
     mode.enter(this);
   }
   pop() {
+    this.modeStack[this.modeStack.length - 1].exit();
     this.modeStack.pop();
     // Enter previous mode
     if (this.modeStack.length > 0) {

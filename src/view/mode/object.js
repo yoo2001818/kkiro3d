@@ -26,18 +26,20 @@ export default class ObjectAction {
     return this.renderer.viewports[0].camera;
   }
   mousemove(e) {
-    if (this.rightHeld) {
+    let offsetX = e.clientX - this.mouseX;
+    let offsetY = e.clientY - this.mouseY;
+    if (this.rightHeld &&
+      Math.sqrt(offsetX * offsetX + offsetY * offsetY) > 4
+    ) {
       let prevEntity = this.engine.state.entities[this.engine.state.global.
         selected];
       if (prevEntity == null) return;
       this.manager.push(new TranslateMode(prevEntity,
-        toNDC(e.clientX, e.clientY, this.renderer)
+        toNDC(this.mouseX, this.mouseY, this.renderer)
       ));
       return;
     }
     if (!this.mouseHeld) return;
-    let offsetX = e.clientX - this.mouseX;
-    let offsetY = e.clientY - this.mouseY;
     this.mouseX = e.clientX;
     this.mouseY = e.clientY;
     if (e.shiftKey) {
@@ -53,6 +55,9 @@ export default class ObjectAction {
     e.preventDefault();
   }
   mousedown(e) {
+    // Set position
+    this.mouseX = e.clientX;
+    this.mouseY = e.clientY;
     if (e.button === 2) {
       // Initiate mouse pick
       let id = this.renderer.effects.mousePick.pick(e.clientX, e.clientY);
@@ -72,9 +77,6 @@ export default class ObjectAction {
       this.getCamera().transform.rotation);
     let upDot = vec3.dot(up, upLocal);
     this.rotateDir = upDot >= 0 ? 1 : -1;
-    // Set position
-    this.mouseX = e.clientX;
-    this.mouseY = e.clientY;
     e.preventDefault();
   }
   mouseup(e) {

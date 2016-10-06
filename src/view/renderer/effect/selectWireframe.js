@@ -21,13 +21,13 @@ export default function selectWireframeEffect(renderer) {
           webglue.geometries.create(wireframe(renderer.geometries[geomName]));
       }
       return Object.assign(data, {
-        passes: [{
-          uniforms: Object.assign({}, data.uniforms, {
+        passes: (data.passes || [{}]).concat([{
+          uniforms: {
             uColor: '#ffa400'
-          }),
+          },
           shader: colorShaderHandler(data.shader, data.uniforms, webglue),
           geometry: geometry
-        }, {}]
+        }])
       });
     }
   };
