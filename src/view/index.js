@@ -7,6 +7,8 @@ import createMaterials from '../material';
 import RendererView from './renderer';
 // import BlenderInputView from './blenderInput';
 
+import initUI from './ui';
+
 import ObjectMode from './mode/object';
 import ModeManager from './modeManager';
 
@@ -54,4 +56,6 @@ export default function initView(engine) {
   ['keydown', 'keyup'].forEach(
     v => modeManager.addEventDelegator(document, v)
   );
+
+  initUI(engine);
 }
