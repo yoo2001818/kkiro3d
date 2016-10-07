@@ -1,4 +1,4 @@
-import { vec3, quat } from 'gl-matrix';
+import { vec2, vec3, vec4, quat } from 'gl-matrix';
 import toNDC from '../../util/toNDC';
 import TranslateMode from './translate';
 
@@ -67,6 +67,51 @@ export default class ObjectAction {
       if (entity === this.engine.systems.widget.widget) return;
       this.engine.actions.editor.select(entity);
       return;
+    }
+    if (e.button === 0) {
+      let prevEntity = this.engine.state.entities[this.engine.state.global.
+        selected];
+      if (prevEntity == null) return;
+      // Project the widget axis to screen
+      let ndc = toNDC(this.mouseX, this.mouseY, this.renderer);
+      let projView = this.engine.systems.cameraMatrix.
+        getProjectionView(this.getCamera());
+      let perspPos = vec4.fromValues(0, 0, 0, 1);
+      vec4.transformMat4(perspPos, perspPos,
+        this.engine.systems.matrix.get(prevEntity));
+      vec4.transformMat4(perspPos, perspPos, projView);
+      let startPos = vec4.create();
+      vec2.scale(startPos, perspPos, 1 / perspPos[3]);
+      [[1, 0, 0], [0, 1, 0], [0, 0, 1]].some(input => {
+        let axis = vec4.create();
+        vec3.copy(axis, input);
+        vec4.transformMat4(axis, axis, projView);
+        vec4.scale(axis, axis, perspPos[3] * 0.2);
+        let endPos = vec4.create();
+        vec4.add(endPos, perspPos, axis);
+        vec2.scale(endPos, endPos, 1 / endPos[3]);
+        // Translate...
+        vec2.subtract(endPos, endPos, startPos);
+        let endDist = vec2.length(endPos);
+        let endNorm = vec2.create();
+        vec2.scale(endNorm, endPos, 1 / endDist);
+        let ndcTranslated = vec2.create();
+        vec2.subtract(ndcTranslated, ndc, startPos);
+        // Try to project ndc to axis
+        let a1 = vec2.dot(ndcTranslated, endNorm);
+        let v1 = vec2.create();
+        vec2.scale(v1, endNorm, a1);
+        let v2 = vec2.create();
+        vec2.subtract(v2, ndcTranslated, v1);
+        let a2 = vec2.length(v2);
+        if (a1 > 0 && a1 < endDist && a2 < 0.015) {
+          this.manager.push(new TranslateMode(prevEntity,
+            toNDC(this.mouseX, this.mouseY, this.renderer),
+            input
+          ));
+          return true;
+        }
+      });
     }
     if (e.button !== 1) return;
     this.mouseHeld = true;

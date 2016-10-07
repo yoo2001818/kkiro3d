@@ -79,7 +79,7 @@ export default class RendererView {
         return v.viewport(data, viewport, index, world, worldPasses);
       }, {
         options: {
-          clearColor: new Float32Array([0, 0, 0, 1]),
+          clearColor: '#222222',
           clearDepth: 1,
           cull: gl.BACK,
           depth: gl.LEQUAL

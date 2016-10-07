@@ -2,19 +2,17 @@ import { vec2, vec3, vec4 } from 'gl-matrix';
 import toNDC from '../../util/toNDC';
 
 export default class TranslateMode {
-  constructor(entity, ndc) {
+  constructor(entity, ndc, alignAxis = null) {
     this.entity = entity;
     this.startPos = vec3.create();
     vec3.copy(this.startPos, this.entity.transform.position);
 
     this.mouseHeld = true;
-    this.mouseX = ndc[0];
-    this.mouseY = ndc[1];
+    this.ndc = ndc;
     this.relativeOffset = vec2.create();
 
-    this.align = false;
-    this.alignColor = '#ff0000';
-    this.alignAxis = [1, 0, 0];
+    this.align = alignAxis != null;
+    this.alignAxis = alignAxis;
   }
   enter(manager) {
     this.manager = manager;
@@ -24,6 +22,15 @@ export default class TranslateMode {
     this.setEffect();
 
     this.camera = this.renderer.viewports[0].camera;
+
+    let perspPos = vec4.fromValues(0, 0, 0, 1);
+    vec4.transformMat4(perspPos, perspPos,
+      this.engine.systems.matrix.get(this.entity));
+    vec4.transformMat4(perspPos, perspPos,
+      this.engine.systems.cameraMatrix.getProjectionView(this.camera));
+
+    vec4.scale(perspPos, perspPos, 1 / perspPos[3]);
+    vec2.subtract(this.relativeOffset, this.ndc, perspPos);
   }
   exit() {
     // Remove axis effect
@@ -33,26 +40,23 @@ export default class TranslateMode {
   }
   setEffect() {
     this.renderer.effects.axis.direction = this.align ? this.alignAxis : null;
-    this.renderer.effects.axis.color = this.alignColor;
+    this.renderer.effects.axis.color = this.align && this.alignAxis.concat([1]);
   }
   mousemove(e) {
     let ndc = toNDC(e.clientX, e.clientY, this.renderer);
-    let deltaX = ndc[0] - this.mouseX;
-    let deltaY = ndc[1] - this.mouseY;
-    this.mouseX = ndc[0];
-    this.mouseY = ndc[1];
+    this.ndc = ndc;
+    vec2.subtract(ndc, ndc, this.relativeOffset);
     if (!this.align) {
       // Freestyle translation
       // Project current model position to projection space
       let perspPos = vec4.fromValues(0, 0, 0, 1);
-      vec4.transformMat4(perspPos, perspPos,
-        this.engine.systems.matrix.get(this.entity));
+      vec3.copy(perspPos, this.startPos);
       vec4.transformMat4(perspPos, perspPos,
         this.engine.systems.cameraMatrix.getProjectionView(this.camera));
       // vec4.scale(perspPos, perspPos, 1 / perspPos[3]);
       // Then move using delta value
-      perspPos[0] += deltaX * perspPos[3];
-      perspPos[1] += deltaY * perspPos[3];
+      perspPos[0] = ndc[0] * perspPos[3];
+      perspPos[1] = ndc[1] * perspPos[3];
       // Inverse-project to world space
       vec4.transformMat4(perspPos, perspPos,
         this.engine.systems.cameraMatrix.getProjectionInverse(this.camera));
@@ -86,25 +90,23 @@ export default class TranslateMode {
     }
   }
   mouseup(e) {
-    if (e.button === 2) this.manager.pop();
+    if (e.buttons === 0) this.manager.pop();
   }
   keydown(e) {
     if (e.keyCode === 67) {
       this.align = false;
       this.setEffect();
+      this.engine.actions.transform.setPosition(this.entity, this.startPos);
     } else if (e.keyCode === 88) {
       this.align = true;
-      this.alignColor = '#ff0000';
       this.alignAxis = [1, 0, 0];
       this.setEffect();
     } else if (e.keyCode === 89) {
       this.align = true;
-      this.alignColor = '#00ff00';
       this.alignAxis = [0, 1, 0];
       this.setEffect();
     } else if (e.keyCode === 90) {
       this.align = true;
-      this.alignColor = '#0000ff';
       this.alignAxis = [0, 0, 1];
       this.setEffect();
     }
