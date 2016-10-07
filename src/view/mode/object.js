@@ -43,11 +43,11 @@ export default class ObjectAction {
     this.mouseX = e.clientX;
     this.mouseY = e.clientY;
     if (e.shiftKey) {
-      this.engine.actions.blenderController.translate(
+      this.engine.actions.external.execute('blenderController.translate',
         this.getCamera(), offsetX / 600, offsetY / 600);
       return;
     }
-    this.engine.actions.blenderController.rotate(
+    this.engine.actions.external.execute('blenderController.rotate',
       this.getCamera(), Math.PI / 180 * -offsetX * this.rotateDir / 4,
       Math.PI / 180 * -offsetY / 4);
   }
@@ -65,7 +65,7 @@ export default class ObjectAction {
       if (entity == null) return;
       this.rightHeld = true;
       if (entity === this.engine.systems.widget.widget) return;
-      this.engine.actions.editor.select(entity);
+      this.engine.actions.external.execute('editor.select', entity);
       return;
     }
     if (e.button === 0) {
@@ -133,12 +133,12 @@ export default class ObjectAction {
   keydown(e) {
     if (e.shiftKey) return;
     if (e.keyCode === 32) {
-      this.engine.actions.blenderController.lerpCenter(
+      this.engine.actions.external.execute('blenderController.lerpCenter',
         this.getCamera(), [0, 0, 0]);
     }
     // Persp - Ortho swap
     if (e.keyCode === 101 || e.keyCode === 53) {
-      this.engine.actions.blenderController.setCamera(
+      this.engine.actions.external.execute('blenderController.setCamera',
         this.getCamera(), this.getCamera().camera.type === 'ortho');
     }
     // Front
@@ -147,7 +147,7 @@ export default class ObjectAction {
       if (e.ctrlKey) {
         quat.rotateY(tempQuat, tempQuat, Math.PI);
       }
-      this.engine.actions.blenderController.lerpRotation(
+      this.engine.actions.external.execute('blenderController.lerpRotation',
         this.getCamera(), tempQuat);
     }
     // Right
@@ -157,7 +157,7 @@ export default class ObjectAction {
       if (e.ctrlKey) {
         quat.rotateY(tempQuat, tempQuat, -Math.PI);
       }
-      this.engine.actions.blenderController.lerpRotation(
+      this.engine.actions.external.execute('blenderController.lerpRotation',
         this.getCamera(), tempQuat);
     }
     // Top
@@ -167,7 +167,7 @@ export default class ObjectAction {
       if (e.ctrlKey) {
         quat.rotateX(tempQuat, tempQuat, Math.PI);
       }
-      this.engine.actions.blenderController.lerpRotation(
+      this.engine.actions.external.execute('blenderController.lerpRotation',
         this.getCamera(), tempQuat);
     }
   }
@@ -175,17 +175,18 @@ export default class ObjectAction {
     let diff = e.deltaY / 50;
     if (e.deltaMode === 0) diff /= 12;
     if (e.shiftKey) {
-      this.engine.actions.blenderController.translate(
+      this.engine.actions.external.execute('blenderController.translate',
         this.getCamera(), 0, diff);
       e.preventDefault();
       return;
     } else if (e.ctrlKey) {
-      this.engine.actions.blenderController.translate(
+      this.engine.actions.external.execute('blenderController.translate',
         this.getCamera(), diff, 0);
       e.preventDefault();
       return;
     }
-    this.engine.actions.blenderController.zoom(this.getCamera(), diff);
+    this.engine.actions.external.execute('blenderController.zoom',
+      this.getCamera(), diff);
     e.preventDefault();
   }
 }

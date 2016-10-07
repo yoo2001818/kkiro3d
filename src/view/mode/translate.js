@@ -63,7 +63,8 @@ export default class TranslateMode {
       vec4.transformMat4(perspPos, perspPos,
         this.engine.systems.matrix.get(this.camera));
       // Last, write the pos to transform
-      this.engine.actions.transform.setPosition(this.entity, perspPos);
+      this.engine.actions.external.execute('transform.setPosition',
+        this.entity, perspPos);
     } else {
       // Project current model position to projection space
       let perspPos = vec4.fromValues(0, 0, 0, 1);
@@ -86,7 +87,8 @@ export default class TranslateMode {
       let pos = vec3.create();
       vec3.add(pos, translation, this.startPos);
       // Last, write the pos to transform
-      this.engine.actions.transform.setPosition(this.entity, pos);
+      this.engine.actions.external.execute('transform.setPosition',
+        this.entity, pos);
     }
   }
   mouseup(e) {
@@ -96,7 +98,6 @@ export default class TranslateMode {
     if (e.keyCode === 67) {
       this.align = false;
       this.setEffect();
-      this.engine.actions.transform.setPosition(this.entity, this.startPos);
     } else if (e.keyCode === 88) {
       this.align = true;
       this.alignAxis = [1, 0, 0];

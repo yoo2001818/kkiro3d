@@ -35,8 +35,12 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "fudge": "^0.1.8",
     "gl-matrix": "^2.3.2",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-hot-loader": "^3.0.0-beta.5",
     "webglue": "^1.0.2"
   }
 }

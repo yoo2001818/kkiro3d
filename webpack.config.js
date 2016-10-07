@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
+var entries = ['./src/client.js'];
 var plugins = [
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.NoErrorsPlugin(),
@@ -21,14 +22,18 @@ var plugins = [
 ];
 if (process.env.NODE_ENV === 'production') {
   plugins.push(new webpack.optimize.UglifyJsPlugin());
+} else {
+  entries = [
+    'webpack/hot/dev-server',
+    'react-hot-loader/patch'
+  ].concat(entries);
+  plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 
 module.exports = {
   // devtool: 'eval-source-map',
   context: __dirname,
-  entry: [
-    './src/client.js'
-  ],
+  entry: entries,
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
