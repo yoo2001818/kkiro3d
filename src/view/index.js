@@ -14,6 +14,7 @@ import ModeManager from './modeManager';
 
 import selectWireframe from './renderer/effect/selectWireframe';
 import mousePick from './renderer/effect/mousePick';
+import depthPick from './renderer/effect/depthPick';
 import axis from './renderer/effect/axis';
 
 export default function initView(engine) {
@@ -40,7 +41,7 @@ export default function initView(engine) {
     createGeometries(renderer),
     createShaders(renderer),
     createMaterials(renderer),
-    { selectWireframe, mousePick, axis }
+    { selectWireframe, mousePick, depthPick, axis }
   );
   rendererView.setEffects(['selectWireframe']);
 
