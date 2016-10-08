@@ -14,12 +14,12 @@ function decodeDepth(data) {
 
 function decodePos(data, x, y, inverseProjection, inverseView) {
   let depth = decodeDepth(data);
+  if (depth > 1) return null;
   let projPos = vec4.fromValues(x, y, depth * 2 - 1, 1);
   vec4.transformMat4(projPos, projPos, inverseProjection);
   vec3.scale(projPos, projPos, 1 / projPos[3]);
   projPos[3] = 1;
   vec4.transformMat4(projPos, projPos, inverseView);
-  console.log(projPos);
   return projPos;
 }
 
@@ -57,10 +57,9 @@ export default function depthPickEffect(renderer) {
       let pixel = new Uint8Array(4);
       pickFramebuffer.readPixelsRGBA(x,
         pickFramebuffer.height - y, 1, 1, pixel);
-      console.log(pixel);
       let ndc = toNDC(x, y, renderer);
       let camera = renderer.viewports[0].camera;
-      let pos = decodePos(pixel, ndc[0], ndc[1],
+      return decodePos(pixel, ndc[0], ndc[1],
         renderer.engine.systems.cameraMatrix.getProjectionInverse(camera),
         renderer.engine.systems.matrix.get(camera)
       );

@@ -64,7 +64,6 @@ export default class ObjectAction {
       let entity = this.engine.state.entities[id];
       if (entity == null) return;
       this.rightHeld = true;
-      if (entity === this.engine.systems.widget.widget) return;
       this.engine.actions.external.execute('editor.select', entity);
       return;
     }
@@ -115,7 +114,9 @@ export default class ObjectAction {
         if (result) return;
       }
       // Run depth pick
-      this.renderer.effects.depthPick.pick(e.clientX, e.clientY);
+      let pos = this.renderer.effects.depthPick.pick(e.clientX, e.clientY);
+      if (pos == null) return;
+      this.engine.actions.external.execute('editor.cursor', pos);
     }
     if (e.button !== 1) return;
     this.mouseHeld = true;
