@@ -1,0 +1,17 @@
+@mixin triangle-left($size, $vsize, $color) {
+  width: 0;
+  height: 0;
+  border-right: $size solid $color;
+  border-left: $size solid transparent;
+  border-bottom: $vsize solid transparent;
+  border-top: $vsize solid transparent;
+}
+
+@mixin triangle-top($size, $hsize, $color) {
+  width: 0;
+  height: 0;
+  border-bottom: $size solid $color;
+  border-top: $size solid transparent;
+  border-right: $hsize solid transparent;
+  border-left: $hsize solid transparent;
+}

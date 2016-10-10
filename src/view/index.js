@@ -21,18 +21,15 @@ import widget from './renderer/effect/widget';
 export default function initView(engine) {
   // Canvas init
   let canvas = document.createElement('canvas');
+  canvas.className = 'engine-canvas';
   document.body.appendChild(canvas);
   canvas.width = document.documentElement.clientWidth;
-  canvas.height = document.documentElement.clientHeight;
+  canvas.height = document.documentElement.clientHeight - 1;
 
   window.addEventListener('resize', () => {
     canvas.width = document.documentElement.clientWidth;
-    canvas.height = document.documentElement.clientHeight;
+    canvas.height = document.documentElement.clientHeight - 1;
   });
-
-  document.body.style.margin = '0';
-  document.body.style.padding = '0';
-  document.body.style.overflow = 'hidden';
 
   let gl = canvas.getContext('webgl', { antialias: true }) ||
     canvas.getContext('experimental-webgl');

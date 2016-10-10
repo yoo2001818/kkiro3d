@@ -1,0 +1,35 @@
+.text-input-component {
+  font-size: 1em;
+  background-color: $grey-000;
+  color: $grey-800;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0.5em 0.6em;
+  // margin: 0.1em 0.2em;
+  border-radius: 2px;
+  border: 1px solid $grey-400;
+
+  // transition: background-color 0.1s, transform 0.1s, box-shadow 0.1s,
+  //   border-color 0.1s;
+
+  &:hover {
+    border-color: $grey-500;
+  }
+  &:active, &:focus {
+    // box-shadow: 0em 0em 2px 0 $blue-400;
+    border-color: $blue-500;
+  }
+  .noborder-input & {
+    padding: 0.3em;
+    border: none;
+    background-color: transparent;
+    border-bottom: 1px solid $grey-500;
+    border-radius: 0;
+    &:hover {
+      border-color: $grey-600;
+    }
+    &:active, &:focus {
+      border-color: $blue-500;
+    }
+  }
+}

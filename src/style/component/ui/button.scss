@@ -1,0 +1,91 @@
+.button-component, input[type='button'] {
+  font-size: 1em;
+  background-color: $blue-700;
+  color: $grey-100;
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0.5em 1.9em;
+  margin: 0.1em 0.2em;
+  border: none;
+  border-radius: 2px;
+  cursor: default;
+  vertical-align: middle;
+  // border: 1px solid darken($color, 10%);
+
+  // transition: background-color 0.1s, transform 0.1s, box-shadow 0.1s,
+  //   border-color 0.1s;
+
+  &.red {
+    background-color: $red-700;
+    &:hover, &:focus {
+      background-color: $red-600;
+    }
+    &:hover:active {
+      background-color: $red-800;
+    }
+    &:active {
+      background-color: $red-700;
+    }
+    &:disabled, &:disabled:hover, &:disabled:active {
+      background-color: $grey-700;
+    }
+  }
+
+  &.orange {
+    background-color: $orange-700;
+    &:hover, &:focus {
+      background-color: $orange-600;
+    }
+    &:hover:active {
+      background-color: $orange-800;
+    }
+    &:active {
+      background-color: $orange-700;
+    }
+    &:disabled, &:disabled:hover, &:disabled:active {
+      background-color: $grey-700;
+    }
+  }
+
+  &.green {
+    background-color: $green-700;
+    &:hover, &:focus {
+      background-color: $green-600;
+    }
+    &:hover:active {
+      background-color: $green-800;
+    }
+    &:active {
+      background-color: $green-700;
+    }
+    &:disabled, &:disabled:hover, &:disabled:active {
+      background-color: $grey-700;
+    }
+  }
+
+  &:hover, &:focus {
+    background-color: $blue-600;
+    // border-color: $color;
+  }
+  &:hover:active {
+    background-color: $blue-800;
+    // border-color: darken($color, 20%);
+  }
+  &:active {
+    background-color: $blue-700;
+    // border-color: darken($color, 10%);
+  }
+  &:disabled, &:disabled:hover, &:disabled:active {
+    background-color: $grey-700;
+  }
+}
+
+div.button-component, a.button-component {
+  text-decoration: none;
+  vertical-align: middle;
+  min-height: 2.3em;
+  &:hover {
+    color: $grey-100;
+  }
+}

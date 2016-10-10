@@ -1,0 +1,16 @@
+.read-input-component {
+  & > label {
+    & > .label {
+      // Label is hidden by default..
+      display: none;
+      color: $grey-600;
+    }
+    & > .field {
+      display: block;
+      border-radius: 0;
+      border: none;
+      background: none;
+      padding: 0.2em 0;
+    }
+  }
+}

@@ -1,0 +1,21 @@
+.alert-component {
+  color: $red-800;
+  background-color: $red-200;
+  box-sizing: border-box;
+  padding: 0.5em;
+  margin-top: 12px;
+  margin-bottom: 0.3em;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: normal;
+  position: relative;
+  &:after {
+    content: '';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    margin-right: -9px;
+    @include triangle-top(9px, 9px, $red-200);
+  }
+}

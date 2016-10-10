@@ -1,3 +1,5 @@
+import './style/index.scss';
+
 import createView from './view';
 import createEngine from './engine';
 import BatteryManager from './util/batteryManager';

@@ -1,0 +1,37 @@
+.app {
+  // If a browser doesn't support WebGL, it doesn't support flexbox too.
+  // So why don't we use flexbox? :P It's reallly convinient.
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  & > .header {
+    flex: 0 0 auto;
+    height: $header-height;
+
+    background-color: $header-bg-color;
+    color: $header-color;
+    border-bottom: 1px solid $header-border-color;
+
+    line-height: $header-height;
+    padding: 0 0.5em;
+  }
+  & > .content {
+    flex: 1 1;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    & > .viewport {
+      flex: 1 1;
+      color: $grey-200;
+    }
+    & > .sidebar {
+      flex: 0 0 auto;
+      width: $sidebar-width;
+
+      background-color: $sidebar-bg-color;
+      color: $sidebar-color;
+      border-left: 1px solid $sidebar-border-color;
+    }
+  }
+}

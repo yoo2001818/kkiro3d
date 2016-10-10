@@ -1,0 +1,30 @@
+.section-component {
+  & > .title {
+    color: $orange-700;
+    margin: 0;
+    padding: 0.5em 0.5em;
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-bottom: 1px solid $orange-800;
+  }
+  & > .content {
+    margin: 0.5em 1em;
+    code pre {
+      padding: 0.5em;
+      max-height: 12em;
+      overflow: auto;
+      text-align: left;
+    }
+    .error-log {
+      background-color: $grey-200;
+    }
+    & > .tip {
+      color: $grey-700;
+      font-size: 0.85em;
+    }
+    & .section-action {
+      text-align: right;
+    }
+  }
+}

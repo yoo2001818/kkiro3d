@@ -1,0 +1,11 @@
+.index-view, .general-view {
+  padding: 1em 0.5em;
+  & > .content {
+    background-color: $grey-100;
+    padding: 1em;
+    max-width: 35em;
+    margin: 0 auto;
+    border: 1px solid $grey-400;
+    border-radius: 3px;
+  }
+}

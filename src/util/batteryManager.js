@@ -9,7 +9,6 @@ export default class BatteryManager {
           return;
         }
         const updateBattery = () => {
-          console.log(battery);
           if (!battery.charging) {
             if (battery.level > 0.3) {
               this.mode = 2;
