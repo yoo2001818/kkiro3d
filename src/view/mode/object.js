@@ -103,7 +103,7 @@ export default class ObjectAction {
           let v2 = vec2.create();
           vec2.subtract(v2, ndcTranslated, v1);
           let a2 = vec2.length(v2);
-          if (a1 > 0 && a1 < endDist && a2 < 0.015) {
+          if (a1 > 0 && a1 < endDist && a2 < 0.023) {
             this.manager.push(new TranslateMode(prevEntity,
               toNDC(this.mouseX, this.mouseY, this.renderer),
               input
@@ -115,7 +115,30 @@ export default class ObjectAction {
       }
       // Run depth pick
       let pos = this.renderer.effects.depthPick.pick(e.clientX, e.clientY);
-      if (pos == null) return;
+      if (pos == null) {
+        // Set the position to current XY, while preserving Z value
+        // Of course, this requires previous cursor value
+        let prevPos = this.engine.state.global.cursor;
+        if (prevPos == null) return;
+        let ndc = toNDC(this.mouseX, this.mouseY, this.renderer);
+        let camera = this.getCamera();
+        // Project current position to projection space
+        let perspPos = vec4.fromValues(0, 0, 0, 1);
+        vec3.copy(perspPos, prevPos);
+        vec4.transformMat4(perspPos, perspPos,
+          this.engine.systems.cameraMatrix.getProjectionView(camera));
+        // vec4.scale(perspPos, perspPos, 1 / perspPos[3]);
+        // Then move using delta value
+        perspPos[0] = ndc[0] * perspPos[3];
+        perspPos[1] = ndc[1] * perspPos[3];
+        // Inverse-project to world space
+        vec4.transformMat4(perspPos, perspPos,
+          this.engine.systems.cameraMatrix.getProjectionInverse(camera));
+        vec4.transformMat4(perspPos, perspPos,
+          this.engine.systems.matrix.get(camera));
+        // Tada
+        pos = perspPos;
+      }
       this.engine.actions.external.execute('editor.cursor', pos);
     }
     if (e.button !== 1) return;
