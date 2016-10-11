@@ -82,7 +82,8 @@ export default class RendererView {
           clearColor: '#222222',
           clearDepth: 1,
           cull: gl.BACK,
-          depth: gl.LEQUAL
+          depth: gl.LEQUAL,
+          viewport: viewport.viewport
         },
         uniforms: {
           uView: cameraMatrix.getView(camera),
