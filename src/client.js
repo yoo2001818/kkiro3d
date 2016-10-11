@@ -12,16 +12,19 @@ let engine = createEngine({}, {
     this.hooks = {
       'external.start!': () => {
         box = engine.actions.entity.create({
+          name: 'Box',
           transform: {},
           mesh: { geometry: 'box', material: 'test' }
         });
         engine.actions.entity.create({
+          name: 'Teapot',
           transform: {
             position: [3, 0, 0]
           },
           mesh: { geometry: 'teapot', material: 'test' }
         });
         camera = engine.actions.entity.create({
+          name: 'Camera',
           transform: {
             position: [0, 0, 5]
           },
