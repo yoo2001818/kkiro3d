@@ -23,7 +23,6 @@ class Viewport extends Component {
   render() {
     return (
       <div className='viewport' ref={node => this.node = node} tabIndex={0}>
-        Viewport :)
       </div>
     );
   }

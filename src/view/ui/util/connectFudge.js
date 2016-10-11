@@ -54,8 +54,8 @@ export default function connectFudge(
           let checker = actionValidations[key];
           if (typeof checker === 'function') {
             this.validations[key] =
-              (args) => checker(args, this.props, this.engine) &&
-              this.handleChange();
+              (args) => (checker(args, this.props, this.engine) &&
+              this.handleChange());
           } else {
             this.validations[key] = bindedChange;
           }
@@ -90,8 +90,9 @@ export default function connectFudge(
       handleChange() {
         this.stateChanged = true;
       }
-      checkUpdate() {
+      checkUpdate(args) {
         if (this.stateChanged) this.forceUpdate();
+        return args;
       }
       componentDidMount() {
         this.attachHooks();

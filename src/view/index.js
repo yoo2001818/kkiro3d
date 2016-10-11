@@ -24,11 +24,11 @@ export default function initView(engine) {
   canvas.className = 'engine-canvas';
   document.body.appendChild(canvas);
   canvas.width = document.documentElement.clientWidth;
-  canvas.height = document.documentElement.clientHeight - 1;
+  canvas.height = document.documentElement.clientHeight;
 
   window.addEventListener('resize', () => {
     canvas.width = document.documentElement.clientWidth;
-    canvas.height = document.documentElement.clientHeight - 1;
+    canvas.height = document.documentElement.clientHeight;
   });
 
   let gl = canvas.getContext('webgl', { antialias: true }) ||

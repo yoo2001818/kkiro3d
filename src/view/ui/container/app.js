@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import connect from '../util/connectFudge';
 
 import Viewport from './viewport';
+import EntityList from './entityList';
 
 export default class App extends Component {
   render() {
@@ -15,7 +16,7 @@ export default class App extends Component {
         <div className='content'>
           <Viewport />
           <div className='sidebar'>
-            Sidebar
+            <EntityList />
           </div>
         </div>
       </div>
