@@ -24,10 +24,11 @@ export default class ModeManager {
   get() {
     return this.modeStack[this.modeStack.length - 1];
   }
+  processEvent(name, e) {
+    let current = this.get();
+    if (current && current[name]) return current[name](e);
+  }
   addEventDelegator(target, name) {
-    target.addEventListener(name, e => {
-      let current = this.get();
-      if (current && current[name]) return current[name](e);
-    });
+    target.addEventListener(name, this.processEvent.bind(this, name));
   }
 }

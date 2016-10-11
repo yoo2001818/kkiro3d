@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // import connect from '../util/connectFudge';
 
+import Viewport from './viewport';
+
 export default class App extends Component {
   render() {
     // There's only one page in the app - there's no point using routers and
@@ -11,9 +13,7 @@ export default class App extends Component {
           kkiro3d
         </div>
         <div className='content'>
-          <div className='viewport'>
-            Viewport
-          </div>
+          <Viewport />
           <div className='sidebar'>
             Sidebar
           </div>

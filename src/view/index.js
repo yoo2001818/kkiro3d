@@ -45,16 +45,10 @@ export default function initView(engine) {
 
   let modeManager = new ModeManager(engine, rendererView);
   modeManager.push(new ObjectMode());
+  // Why is this in the engine? To avoid global variables... I guess?
+  engine.modeManager = modeManager;
 
   canvas.addEventListener('contextmenu', e => e.preventDefault());
-
-  // Delegate events
-  ['mousedown', 'mousemove', 'mouseup', 'contextmenu', 'wheel'].forEach(
-    v => modeManager.addEventDelegator(canvas, v)
-  );
-  ['keydown', 'keyup'].forEach(
-    v => modeManager.addEventDelegator(document, v)
-  );
 
   initUI(engine);
 }
