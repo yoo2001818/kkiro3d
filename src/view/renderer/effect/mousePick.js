@@ -38,12 +38,12 @@ export default function mousePickEffect(renderer) {
   return {
     pickFramebuffer,
     viewport: (data) => Object.assign(data, {
-      options: {
+      options: Object.assign(data.options, {
         clearColor: new Float32Array([0, 0, 0, 1]),
         clearDepth: 1,
         cull: gl.BACK,
         depth: gl.LEQUAL
-      },
+      }),
       shaderHandler: pickShaderHandler,
       framebuffer: pickFramebuffer
     }),
