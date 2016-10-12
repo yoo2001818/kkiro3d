@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 // import connect from '../util/connectFudge';
 
 import Viewport from './viewport';
-import EntityList from './entityList';
+import OverviewPane from './overviewPane';
+import PropertiesPane from './propertiesPane';
 
 export default class App extends Component {
   render() {
@@ -16,7 +17,8 @@ export default class App extends Component {
         <div className='content'>
           <Viewport />
           <div className='sidebar'>
-            <EntityList />
+            <OverviewPane />
+            <PropertiesPane />
           </div>
         </div>
       </div>

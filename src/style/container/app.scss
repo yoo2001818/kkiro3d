@@ -33,6 +33,17 @@
       color: $sidebar-color;
       border-left: 1px solid $sidebar-border-color;
       font-size: 0.85em;
+
+      display: flex;
+      flex-direction: column;
+
+      & > .pane {
+        flex: 1 1 auto;
+        height: 0;
+      }
+      & > .properties-pane {
+        flex: 2.5 1 auto;
+      }
     }
   }
 }
