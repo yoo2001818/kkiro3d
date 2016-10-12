@@ -9,6 +9,9 @@ export default class EntityTag extends Component {
         onClick={onClick}
       >
         {entity.name}
+        <span className='id'>
+          {entity.id}
+        </span>
       </div>
     );
   }

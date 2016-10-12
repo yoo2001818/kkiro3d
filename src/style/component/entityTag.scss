@@ -1,5 +1,30 @@
 .entity-tag {
-  &.selected {
+  margin: 0.2em 0;
+  padding: 0.3em 0.5em;
+  border-radius: 2px;
+  line-height: 1.3em;
+  color: $grey-700;
+
+  & > .id {
+    float: right;
+    vertical-align: middle;
+    font-size: 0.9em;
+    line-height: inherit;
+    color: $grey-600;
+  }
+
+  &:hover {
+    background-color: $blue-200;
     color: $blue-700;
+    & > .id {
+      color: $blue-600;
+    }
+  }
+  &.selected {
+    background-color: $blue-700;
+    color: $blue-100;
+    & > .id {
+      color: $blue-200;
+    }
   }
 }
