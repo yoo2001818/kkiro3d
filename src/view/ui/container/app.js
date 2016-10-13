@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import connect from '../util/connectFudge';
 
 import Viewport from './viewport';
-import OverviewPane from './overviewPane';
+import OutlinePane from './outlinePane';
 import PropertiesPane from './propertiesPane';
 
 export default class App extends Component {
@@ -17,7 +17,7 @@ export default class App extends Component {
         <div className='content'>
           <Viewport />
           <div className='sidebar'>
-            <OverviewPane />
+            <OutlinePane />
             <PropertiesPane />
           </div>
         </div>

@@ -4,8 +4,8 @@ import connect from '../../util/connectFudge';
 class EntityComponentName extends Component {
   handleChange(e) {
     let newValue = e.target.value;
-    const { entity, set } = this.props;
-    set(entity, newValue);
+    const { entity, execute } = this.props;
+    execute('name.set', entity, newValue);
   }
   render() {
     const { entity } = this.props;
@@ -21,7 +21,7 @@ class EntityComponentName extends Component {
 
 EntityComponentName.propTypes = {
   entity: PropTypes.object.isRequired,
-  set: PropTypes.func.isRequired
+  execute: PropTypes.func.isRequired
 };
 
 export default connect({
@@ -29,5 +29,5 @@ export default connect({
 }, (engine, { entity: propEntity }) => ({
   // This happens because fudge objects are mutable :/
   entity: propEntity,
-  set: engine.actions.name.set
+  execute: engine.actions.external.execute
 }))(EntityComponentName);

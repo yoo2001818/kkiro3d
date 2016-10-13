@@ -4,10 +4,10 @@ import connect from '../util/connectFudge';
 import Pane from '../component/pane';
 import EntityList from './entityList';
 
-export default class OverviewPane extends Component {
+export default class OutlinePane extends Component {
   render() {
     return (
-      <Pane header='Overview' className='overview-pane'>
+      <Pane header='Outline' className='outline-pane'>
         <EntityList />
       </Pane>
     );
