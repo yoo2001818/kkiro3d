@@ -20,14 +20,11 @@ var plugins = [
     title: 'kkiro3d'
   })
 ];
-if (process.env.NODE_ENV === 'production') {
+
+const PRODUCTION = process.env.NODE_ENV === 'production';
+
+if (PRODUCTION) {
   plugins.push(new webpack.optimize.UglifyJsPlugin());
-} else {
-  entries = [
-    'webpack/hot/dev-server',
-    'react-hot-loader/patch'
-  ].concat(entries);
-  plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 
 module.exports = {
@@ -45,7 +42,7 @@ module.exports = {
       {
         test: /\.jsx?$/i,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'react-hot!babel'
       },
       {
         test: /\.json$/i,
@@ -57,11 +54,15 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        loader: ExtractTextPlugin.extract('style', 'css!import-glob')
+        loader: PRODUCTION ?
+          ExtractTextPlugin.extract('style', 'css!import-glob') :
+          'style!css!import-glob'
       },
       {
         test: /\.s[ca]ss$/i,
-        loader: ExtractTextPlugin.extract('style', 'css!sass!import-glob')
+        loader: PRODUCTION ?
+          ExtractTextPlugin.extract('style', 'css!sass!import-glob') :
+          'style!css!sass!import-glob'
       },
       {
         test: /(\.vert|\.frag|\.obj|\.mtl)$/i,

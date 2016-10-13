@@ -31,6 +31,8 @@ const defaultStateToProps = () => ({});
 const defaultMergeProps = (stateProps, parentProps) =>
   Object.assign({}, parentProps, stateProps);
 
+let VERSION = 0;
+
 export default function connectFudge(
   actionValidations = defaultActionValidations,
   mapStateToProps = defaultStateToProps,
@@ -39,6 +41,7 @@ export default function connectFudge(
   }
 ) {
   const { pure } = options;
+  const version = VERSION ++;
 
   return function wrapWithConnect(WrappedComponent) {
     const connectDisplayName =
@@ -47,6 +50,7 @@ export default function connectFudge(
       constructor(props, context) {
         super(props, context);
         this.engine = props.engine || context.engine;
+        this.version = version;
         // Build action validations tree
         this.validations = {};
         let bindedChange = this.handleChange.bind(this);
@@ -104,6 +108,12 @@ export default function connectFudge(
       }
       componentWillUnmount() {
         this.detachHooks();
+      }
+      componentWillUpdate() {
+        if (this.version !== version) {
+          this.version = version;
+          this.propsChanged = true;
+        }
       }
       render() {
         let updateState = this.stateChanged ||

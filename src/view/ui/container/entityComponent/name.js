@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import connect from '../../util/connectFudge';
+import connectComponent from '../../util/connectComponent';
 
 class EntityComponentName extends Component {
   handleChange(e) {
@@ -24,10 +24,4 @@ EntityComponentName.propTypes = {
   execute: PropTypes.func.isRequired
 };
 
-export default connect({
-  'name.set': ([entity], { entity: propEntity }) => entity === propEntity
-}, (engine, { entity: propEntity }) => ({
-  // This happens because fudge objects are mutable :/
-  entity: propEntity,
-  execute: engine.actions.external.execute
-}))(EntityComponentName);
+export default connectComponent(['name.set'])(EntityComponentName);
