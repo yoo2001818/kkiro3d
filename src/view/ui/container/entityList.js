@@ -34,7 +34,8 @@ export default connect({
   'entity.create': true,
   'entity.delete': true,
   'external.load': true,
-  'editor.select': true
+  'editor.select': true,
+  'name.set': true
 }, ({ state, actions }) => ({
   entities: state.entities,
   selected: state.global.selected,
