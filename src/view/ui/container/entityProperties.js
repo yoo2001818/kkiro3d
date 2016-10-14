@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import connect from '../util/connectFudge';
 
 import EntityComponentName from './entityComponent/name';
+import EntityComponentTransform from './entityComponent/transform';
 
 // EntityProperties should react to component add / remove, nothing else.
 class EntityProperties extends Component {
@@ -10,6 +11,7 @@ class EntityProperties extends Component {
     return (
       <div className='entity-properties'>
         <EntityComponentName entity={entity} />
+        <EntityComponentTransform entity={entity} />
       </div>
     );
   }
