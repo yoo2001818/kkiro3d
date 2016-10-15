@@ -20,11 +20,6 @@ export default class NumberInput extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
   }
-  shouldComponentUpdate() {
-    const { value } = this.props;
-    const { locked, editValue } = this.state;
-    return this.currentValue !== (locked ? editValue : value);
-  }
   handleChange(e) {
     this.setState({
       editValue: e.target.value
@@ -62,6 +57,7 @@ export default class NumberInput extends Component {
     if (!this.mouseDown) return;
     let deltaX = e.clientX - this.startX;
     let deltaY = e.clientY - this.startY;
+    let { precision = 4 } = this.props;
     if (!this.dragging) {
       // Threshold
       if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 3) return;
@@ -69,15 +65,16 @@ export default class NumberInput extends Component {
         this.dragValue = (this.props.value || 0);
         this.setState({
           locked: true,
-          editValue: this.dragValue.toFixed(4)
+          editValue: this.dragValue.toFixed(precision)
         });
       }
       this.dragging = true;
     }
     // Set the value
-    let currentValue = this.dragValue + deltaY / 100;
+    let currentValue = this.dragValue + deltaY * 1 /
+      Math.pow(10, precision / 2);
     this.setState({
-      editValue: currentValue.toFixed(4)
+      editValue: currentValue.toFixed(precision)
     });
     if (this.props.onChange) {
       this.props.onChange({
@@ -112,15 +109,16 @@ export default class NumberInput extends Component {
     document.removeEventListener('mouseup', this.handleMouseUp);
   }
   render() {
-    const { value } = this.props;
+    const { value, precision = 4, className } = this.props;
     const { locked, editValue } = this.state;
-    this.currentValue = locked ? editValue : value;
     return (
-      <div className={classNames('number-input-component', { locked })}
+      <div
+        className={classNames('number-input-component', { locked }, className)}
         onMouseDown={this.handleMouseDown.bind(this)}
       >
         <input
-          type='text' value={ locked ? editValue : (value || 0).toFixed(4) }
+          type='text'
+          value={ locked ? editValue : (value || 0).toFixed(precision) }
           onChange={this.handleChange.bind(this)}
           onFocus={this.handleFocus.bind(this)}
           onBlur={this.handleBlur.bind(this)}
@@ -133,5 +131,7 @@ export default class NumberInput extends Component {
 
 NumberInput.propTypes = {
   value: PropTypes.number,
+  precision: PropTypes.number,
+  className: PropTypes.string,
   onChange: PropTypes.func
 };

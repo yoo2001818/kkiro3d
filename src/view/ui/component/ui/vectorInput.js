@@ -15,13 +15,14 @@ export default class VectorInput extends Component {
     }
   }
   render() {
-    const { value } = this.props;
+    const { value, precision, className } = this.props;
     let nodes = [];
     // TypedArray's map function returns TypedArray, so we need to
     // do this for React nodes
     for (let i = 0; i < value.length; ++i) {
       nodes.push(
-        <NumberInput value={ value[i] }
+        <NumberInput value={value[i]} precision={precision}
+          className={className}
           onChange={this.handleChange.bind(this, i)}
           key={i}
         />
@@ -37,5 +38,7 @@ export default class VectorInput extends Component {
 
 VectorInput.propTypes = {
   value: PropTypes.any,
+  precision: PropTypes.number,
+  className: PropTypes.string,
   onChange: PropTypes.func
 };

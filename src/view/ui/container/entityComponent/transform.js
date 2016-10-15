@@ -1,9 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import connectComponent from '../../util/connectComponent';
 
+import { vec3 } from 'gl-matrix';
+import { quatToEuler, eulerToQuat } from 'webglue/lib/util/euler';
+
 import Section from '../../component/section';
 import Field from '../../component/ui/field';
 import VectorInput from '../../component/ui/vectorInput';
+
+
+let tmpEuler = new Float32Array(3);
+let tmpQuat = new Float32Array(4);
 
 class EntityComponentTransform extends Component {
   handlePosition(e) {
@@ -14,7 +21,8 @@ class EntityComponentTransform extends Component {
   handleRotation(e) {
     let newValue = e.target.value;
     const { entity, execute } = this.props;
-    execute('transform.setRotation', entity, newValue);
+    vec3.scale(newValue, newValue, Math.PI / 180);
+    execute('transform.setRotation', entity, eulerToQuat(tmpQuat, newValue));
   }
   handleScale(e) {
     let newValue = e.target.value;
@@ -23,6 +31,8 @@ class EntityComponentTransform extends Component {
   }
   render() {
     const { entity } = this.props;
+    quatToEuler(tmpEuler, entity.transform.rotation);
+    vec3.scale(tmpEuler, tmpEuler, 180 / Math.PI);
     return (
       <Section className='entity-component-transform'
         header='Transform'
@@ -33,8 +43,10 @@ class EntityComponentTransform extends Component {
           />
         </Field>
         <Field label='Rotation'>
-          <VectorInput value={entity.transform.rotation}
+          <VectorInput value={tmpEuler}
             onChange={this.handleRotation.bind(this)}
+            precision={1}
+            className='degree'
           />
         </Field>
         <Field label='Scale'>

@@ -8,4 +8,17 @@
       border-color: $blue-500;
     }
   }
+  &.degree {
+    // What the heck
+    position: relative;
+    & > input {
+      text-align: right;
+    }
+    &:after {
+      content: '°';
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
 }
