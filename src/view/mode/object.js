@@ -73,8 +73,11 @@ export default class ObjectAction {
       if (prevEntity != null) {
         // Project the widget axis to screen
         let ndc = toNDC(this.mouseX, this.mouseY, this.renderer);
+        let camera = this.getCamera();
+        let projection = this.engine.systems.cameraMatrix.
+          getProjection(camera);
         let projView = this.engine.systems.cameraMatrix.
-          getProjectionView(this.getCamera());
+          getProjectionView(camera);
         let perspPos = vec4.fromValues(0, 0, 0, 1);
         vec4.transformMat4(perspPos, perspPos,
           this.engine.systems.matrix.get(prevEntity));
@@ -85,7 +88,11 @@ export default class ObjectAction {
           let axis = vec4.create();
           vec3.copy(axis, input);
           vec4.transformMat4(axis, axis, projView);
-          vec4.scale(axis, axis, perspPos[3] * 0.2);
+          if (camera.camera.type === 'ortho') {
+            vec4.scale(axis, axis, 1 / projection[5] * 0.3);
+          } else {
+            vec4.scale(axis, axis, perspPos[3] * 0.2);
+          }
           let endPos = vec4.create();
           vec4.add(endPos, perspPos, axis);
           vec2.scale(endPos, endPos, 1 / endPos[3]);
