@@ -15,8 +15,15 @@ export default class NumberInput extends Component {
     this.startX = 0;
     this.startY = 0;
 
+    this.currentValue = null;
+
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+  }
+  shouldComponentUpdate() {
+    const { value } = this.props;
+    const { locked, editValue } = this.state;
+    return this.currentValue !== (locked ? editValue : value);
   }
   handleChange(e) {
     this.setState({
@@ -107,6 +114,7 @@ export default class NumberInput extends Component {
   render() {
     const { value } = this.props;
     const { locked, editValue } = this.state;
+    this.currentValue = locked ? editValue : value;
     return (
       <div className={classNames('number-input-component', { locked })}
         onMouseDown={this.handleMouseDown.bind(this)}

@@ -1,0 +1,24 @@
+.vector-input-component {
+  background: $grey-000;
+  border-radius: 2px;
+  border: 1px solid $grey-400;
+  input {
+    border-width: 0 0 1px 0;
+    border-radius: 0;
+    background: none;
+    &:hover {
+      background: $grey-200;
+    }
+    &:focus, &:active {
+      background: $blue-200;
+    }
+  }
+  & > .locked > input {
+    &, &:hover {
+      background: $blue-200;
+    }
+  }
+  & > div:last-child > input {
+    border-width: 0;
+  }
+}

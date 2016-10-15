@@ -6,17 +6,21 @@
     & > .field-component {
       flex: 1 1 auto;
       width: 0;
-      margin: 0;
+      margin: 0 0.1em;
       overflow: hidden;
       display: block;
+      font-size: 0.9em;
       & > .content, & > .label {
         display: block;
         padding: 0;
         text-align: center;
         width: 100%;
+        margin-bottom: 0.1em;
       }
       & > .content {
-        font-size: 0.9em;
+        input {
+          padding: 0.3em 0.4em;
+        }
       }
     }
   }

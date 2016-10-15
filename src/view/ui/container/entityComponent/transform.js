@@ -3,8 +3,7 @@ import connectComponent from '../../util/connectComponent';
 
 import Section from '../../component/section';
 import Field from '../../component/ui/field';
-import Vec3Input from '../../component/ui/vec3Input';
-import Vec4Input from '../../component/ui/vec4Input';
+import VectorInput from '../../component/ui/vectorInput';
 
 class EntityComponentTransform extends Component {
   handlePosition(e) {
@@ -29,17 +28,17 @@ class EntityComponentTransform extends Component {
         header='Transform'
       >
         <Field label='Position'>
-          <Vec3Input value={entity.transform.position}
+          <VectorInput value={entity.transform.position}
             onChange={this.handlePosition.bind(this)}
           />
         </Field>
         <Field label='Rotation'>
-          <Vec4Input value={entity.transform.rotation}
+          <VectorInput value={entity.transform.rotation}
             onChange={this.handleRotation.bind(this)}
           />
         </Field>
         <Field label='Scale'>
-          <Vec3Input value={entity.transform.scale}
+          <VectorInput value={entity.transform.scale}
             onChange={this.handleScale.bind(this)}
           />
         </Field>
