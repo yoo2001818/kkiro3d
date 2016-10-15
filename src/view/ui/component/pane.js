@@ -5,7 +5,7 @@ export default class Pane extends Component {
   render() {
     const { header, children, className } = this.props;
     return (
-      <div className={classNames('pane', className)}>
+      <div className={classNames('pane-component', className)}>
         <div className='header'>
           { header }
         </div>

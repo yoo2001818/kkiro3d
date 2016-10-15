@@ -1,0 +1,11 @@
+.number-input-component {
+  & > input {
+    width: 100%;
+  }
+  &.locked > input {
+    border-color: $blue-500;
+    &:hover {
+      border-color: $blue-500;
+    }
+  }
+}

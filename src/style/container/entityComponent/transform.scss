@@ -2,17 +2,21 @@
   & > .content {
     display: flex;
     align-items: stretch;
-    & > .column {
+    // This is really awful.
+    & > .field-component {
       flex: 1 1 auto;
       width: 0;
+      margin: 0;
       overflow: hidden;
-      & > .title {
+      display: block;
+      & > .content, & > .label {
+        display: block;
+        padding: 0;
         text-align: center;
-        font-size: 0.95em;
+        width: 100%;
       }
-      & > .value {
-        font-family: monospace;
-        text-align: center;
+      & > .content {
+        font-size: 0.9em;
       }
     }
   }

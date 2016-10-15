@@ -11,21 +11,21 @@
     vertical-align: middle;
     font-size: 0.9em;
     line-height: inherit;
-    color: $grey-600;
+    color: $grey-700;
   }
 
   &:hover {
     background-color: $blue-200;
     color: $blue-700;
     & > .id {
-      color: $blue-600;
+      color: $blue-700;
     }
   }
   &.selected {
     background-color: $blue-600;
     color: $blue-100;
     & > .id {
-      color: $blue-200;
+      color: $blue-100;
     }
   }
 }
