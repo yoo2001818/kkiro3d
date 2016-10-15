@@ -1,6 +1,7 @@
 .entity-component-name {
   padding: 0.2em;
-  & > input {
+  & > input[type="text"] {
     width: 100%;
   }
+  border-bottom: 1px solid $grey-400;
 }

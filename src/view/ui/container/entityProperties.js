@@ -3,6 +3,7 @@ import connect from '../util/connectFudge';
 
 import EntityComponentName from './entityComponent/name';
 import EntityComponentTransform from './entityComponent/transform';
+import EntityComponentMesh from './entityComponent/mesh';
 
 // EntityProperties should react to component add / remove, nothing else.
 class EntityProperties extends Component {
@@ -11,7 +12,8 @@ class EntityProperties extends Component {
     return (
       <div className='entity-properties'>
         <EntityComponentName entity={entity} />
-        <EntityComponentTransform entity={entity} />
+        { entity.transform && <EntityComponentTransform entity={entity} /> }
+        { entity.mesh && <EntityComponentMesh entity={entity} /> }
       </div>
     );
   }

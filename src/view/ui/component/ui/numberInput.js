@@ -15,8 +15,6 @@ export default class NumberInput extends Component {
     this.startX = 0;
     this.startY = 0;
 
-    this.currentValue = null;
-
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
   }
