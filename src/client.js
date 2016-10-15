@@ -42,6 +42,7 @@ let engine = createEngine({}, {
 
 createView(engine);
 
+let domCounter = 0;
 let prevTime = -1;
 let stepCounter = 0;
 let battery = new BatteryManager();
@@ -59,6 +60,8 @@ function update(time) {
   // timer += delta;
 
   engine.update(delta);
+  domCounter += 1;
+  if (domCounter % 3 === 0) engine.actions.external.domUpdate(delta);
 }
 
 window.requestAnimationFrame(update);

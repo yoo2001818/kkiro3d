@@ -80,7 +80,7 @@ export default function connectFudge(
         for (let key in this.validations) {
           this.engine.attachHook(key, this.validations[key], true);
         }
-        this.engine.attachHook('external.*:post', this.checkUpdate, true);
+        this.engine.attachHook('external.domUpdate:post', this.checkUpdate, true);
         this.attached = true;
       }
       detachHooks() {
@@ -88,7 +88,7 @@ export default function connectFudge(
         for (let key in this.validations) {
           this.engine.detachHook(key, this.validations[key]);
         }
-        this.engine.detachHook('external.*:post', this.checkUpdate);
+        this.engine.detachHook('external.domUpdate:post', this.checkUpdate);
         this.attached = false;
       }
       handleChange() {
