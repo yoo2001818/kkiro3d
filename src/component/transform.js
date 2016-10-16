@@ -5,11 +5,11 @@ let tmp = vec3.create();
 let tmpQuat = quat.create();
 
 export default {
-  component: data => Object.assign({}, {
-    position: vec3.create(),
-    scale: vec3.fromValues(1, 1, 1),
-    rotation: quat.create()
-  }, data),
+  component: data => ({
+    position: data.position ? new Float32Array(data.position) : vec3.create(),
+    scale: data.scale ? new Float32Array(data.scale) : vec3.fromValues(1, 1, 1),
+    rotation: data.rotation ? new Float32Array(data.rotation) : quat.create()
+  }),
   actions: {
     setPosition: signalRaw(([entity, target]) => {
       vec3.copy(entity.transform.position, target);
