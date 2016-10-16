@@ -40,18 +40,22 @@ class EntityComponentTransform extends Component {
         <Field label='Position'>
           <VectorInput value={entity.transform.position}
             onChange={this.handlePosition.bind(this)}
+            precision={4}
+            className='vertical'
           />
         </Field>
         <Field label='Rotation'>
           <VectorInput value={tmpEuler}
             onChange={this.handleRotation.bind(this)}
             precision={1}
-            className='degree'
+            className='degree vertical'
           />
         </Field>
         <Field label='Scale'>
           <VectorInput value={entity.transform.scale}
             onChange={this.handleScale.bind(this)}
+            precision={4}
+            className='vertical'
           />
         </Field>
       </Section>

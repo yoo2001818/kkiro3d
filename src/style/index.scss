@@ -1,3 +1,9 @@
+$fa-font-path: "~font-awesome/fonts/";
+// @import '~font-awesome/scss/font-awesome.scss';
+@import '~font-awesome/scss/_variables.scss';
+@import '~font-awesome/scss/_mixins.scss';
+@import '~font-awesome/scss/_path.scss';
+
 @import 'color.scss';
 @import 'constant.scss';
 @import 'utils/**/*.scss';

@@ -6,7 +6,7 @@ export default class BlenderControllerSystem {
   constructor(engine) {
     this.engine = engine;
     this.hooks = {
-      'blenderController.zoom:post!': ([entity]) => {
+      'blenderController.setRadius:post!': ([entity]) => {
         if (entity.camera == null) return;
         // Update camera projection
         if (entity.camera.type === 'ortho') {

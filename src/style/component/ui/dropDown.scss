@@ -1,0 +1,172 @@
+.drop-down-component {
+  display: inline-block;
+  position: relative;
+  &>.cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: 9;
+  }
+  &>.button {
+    display: block;
+    cursor: pointer;
+    line-height: 1em;
+    & a {
+      outline: 0;
+    }
+    & .title {
+      padding: 0.5em 0;
+      padding-right: 0.3em;
+      min-width: 1em;
+      display: inline-block;
+      text-decoration: underline;
+    }
+    &:after {
+      @include fa-icon();
+      content: $fa-var-caret-down;
+    }
+  }
+  &>.content {
+    position: absolute;
+    font-size: 0.9rem;
+    top: 100%;
+    right: 0;
+    text-align: left;
+    background-color: $grey-100;
+    color: $grey-800;
+    padding: 0.5em 0;
+    border: 1px solid $grey-500;
+    margin-top: 10px;
+    border-radius: 2px;
+    box-sizing: border-box;
+    z-index: 40;
+    line-height: 1em;
+    box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.5);
+    // Width should adapt to content's size - so no wraps allowed.
+    white-space: nowrap;
+    a {
+      color: $grey-800;
+      text-decoration: none;
+      &:hover {
+        color: $grey-700;
+        text-decoration: none;
+      }
+    }
+    &:before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: 1.3em;
+      margin-right: -10px;
+      @include triangle-top(10px, 10px, $grey-500);
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      top: -18px;
+      right: 1.3em;
+      margin-right: -9px;
+      @include triangle-top(9px, 9px, $grey-100);
+    }
+    // Common thing - a dropdown list
+    & > ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      & > li {
+        margin: 0;
+        padding: 0;
+        a {
+          display: block;
+          padding: 0.5em 1em;
+          &:hover {
+            background-color: $blue-200;
+            color: $blue-800;
+          }
+          &.active {
+            background-color: $blue-600;
+            color: $blue-100;
+          }
+        }
+      }
+    }
+  }
+  &.hidden {
+    &>.button {
+      &:after {
+        opacity: 0.6;
+      }
+      & .title {
+        text-decoration: none;
+      }
+      &:hover {
+        &:after {
+          opacity: 1;
+        }
+        & .title {
+          text-decoration: underline;
+        }
+      }
+    }
+    &>.content {
+      visibility: hidden;
+      opacity: 0;
+      margin-top: 0;
+    }
+    &>.cover {
+      display: none;
+    }
+  }
+  &.left {
+    & > .content {
+      right: auto;
+      left: 0;
+      &:before {
+        right: auto;
+        margin-right: 0;
+        left: 1.3em;
+        margin-left: -10px;
+      }
+      &:after {
+        right: auto;
+        margin-right: 0;
+        left: 1.3em;
+        margin-left: -9px;
+      }
+    }
+  }
+  &.select-list {
+    a {
+      color: $grey-700;
+    }
+    & > .button .title {
+      padding: 0.3em;
+      text-align: right;
+    }
+    & > .content > ul > li {
+      display: block;
+      cursor: pointer;
+      font-size: 0.9em;
+      padding: 0.4em 0.5em;
+      border-radius: 0;
+      border: none;
+      background-color: $grey-100;
+      color: $grey-700;
+      & > .icon {
+        display: none;
+      }
+      &.selected, &.selected.focus {
+        border: none;
+        background-color: $blue-600;
+        color: $blue-100;
+      }
+      &:hover, &.focus {
+        background-color: $blue-200;
+        color: $blue-800;
+      }
+    }
+  }
+}

@@ -2,8 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import connect from '../util/connectFudge';
 
 import EntityComponentName from './entityComponent/name';
-import EntityComponentTransform from './entityComponent/transform';
-import EntityComponentMesh from './entityComponent/mesh';
+import * as EntityComponents from './entityComponent';
+
+// let componentList = ['name', 'transform', 'mesh'];
 
 // EntityProperties should react to component add / remove, nothing else.
 class EntityProperties extends Component {
@@ -12,8 +13,13 @@ class EntityProperties extends Component {
     return (
       <div className='entity-properties'>
         <EntityComponentName entity={entity} />
-        { entity.transform && <EntityComponentTransform entity={entity} /> }
-        { entity.mesh && <EntityComponentMesh entity={entity} /> }
+        { Object.keys(entity).map(component => {
+          let UIComponent = EntityComponents[component];
+          if (UIComponent == null) return false;
+          return (
+            <UIComponent entity={entity} key={component} />
+          );
+        }) }
       </div>
     );
   }

@@ -1,0 +1,112 @@
+.select-input-component {
+  text-align: left;
+  margin: 0.4em 0;
+  padding: 0;
+  list-style-type: none;
+  & > .option {
+    display: inline-block;
+    margin: 0;
+    margin-right: 0.4em;
+    &:last-child {
+      margin-right: 0;
+    }
+    padding: 0.4em 0.54em;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background-color: $blue-700;
+    color: $blue-100;
+    &:hover, &.focus {
+      background-color: $blue-600;
+    }
+    &.red {
+      background-color: $red-700;
+      color: $red-100;
+      &:hover, &.focus {
+        background-color: $red-600;
+      }
+    }
+    &.orange {
+      background-color: $orange-700;
+      color: $orange-100;
+      &:hover, &.focus {
+        background-color: $orange-600;
+      }
+    }
+    &.green {
+      background-color: $green-700;
+      color: $green-100;
+      &:hover, &.focus {
+        background-color: $green-600;
+      }
+    }
+    &.selected {
+      & > .icon {
+        padding-right: 0.3em;
+        @include fa-icon();
+        &:before {
+          content: $fa-var-check;
+        }
+      }
+      color: $blue-800;
+      background-color: $grey-100;
+      border: 1px solid $blue-700;
+      &.focus {
+        background-color: $blue-200;
+      }
+      &.red {
+        color: $red-800;
+        background-color: $grey-100;
+        border: 1px solid $red-700;
+        &.focus {
+          background-color: $red-200;
+        }
+      }
+      &.orange {
+        color: $orange-800;
+        background-color: $grey-100;
+        border: 1px solid $orange-700;
+        &.focus {
+          background-color: $orange-200;
+        }
+      }
+      &.green {
+        color: $green-800;
+        background-color: $grey-100;
+        border: 1px solid $green-700;
+        &.focus {
+          background-color: $green-200;
+        }
+      }
+    }
+  }
+  .noborder-input & {
+    margin: 0 0.4em;
+    & > .option {
+      font-size: 0.9em;
+    }
+  }
+  &.list {
+    & > .option {
+      display: block;
+      margin: 0.2em 0;
+      background: none;
+      border: none;
+      border-radius: 2px;
+      color: $grey-700;
+      &:hover, &.focus {
+        background-color: $blue-200;
+        color: $blue-700;
+      }
+      &.selected {
+        & > .icon {
+          display: none;
+        }
+        color: $blue-100;
+        background: $blue-600;
+        &.focus {
+          background-color: $blue-700;
+        }
+      }
+    }
+  }
+}

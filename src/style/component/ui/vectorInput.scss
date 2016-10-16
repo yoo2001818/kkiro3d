@@ -2,8 +2,28 @@
   background: $grey-000;
   border-radius: 2px;
   border: 1px solid $grey-400;
+  display: flex;
+  & > div {
+    display: inline-block;
+    flex: 1 0 auto;
+    width: 0;
+  }
+  font-size: 0.9em;
+  &.vertical {
+    display: block;
+    font-size: 1em;
+    & > div {
+      display: block;
+      width: 100%;
+    }
+    input {
+      padding: 0.3em 0.4em;
+      border-width: 0 0 1px 0;
+    }
+  }
   input {
-    border-width: 0 0 1px 0;
+    padding: 0.4em 0.2em;
+    border-width: 0 1px 0 0;
     border-radius: 0;
     background: none;
     &:hover {

@@ -20,6 +20,10 @@ export default {
       entity.camera.zoom = zoom;
       entity.camera.near = near;
       entity.camera.far = far;
+    }),
+    set: signalRaw(([entity, data]) => {
+      // I'm being lazy :/
+      Object.assign(entity.camera, data);
     })
   }
 };

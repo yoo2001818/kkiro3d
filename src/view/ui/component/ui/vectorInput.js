@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import NumberInput from './numberInput';
 
@@ -29,7 +30,7 @@ export default class VectorInput extends Component {
       );
     }
     return (
-      <div className='vector-input-component'>
+      <div className={classNames('vector-input-component', className)}>
         { nodes }
       </div>
     );

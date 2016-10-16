@@ -27,12 +27,17 @@ export default {
       vec3.add(vecTemp, vecTemp, entity.blenderController.center);
       this.actions.blenderController.setCenter(entity, vecTemp);
     },
-    zoom: signalRaw(function ([entity, delta]) {
-      entity.blenderController.radius += delta *
-        entity.blenderController.radius;
-    }),
+    zoom: function (entity, delta) {
+      let current = entity.blenderController.radius;
+      this.actions.blenderController.setRadius(entity,
+        delta * current + current
+      );
+    },
     setCenter: signalRaw(function ([entity, pos]) {
       vec3.copy(entity.blenderController.center, pos);
+    }),
+    setRadius: signalRaw(function ([entity, radius]) {
+      entity.blenderController.radius = radius;
     }),
     setCamera: function (entity, perspective) {
       if (entity.camera == null) return;
