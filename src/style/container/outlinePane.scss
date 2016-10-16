@@ -1,4 +1,29 @@
 .outline-pane {
+  & > .header > .header-content {
+    display: flex;
+    & > .title {
+      flex: 1 1 0;
+    }
+    & > .add-button {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1.4em;
+      margin: auto 0;
+      margin-right: -0.2em;
+      padding: 0 0.4em;
+      box-sizing: border-box;
+      cursor: pointer;
+      color: $green-800;
+      &:hover {
+        color: $green-700;
+      }
+      &:after {
+        @include fa-icon();
+        font-size: 0.9em;
+        content: $fa-var-plus;
+      }
+    }
+  }
   .entity-list {
     overflow-y: scroll;
     box-sizing: border-box;

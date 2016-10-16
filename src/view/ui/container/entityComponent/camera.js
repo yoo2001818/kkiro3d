@@ -40,7 +40,9 @@ class EntityComponentCamera extends Component {
             <NumberInput
               value={entity.camera.fov / Math.PI * 180}
               onChange={getHandler(this, (entity, value) =>
-                ['camera.set', entity, {fov: value / 180 * Math.PI}])}
+                ['camera.set', entity,
+                  {fov: parseFloat(value) / 180 * Math.PI}
+                ])}
               className='degree'
               precision={2}
             />
@@ -51,7 +53,7 @@ class EntityComponentCamera extends Component {
             <NumberInput
               value={entity.camera.zoom}
               onChange={getHandler(this, (entity, value) =>
-                ['camera.set', entity, {zoom: value}])}
+                ['camera.set', entity, {zoom: parseFloat(value)}])}
             />
           </Field>
         )}

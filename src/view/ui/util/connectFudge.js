@@ -77,18 +77,27 @@ export default function connectFudge(
       }
       attachHooks() {
         if (this.attached) return;
+        let hasKey = false;
         for (let key in this.validations) {
           this.engine.attachHook(key, this.validations[key], true);
+          hasKey = true;
         }
-        this.engine.attachHook('external.domUpdate:post', this.checkUpdate, true);
+        if (hasKey) {
+          this.engine.attachHook('external.domUpdate:post', this.checkUpdate,
+            true);
+        }
         this.attached = true;
       }
       detachHooks() {
         if (!this.attached) return;
+        let hasKey = false;
         for (let key in this.validations) {
           this.engine.detachHook(key, this.validations[key]);
+          hasKey = true;
         }
-        this.engine.detachHook('external.domUpdate:post', this.checkUpdate);
+        if (hasKey) {
+          this.engine.detachHook('external.domUpdate:post', this.checkUpdate);
+        }
         this.attached = false;
       }
       handleChange() {

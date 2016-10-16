@@ -4,12 +4,28 @@ import connect from '../util/connectFudge';
 import Pane from '../component/pane';
 import EntityList from './entityList';
 
-export default class OutlinePane extends Component {
+class OutlinePane extends Component {
+  handleAdd() {
+    this.props.execute('editor.create', {});
+  }
   render() {
     return (
-      <Pane header='Outline' className='outline-pane'>
+      <Pane className='outline-pane'
+        header={<div className='header-content'>
+          <div className='title'>Outline</div>
+          <div className='add-button' onClick={this.handleAdd.bind(this)} />
+        </div>}
+      >
         <EntityList />
       </Pane>
     );
   }
 }
+
+OutlinePane.propTypes = {
+  execute: PropTypes.func
+};
+
+export default connect({}, (engine) => ({
+  execute: engine.actions.external.execute
+}))(OutlinePane);

@@ -4,7 +4,8 @@
   flex-direction: column;
 
   & > .header {
-    padding: 0.5em 0.6em;
+    padding: 0 0.6em;
+    line-height: 2em;
     border-bottom: 1px solid $grey-400;
     background-color: $grey-200;
     color: $grey-700;

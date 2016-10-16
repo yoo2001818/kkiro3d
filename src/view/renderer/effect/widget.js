@@ -25,7 +25,7 @@ export default function selectWireframeEffect(renderer) {
       // Add widget to draw passes if an entity is selected
       let entityId = engine.state.global.selected;
       let entity = engine.state.entities[entityId];
-      if (entity != null) {
+      if (entity != null && entity.transform != null) {
         // Create model matrix for it (Sigh)
         let model = mat4.create();
         model.set(entity.transform.position, 12);
