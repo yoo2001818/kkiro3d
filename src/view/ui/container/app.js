@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import connect from 'react-fudge';
+// import connect from '../util/connect';
 
 import Viewport from './viewport';
 import OutlinePane from './outlinePane';

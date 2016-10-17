@@ -17,5 +17,8 @@ export default {
       this.actions.editor.select(entity);
       return entity;
     }
+  },
+  global: {
+    running: true
   }
 };

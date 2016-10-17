@@ -12,7 +12,9 @@ export default {
       if (node.raw) return node.raw(args);
       return node.apply(node, args);
     }, func => args => func(['execute'].concat(args))),
-    domUpdate: signalRaw(() => {},
-      func => args => func(['domUpdate'].concat(args)))
+    render: signalRaw(() => {},
+      func => args => func(['render'].concat(args))),
+    domRender: signalRaw(() => {},
+      func => args => func(['domRender'].concat(args)))
   }
 };

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import connect from 'react-fudge';
+import connect from '../util/connect';
 
 import EntityTag from '../component/entityTag';
 

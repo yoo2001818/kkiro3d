@@ -59,9 +59,10 @@ function update(time) {
   prevTime = time;
   // timer += delta;
 
-  engine.update(delta);
+  if (engine.state.global.running) engine.actions.external.update(delta);
+  engine.actions.external.render(delta);
   domCounter += 1;
-  if (domCounter % 3 === 0) engine.actions.external.domUpdate(delta);
+  if (domCounter % 3 === 0) engine.actions.external.domRender(delta);
 }
 
 window.requestAnimationFrame(update);

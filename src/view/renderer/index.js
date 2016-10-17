@@ -25,7 +25,7 @@ export default class RendererView {
     });
 
     // TODO This generates render tree every frame; it can be optimized.
-    engine.signals.external.update.post.add(() => this.render());
+    engine.signals.external.render.post.add(() => this.render());
   }
   setEffects(effectList) {
     this.effectList = effectList.map(v => this.effects[v]);
