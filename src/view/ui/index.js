@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from './util/connectFudge';
+import { Provider } from 'react-fudge';
 import App from './container/app';
 
 export default function initUI(engine) {

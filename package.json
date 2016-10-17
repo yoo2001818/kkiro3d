@@ -42,6 +42,7 @@
     "gl-matrix": "^2.3.2",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "react-fudge": "^0.1.12",
     "react-hot-loader": "^1.2.9",
     "shallowequal": "^0.2.2",
     "webglue": "^1.0.2"

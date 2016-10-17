@@ -1,4 +1,4 @@
-import connect from './connectFudge';
+import connect from 'react-fudge';
 
 const ACTION_VALIDATOR = ([entity], { entity: propEntity }) =>
   entity === propEntity;
