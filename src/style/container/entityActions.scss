@@ -1,0 +1,23 @@
+.entity-actions {
+  padding: 0.2em;
+  & > .delete-button {
+    &:after {
+      @include fa-icon();
+      content: $fa-var-trash;
+    }
+  }
+  & > .clone-button {
+    &:after {
+      @include fa-icon();
+      content: $fa-var-clone;
+      font-size: 0.9em;
+    }
+  }
+  & > .json-button {
+    &:after {
+      @include fa-icon();
+      content: $fa-var-code;
+      font-size: 0.9em;
+    }
+  }
+}

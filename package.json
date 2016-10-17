@@ -38,7 +38,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "font-awesome": "^4.6.3",
-    "fudge": "^0.1.11",
+    "fudge": "^0.1.12",
     "gl-matrix": "^2.3.2",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",

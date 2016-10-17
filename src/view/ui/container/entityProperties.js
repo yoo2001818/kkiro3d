@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../util/connectFudge';
 
+import EntityActions from './entityActions';
 import EntityComponentName from './entityComponent/name';
 import * as EntityComponents from './entityComponent';
 
@@ -12,6 +13,7 @@ class EntityProperties extends Component {
     const { entity } = this.props;
     return (
       <div className='entity-properties'>
+        <EntityActions entity={entity} />
         <EntityComponentName entity={entity} />
         { Object.keys(entity).map(component => {
           let UIComponent = EntityComponents[component];
