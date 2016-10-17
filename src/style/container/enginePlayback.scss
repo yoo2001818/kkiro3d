@@ -1,0 +1,28 @@
+.engine-playback {
+  & > .pause-button {
+    background: none;
+    color: $green-300;
+    font-size: 0.8em;
+    padding: 0.4em 0;
+    width: 2em;
+
+    &:hover, &:focus, &:active {
+      background: none;
+      color: $green-100;
+    }
+
+    &:after {
+      @include fa-icon();
+      content: $fa-var-play;
+    }
+  }
+
+  &.running {
+    & > .pause-button {
+      &:after {
+        @include fa-icon();
+        content: $fa-var-pause;
+      }
+    }
+  }
+}

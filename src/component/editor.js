@@ -16,7 +16,10 @@ export default {
       }), true);
       this.actions.editor.select(entity);
       return entity;
-    }
+    },
+    setRunning: signalRaw(function ([running]) {
+      this.state.global.running = running;
+    })
   },
   global: {
     running: true

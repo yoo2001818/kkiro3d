@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // import connect from '../util/connect';
 
+import Header from '../component/header';
+import EnginePlayback from './enginePlayback';
 import Viewport from './viewport';
 import OutlinePane from './outlinePane';
 import PropertiesPane from './propertiesPane';
@@ -11,9 +13,11 @@ export default class App extends Component {
     // stuff.
     return (
       <div className='app'>
-        <div className='header'>
+        <Header right={
+          <EnginePlayback />
+        }>
           kkiro3d
-        </div>
+        </Header>
         <div className='content'>
           <Viewport />
           <div className='sidebar'>

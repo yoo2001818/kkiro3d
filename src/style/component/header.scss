@@ -1,0 +1,16 @@
+.header-component {
+  height: $header-height;
+
+  background-color: $header-bg-color;
+  color: $header-color;
+  border-bottom: 1px solid $header-border-color;
+
+  line-height: $header-height;
+  padding: 0 0.5em;
+  & > .left {
+    float: left;
+  }
+  & > .right {
+    float: right;
+  }
+}

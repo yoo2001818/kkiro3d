@@ -1,16 +1,15 @@
 .outline-pane {
   & > .header > .header-content {
-    display: flex;
     & > .title {
-      flex: 1 1 0;
+      float: left;
     }
     & > .add-button {
+      float: right;
       display: inline-block;
       vertical-align: middle;
-      line-height: 1.4em;
       margin: auto 0;
       margin-right: -0.2em;
-      padding: 0 0.4em;
+      padding: 0 0.5em;
       box-sizing: border-box;
       cursor: pointer;
       color: $green-800;
