@@ -13,7 +13,8 @@ class OutlinePane extends Component {
       <Pane className='outline-pane'
         header={<div className='header-content'>
           <div className='title'>Outline</div>
-          <div className='add-button' onClick={this.handleAdd.bind(this)} />
+          <div className='add-button' onClick={this.handleAdd.bind(this)}
+            title='Add' />
         </div>}
       >
         <EntityList />

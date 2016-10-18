@@ -138,6 +138,11 @@
       }
     }
   }
+  &.no-caret {
+    &>.button:after {
+      display: none;
+    }
+  }
   &.select-list {
     a {
       color: $grey-700;

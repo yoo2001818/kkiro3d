@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 // import connect from '../util/connect';
 
 import Header from '../component/header';
+import HeaderMenu from './headerMenu';
 import EnginePlayback from './enginePlayback';
 import Viewport from './viewport';
 import OutlinePane from './outlinePane';
 import PropertiesPane from './propertiesPane';
+import ModalOverlay from './modalOverlay';
 
 export default class App extends Component {
   render() {
@@ -16,7 +18,7 @@ export default class App extends Component {
         <Header right={
           <EnginePlayback />
         }>
-          kkiro3d
+          <HeaderMenu />
         </Header>
         <div className='content'>
           <Viewport />
@@ -25,6 +27,7 @@ export default class App extends Component {
             <PropertiesPane />
           </div>
         </div>
+        <ModalOverlay />
       </div>
     );
   }

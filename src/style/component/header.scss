@@ -13,4 +13,10 @@
   & > .right {
     float: right;
   }
+  a {
+    color: $header-color;
+    &:hover {
+      color: $header-color;
+    }
+  }
 }

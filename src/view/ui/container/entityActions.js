@@ -11,9 +11,9 @@ class EntityActions extends Component {
   render() {
     return (
       <div className='entity-actions'>
-        <button className='small red delete-button'
+        <button className='small red delete-button' title='Delete'
           onClick={this.handleDelete.bind(this)} />
-        <button className='small clone-button'
+        <button className='small clone-button' title='Clone'
           onClick={this.handleClone.bind(this)} />
       </div>
     );

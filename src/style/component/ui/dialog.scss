@@ -11,8 +11,10 @@
   & > .content {
     margin: 1em 2em;
     code pre {
+      background-color: $grey-200;
       padding: 0.5em;
-      max-width: 30em;
+      width: 30em;
+      max-height: 20em;
       overflow: auto;
       text-align: left;
     }

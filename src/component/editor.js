@@ -22,6 +22,8 @@ export default {
     })
   },
   global: {
-    running: true
+    running: true,
+    selected: -1,
+    cursor: [0, 0, 0]
   }
 };

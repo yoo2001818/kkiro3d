@@ -11,6 +11,7 @@ class EnginePlayback extends Component {
     return (
       <div className={classNames('engine-playback', { running })}>
         <button className='pause-button'
+          title='Pause'
           onClick={this.handleToggle.bind(this)} />
       </div>
     );

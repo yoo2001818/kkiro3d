@@ -11,6 +11,7 @@ import * as EntityComponents from './entityComponent';
 class EntityProperties extends Component {
   render() {
     const { entity } = this.props;
+    if (entity == null) return false;
     return (
       <div className='entity-properties'>
         <EntityActions entity={entity} />
@@ -28,13 +29,16 @@ class EntityProperties extends Component {
 }
 
 EntityProperties.propTypes = {
-  entity: PropTypes.object.isRequired
+  entity: PropTypes.object
 };
 
+let checkUpdate = ([entity], { entity: propEntity }) => entity === propEntity;
+
 export default connect({
-  'entity.add.*': ([entity], { entity: propEntity }) => entity === propEntity,
-  'entity.remove.*': ([entity], { entity: propEntity }) => entity === propEntity
+  'entity.add.*': checkUpdate,
+  'entity.remove.*': checkUpdate,
+  'entity.delete': checkUpdate
 }, (engine, { entity: propEntity }) => ({
   // This happens because fudge objects are mutable :/
-  entity: propEntity
+  entity: engine.state.entities[propEntity.id]
 }))(EntityProperties);
