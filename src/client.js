@@ -34,7 +34,7 @@ let engine = createEngine({}, {
         let light = engine.actions.entity.create({
           name: 'Light',
           transform: {
-            position: [5, 5, 5]
+            position: [2, 2, 2]
           },
           light: {
             type: 'directional',
@@ -45,6 +45,20 @@ let engine = createEngine({}, {
           }
         });
         engine.actions.transform.lookAtPos(light, [0, 0, 0], [0, 1, 0]);
+        engine.actions.entity.create({
+          name: 'PointLight',
+          transform: {
+            position: [-2, 0, 0]
+          },
+          light: {
+            type: 'point',
+            color: '#ff0000',
+            ambient: 0.3,
+            diffuse: 1.0,
+            specular: 1.0,
+            attenuation: 0.8
+          }
+        });
       },
       'external.update!': ([delta]) => {
         engine.actions.transform.rotateY(box, delta);

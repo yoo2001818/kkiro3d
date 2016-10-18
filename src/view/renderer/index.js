@@ -35,15 +35,13 @@ export default class RendererView {
     const gl = this.webglue.gl;
     // Create world graph first.
     let world = {
-      uniforms: {
-        uDirectionalLight: [{
-          direction: [-0.590945, 0.216439, 0.777132],
-          color: '#ffffff',
-          intensity: [0.3, 0.7, 1.0]
-        }],
-        uPointLight: []
-      }
+      options: {},
+      uniforms: {}
     };
+    world = currentEffects.reduce((data, v) => {
+      if (v.worldPre == null) return data;
+      return v.worldPre(data);
+    }, world);
     let worldPasses = [world];
     world.passes = this.meshes.map(entity => {
       if (!entity.mesh.visible) return;
@@ -62,12 +60,12 @@ export default class RendererView {
       }));
     });
     this.lights.forEach(entity => currentEffects.forEach(v => {
-      if (v.light) world = v.light(entity, world, worldPasses);
+      if (v.light) v.light(entity, world, worldPasses);
     }));
-    world = currentEffects.reduce((data, v) => {
-      if (v.world == null) return data;
-      return v.world(data, worldPasses);
-    }, world);
+    currentEffects.forEach(v => {
+      if (v.world == null) return;
+      return v.world(world, worldPasses);
+    });
     // Last, make viewports.
     let cameraMatrix = this.engine.systems.cameraMatrix;
     let viewportPasses = viewports.map((viewport, index) => {
