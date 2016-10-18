@@ -10,13 +10,19 @@
   }
   & > .content {
     margin: 1em 2em;
-    code pre {
+    code pre, textarea.code {
       background-color: $grey-200;
       padding: 0.5em;
-      width: 30em;
-      max-height: 20em;
       overflow: auto;
       text-align: left;
+      width: 30em;
+      max-height: 20em;
+    }
+    textarea.code {
+      font-family: monospace;
+      resize: none;
+      border: none;
+      height: 20em;
     }
   }
   .dialog-controls-component {

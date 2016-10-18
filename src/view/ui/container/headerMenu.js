@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
+import jsonReplacer from '../../../util/jsonReplacer';
 
 import DropDown from '../component/ui/dropDown';
 
@@ -8,11 +9,11 @@ class HeaderMenu extends Component {
     this.props.execute('ui.setModal', {
       title: 'Scene graph (JSON)',
       content: (
-        <code>
-          <pre>
-            {JSON.stringify(this.props.engine.getState(), null, 2)}
-          </pre>
-        </code>
+        <textarea className='code'
+          defaultValue={JSON.stringify(this.props.engine.getState(),
+            jsonReplacer, 2)}
+          readOnly
+        />
       ),
       choices: [{
         name: 'OK'
