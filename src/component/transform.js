@@ -1,5 +1,6 @@
 import { quat, vec3 } from 'gl-matrix';
 import { signalRaw } from 'fudge';
+import lookAt from '../util/lookAt';
 
 let tmp = vec3.create();
 let tmpQuat = quat.create();
@@ -35,6 +36,15 @@ export default {
     rotateZ: function (entity, target) {
       quat.rotateZ(tmpQuat, entity.transform.rotation, target);
       this.actions.transform.setRotation(entity, tmpQuat);
+    },
+    lookAt: function (entity, front, up) {
+      lookAt(tmpQuat, front, up);
+      this.actions.transform.setRotation(entity, tmpQuat);
+    },
+    lookAtPos: function (entity, pos, up) {
+      vec3.subtract(tmp, entity.transform.position, pos);
+      vec3.normalize(tmp, tmp);
+      this.actions.transform.lookAt(entity, tmp, up);
     }
   }
 };

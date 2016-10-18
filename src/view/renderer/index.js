@@ -36,18 +36,15 @@ export default class RendererView {
     // Create world graph first.
     let world = {
       uniforms: {
-        uDirectionalLight: {
+        uDirectionalLight: [{
           direction: [-0.590945, 0.216439, 0.777132],
           color: '#ffffff',
           intensity: [0.3, 0.7, 1.0]
-        },
-        uPointLight: [{}]
+        }],
+        uPointLight: []
       }
     };
     let worldPasses = [world];
-    this.lights.forEach(entity => currentEffects.forEach(v => {
-      if (v.light) world = v.light(entity, world, worldPasses);
-    }));
     world.passes = this.meshes.map(entity => {
       if (!entity.mesh.visible) return;
       let material = this.materials[entity.mesh.material];
@@ -64,6 +61,9 @@ export default class RendererView {
         })
       }));
     });
+    this.lights.forEach(entity => currentEffects.forEach(v => {
+      if (v.light) world = v.light(entity, world, worldPasses);
+    }));
     world = currentEffects.reduce((data, v) => {
       if (v.world == null) return data;
       return v.world(data, worldPasses);

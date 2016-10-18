@@ -4,7 +4,6 @@ import getHandler from '../../util/getComponentHandler';
 
 import Section from '../../component/section';
 import Field from '../../component/ui/field';
-import DropDown from '../../component/ui/dropDown';
 import SelectInput from '../../component/ui/selectInput';
 import VectorInput from '../../component/ui/vectorInput';
 import NumberInput from '../../component/ui/numberInput';

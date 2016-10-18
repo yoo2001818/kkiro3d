@@ -34,6 +34,13 @@ input[type='text'] {
     }
   }
 }
+input[type='color'] {
+  background: none;
+  border: 0;
+  height: 1.5em;
+  margin: 0;
+  padding: 0;
+}
 input {
   width: 100%;
   box-sizing: border-box;

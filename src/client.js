@@ -23,7 +23,7 @@ let engine = createEngine({}, {
           },
           mesh: { geometry: 'teapot', material: 'test' }
         });
-        camera = engine.actions.entity.create({
+        engine.actions.entity.create({
           name: 'Camera',
           transform: {
             position: [0, 0, 5]
@@ -31,6 +31,20 @@ let engine = createEngine({}, {
           camera: {},
           blenderController: {}
         });
+        let light = engine.actions.entity.create({
+          name: 'Light',
+          transform: {
+            position: [5, 5, 5]
+          },
+          light: {
+            type: 'directional',
+            color: '#ffffff',
+            ambient: 0.3,
+            diffuse: 1.0,
+            specular: 1.0
+          }
+        });
+        engine.actions.transform.lookAtPos(light, [0, 0, 0], [0, 1, 0]);
       },
       'external.update!': ([delta]) => {
         engine.actions.transform.rotateY(box, delta);

@@ -4,14 +4,20 @@
 #pragma webglue: feature(USE_NORMAL_MAP, uNormalMap)
 #pragma webglue: feature(USE_HEIGHT_MAP, uHeightMap)
 #pragma webglue: count(POINT_LIGHT_SIZE, uPointLight, maxLength)
-#pragma webglue: feature(USE_DIRECTIONAL_LIGHT_SHADOW_MAP, uDirectionalLightShadowMap)
+#pragma webglue: count(DIRECTIONAL_LIGHT_SIZE, uDirectionalLight, maxLength)
+// TODO We'll handle shadows later
+// #pragma webglue: feature(USE_DIRECTIONAL_LIGHT_SHADOW_MAP, uDirectionalLightShadowMap)
 
 #if defined(USE_NORMAL_MAP) || defined(USE_HEIGHT_MAP)
   #define USE_TANGENT_SPACE
 #endif
 
 #ifndef POINT_LIGHT_SIZE
-#define POINT_LIGHT_SIZE 1
+#define POINT_LIGHT_SIZE 0
+#endif
+
+#ifndef DIRECTIONAL_LIGHT_SIZE
+#define DIRECTIONAL_LIGHT_SIZE 0
 #endif
 
 precision lowp float;
@@ -68,7 +74,9 @@ struct DirectionalLight {
   uniform PointLight uPointLight[POINT_LIGHT_SIZE];
 #endif
 
-uniform DirectionalLight uDirectionalLight;
+#if DIRECTIONAL_LIGHT_SIZE > 0
+  uniform DirectionalLight uDirectionalLight[DIRECTIONAL_LIGHT_SIZE];
+#endif
 #ifdef USE_DIRECTIONAL_LIGHT_SHADOW_MAP
   uniform sampler2D uDirectionalLightShadowMap;
 #endif
@@ -285,8 +293,11 @@ void main(void) {
     result += calcPoint(uPointLight[i], matColor, viewDir);
   }
 	#endif
-  result += calcDirectional(uDirectionalLight, matColor, viewDir);
-
+  #if DIRECTIONAL_LIGHT_SIZE > 0
+  for (int i = 0; i < DIRECTIONAL_LIGHT_SIZE; ++i) {
+    result += calcDirectional(uDirectionalLight[i], matColor, viewDir);
+  }
+  #endif
   gl_FragColor = vec4(result, 1.0);
 
 }

@@ -21,6 +21,10 @@ export default {
       entity.light.diffuse = diffuse;
       entity.light.specular = specular;
       entity.light.attenuation = attenu;
+    }),
+    set: signalRaw(([entity, data]) => {
+      // I'm being lazy (again)
+      Object.assign(entity.light, data);
     })
   }
 };
