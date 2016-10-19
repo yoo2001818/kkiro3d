@@ -4,7 +4,7 @@ import connectComponent from '../../util/connectComponent';
 import { vec3 } from 'gl-matrix';
 import { quatToEuler, eulerToQuat } from 'webglue/lib/util/euler';
 
-import Section from '../../component/section';
+import EntityComponentSection from '../../component/entityComponentSection';
 import Field from '../../component/ui/field';
 import VectorInput from '../../component/ui/vectorInput';
 
@@ -30,12 +30,13 @@ class EntityComponentTransform extends Component {
     execute('transform.setScale', entity, newValue);
   }
   render() {
-    const { entity } = this.props;
+    const { entity, execute } = this.props;
     quatToEuler(tmpEuler, entity.transform.rotation);
     vec3.scale(tmpEuler, tmpEuler, 180 / Math.PI);
     return (
-      <Section className='entity-component-transform'
+      <EntityComponentSection className='entity-component-transform'
         header='Transform'
+        onRemove={() => execute('entity.remove.transform', entity)}
       >
         <Field label='Position'>
           <VectorInput value={entity.transform.position}
@@ -58,7 +59,7 @@ class EntityComponentTransform extends Component {
             className='vertical'
           />
         </Field>
-      </Section>
+      </EntityComponentSection>
     );
   }
 }

@@ -2,17 +2,18 @@ import React, { Component, PropTypes } from 'react';
 import connectComponent from '../../util/connectComponent';
 import getHandler from '../../util/getComponentHandler';
 
-import Section from '../../component/section';
+import EntityComponentSection from '../../component/entityComponentSection';
 import Field from '../../component/ui/field';
 import VectorInput from '../../component/ui/vectorInput';
 import NumberInput from '../../component/ui/numberInput';
 
 class EntityComponentBlenderController extends Component {
   render() {
-    const { entity } = this.props;
+    const { entity, execute } = this.props;
     return (
-      <Section className='entity-component-blender-controller'
+      <EntityComponentSection className='entity-component-blender-controller'
         header='BlenderController'
+        onRemove={() => execute('entity.remove.blenderController', entity)}
       >
         <Field label='Center'>
           <VectorInput value={entity.blenderController.center}
@@ -26,7 +27,7 @@ class EntityComponentBlenderController extends Component {
               ['blenderController.setRadius', entity, parseFloat(value)])}
           />
         </Field>
-      </Section>
+      </EntityComponentSection>
     );
   }
 }

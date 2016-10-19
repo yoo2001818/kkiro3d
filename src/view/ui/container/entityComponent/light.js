@@ -2,17 +2,18 @@ import React, { Component, PropTypes } from 'react';
 import connectComponent from '../../util/connectComponent';
 import getHandler from '../../util/getComponentHandler';
 
-import Section from '../../component/section';
+import EntityComponentSection from '../../component/entityComponentSection';
 import Field from '../../component/ui/field';
 import SelectInput from '../../component/ui/selectInput';
 import NumberInput from '../../component/ui/numberInput';
 
 class EntityComponentLight extends Component {
   render() {
-    const { entity } = this.props;
+    const { entity, execute } = this.props;
     return (
-      <Section className='entity-component-light'
+      <EntityComponentSection className='entity-component-light'
         header='Light'
+        onRemove={() => execute('entity.remove.light', entity)}
       >
         <Field label='Type'>
           <SelectInput
@@ -68,7 +69,7 @@ class EntityComponentLight extends Component {
             />
           </Field>
         )}
-      </Section>
+      </EntityComponentSection>
     );
   }
 }

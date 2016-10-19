@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import connectComponent from '../../util/connectComponent';
 import getHandler from '../../util/getComponentHandler';
 
-import Section from '../../component/section';
+import EntityComponentSection from '../../component/entityComponentSection';
 import Field from '../../component/ui/field';
 import SelectInput from '../../component/ui/selectInput';
 import VectorInput from '../../component/ui/vectorInput';
@@ -10,10 +10,11 @@ import NumberInput from '../../component/ui/numberInput';
 
 class EntityComponentCamera extends Component {
   render() {
-    const { entity } = this.props;
+    const { entity, execute } = this.props;
     return (
-      <Section className='entity-component-camera'
+      <EntityComponentSection className='entity-component-camera'
         header='Camera'
+        onRemove={() => execute('entity.remove.camera', entity)}
       >
         <Field label='Type'>
           <SelectInput
@@ -56,7 +57,7 @@ class EntityComponentCamera extends Component {
             />
           </Field>
         )}
-      </Section>
+      </EntityComponentSection>
     );
   }
 }

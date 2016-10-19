@@ -2,17 +2,18 @@ import React, { Component, PropTypes } from 'react';
 import connectComponent from '../../util/connectComponent';
 import getHandler from '../../util/getComponentHandler';
 
-import Section from '../../component/section';
+import EntityComponentSection from '../../component/entityComponentSection';
 import Field from '../../component/ui/field';
 import CachedTextInput from '../../component/ui/cachedTextInput';
 import CheckboxInput from '../../component/ui/checkboxInput';
 
 class EntityComponentMesh extends Component {
   render() {
-    const { entity } = this.props;
+    const { entity, execute } = this.props;
     return (
-      <Section className='entity-component-mesh'
+      <EntityComponentSection className='entity-component-mesh'
         header='Mesh'
+        onRemove={() => execute('entity.remove.mesh', entity)}
       >
         <Field label='Geometry'>
           <CachedTextInput value={entity.mesh.geometry}
@@ -32,7 +33,7 @@ class EntityComponentMesh extends Component {
               (entity, value) => ['mesh.setVisible', entity, value])}
           />
         </Field>
-      </Section>
+      </EntityComponentSection>
     );
   }
 }
