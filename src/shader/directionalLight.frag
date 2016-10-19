@@ -19,7 +19,7 @@ void main() {
     doOut = true;
   }
   if (dist > uCrossStart && dist < 1.0 &&
-    mod(degrees(atan(center.y, center.x)), 45.0) < 3.0
+    mod(degrees(atan(center.y, center.x)), 45.0) < 3.5
   ) {
     gl_FragColor = vec4(uColor, 1.0);
     doOut = true;
