@@ -16,6 +16,7 @@
     line-height: 1em;
     & a {
       outline: 0;
+      color: $grey-700;
     }
     & .title {
       padding: 0.5em 0;
@@ -30,6 +31,7 @@
     }
   }
   &>.content {
+    font-weight: normal;
     position: absolute;
     font-size: 0.9rem;
     top: 100%;
@@ -138,9 +140,32 @@
       }
     }
   }
+  &.top {
+    &>.content {
+      top: auto;
+      bottom: 100%;
+      margin-top: 0;
+      margin-bottom: 10px;
+      &:before {
+        top: auto;
+        bottom: -20px;
+        @include triangle-bottom(10px, 10px, $grey-500);
+      }
+      &:after {
+        top: auto;
+        bottom: -18px;
+        @include triangle-bottom(9px, 9px, $grey-100);
+      }
+    }
+  }
   &.no-caret {
     &>.button:after {
       display: none;
+    }
+  }
+  &.small {
+    &>.content {
+      font-size: 0.8rem;
     }
   }
   &.select-list {

@@ -13,7 +13,7 @@
   & > .right {
     float: right;
   }
-  a {
+  a, .drop-down-component > .button a {
     color: $header-color;
     &:hover {
       color: $header-color;

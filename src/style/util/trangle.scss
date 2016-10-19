@@ -15,3 +15,12 @@
   border-right: $hsize solid transparent;
   border-left: $hsize solid transparent;
 }
+
+@mixin triangle-bottom($size, $hsize, $color) {
+  width: 0;
+  height: 0;
+  border-top: $size solid $color;
+  border-bottom: $size solid transparent;
+  border-right: $hsize solid transparent;
+  border-left: $hsize solid transparent;
+}

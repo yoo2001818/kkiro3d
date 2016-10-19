@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, isValidElement } from 'react';
 import classNames from 'classnames';
 
 export default class DropDown extends Component {
@@ -58,11 +58,16 @@ export default class DropDown extends Component {
   render() {
     const { hidden } = this.state;
     const { className } = this.props;
-    const buttonContent = (
-      <a href={this.props.href || '#'} tabIndex={-1}>
-        <span className='title'>{this.props.title}</span>
-      </a>
-    );
+    let buttonContent;
+    if (isValidElement(this.props.title)) {
+      buttonContent = this.props.title;
+    } else {
+      buttonContent = (
+        <a href={this.props.href || '#'} tabIndex={-1}>
+          <span className='title'>{this.props.title}</span>
+        </a>
+      );
+    }
     return (
       <div className={classNames('drop-down-component', { hidden }, className)}>
         <div className='cover' ref='cover' />
