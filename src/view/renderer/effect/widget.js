@@ -1,7 +1,7 @@
 import translateWidgetGeom from 'webglue/lib/geom/translateWidget';
 import { mat4 } from 'gl-matrix';
 
-export default function selectWireframeEffect(renderer) {
+export default function widgetEffect(renderer) {
   const engine = renderer.engine;
   const webglue = renderer.webglue;
   const gl = webglue.gl;

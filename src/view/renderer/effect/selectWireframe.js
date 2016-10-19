@@ -21,7 +21,11 @@ export default function selectWireframeEffect(renderer) {
           webglue.geometries.create(wireframe(renderer.geometries[geomName]));
       }
       return Object.assign(data, {
-        passes: (data.passes || [{}]).concat([{
+        passes: (data.passes || [{
+          options: {
+            polygonOffset: [1, 0]
+          }
+        }]).concat([{
           uniforms: {
             uColor: '#ffa400'
           },

@@ -6,7 +6,7 @@ let tmp = vec3.create();
 let tmpQuat = quat.create();
 
 export default {
-  component: data => ({
+  component: (data = {}) => ({
     position: data.position ? new Float32Array(data.position) : vec3.create(),
     scale: data.scale ? new Float32Array(data.scale) : vec3.fromValues(1, 1, 1),
     rotation: data.rotation ? new Float32Array(data.rotation) : quat.create()

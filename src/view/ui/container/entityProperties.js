@@ -14,7 +14,7 @@ import capitalize from '../../../util/capitalize';
 // EntityProperties should react to component add / remove, nothing else.
 class EntityProperties extends Component {
   handleAdd(name) {
-    this.props.execute('entity.add.' + name, this.props.entity, null);
+    this.props.execute('entity.add.' + name, this.props.entity, undefined);
   }
   render() {
     const { entity } = this.props;

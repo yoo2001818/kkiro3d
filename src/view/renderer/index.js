@@ -46,6 +46,7 @@ export default class RendererView {
     world.passes = this.meshes.map(entity => {
       if (!entity.mesh.visible) return;
       let material = this.materials[entity.mesh.material];
+      if (material == null) return;
       let shader = this.shaders[material.shader];
       return currentEffects.reduce((data, v) => {
         if (v.mesh == null) return data;
