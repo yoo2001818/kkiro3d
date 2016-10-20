@@ -1,0 +1,58 @@
+export default function cameraWidgetEffect(renderer) {
+  const engine = renderer.engine;
+  const webglue = renderer.webglue;
+  const gl = webglue.gl;
+  // Why do we need this :/
+  let coneGeom = webglue.geometries.create({
+    attributes: {
+      aPosition: {
+        axis: 3,
+        data: new Float32Array([
+          0, 0, 0,
+          -1, -1, 1,
+          1, -1, 1,
+          1, 1, 1,
+          -1, 1, 1,
+          0.8, 1.1, 1,
+          -0.8, 1.1, 1,
+          0, 1.5, 1,
+        ])
+      }
+    },
+    indices: [
+      0, 1, 0, 2, 0, 3, 0, 4,
+      1, 2, 2, 3, 3, 4, 4, 1,
+      5, 6, 6, 7, 7, 5
+    ],
+    mode: gl.LINES
+  });
+  let lineShader = webglue.shaders.create(
+    require('../../../shader/cameraWidget.vert'),
+    require('../../../shader/monoColor.frag')
+  );
+  return {
+    entity: (data, entity) => {
+      if (data != null) return data;
+      if (entity.camera == null) return data;
+      let isSelected = entity.id === engine.state.global.selected;
+      let model = engine.systems.matrix.get(entity);
+      let scale = [1, 1, 1];
+      if (entity.camera.type === 'persp') {
+        scale[2] = 1 / Math.tan(entity.camera.fov / 2);
+      } else {
+        scale[0] = entity.camera.zoom;
+        scale[1] = entity.camera.zoom;
+        scale[2] = entity.camera.zoom;
+      }
+      return {
+        uniforms: {
+          uModel: model,
+          uColor: isSelected ? '#ffa400' : '#000000',
+          uScale: scale
+        },
+        shader: lineShader,
+        geometry: coneGeom
+      };
+    }
+  };
+}
