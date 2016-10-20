@@ -67,7 +67,8 @@ export default class RendererView {
           clearDepth: 1,
           cull: gl.BACK,
           depth: gl.LEQUAL,
-          viewport: viewport.viewport
+          viewport: viewport.viewport,
+          camera: camera
         },
         uniforms: {
           uView: cameraMatrix.getView(camera),

@@ -36,22 +36,26 @@ export default function cameraWidgetEffect(renderer) {
       if (entity.camera == null) return data;
       let isSelected = entity.id === engine.state.global.selected;
       let model = engine.systems.matrix.get(entity);
+      let aspect = engine.systems.cameraMatrix.getCurrentAspect(entity);
       let scale = [1, 1, 1];
       if (entity.camera.type === 'persp') {
-        scale[2] = 1 / Math.tan(entity.camera.fov / 2);
+        scale[0] = aspect;
+        scale[2] = -1 / Math.tan(entity.camera.fov / 2);
       } else {
-        scale[0] = entity.camera.zoom;
+        scale[0] = entity.camera.zoom * aspect;
         scale[1] = entity.camera.zoom;
-        scale[2] = entity.camera.zoom;
+        scale[2] = -entity.camera.zoom;
       }
-      return {
-        uniforms: {
-          uModel: model,
-          uColor: isSelected ? '#ffa400' : '#000000',
-          uScale: scale
-        },
-        shader: lineShader,
-        geometry: coneGeom
+      return (tree) => {
+        return tree.options.camera === entity ? null : {
+          uniforms: {
+            uModel: model,
+            uColor: isSelected ? '#ffa400' : '#000000',
+            uScale: scale
+          },
+          shader: lineShader,
+          geometry: coneGeom
+        };
       };
     }
   };

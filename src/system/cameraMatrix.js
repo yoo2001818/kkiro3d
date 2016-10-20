@@ -78,6 +78,10 @@ export default class CameraMatrixSystem {
 
     return true;
   }
+  getCurrentAspect(entity) {
+    let data = this.getData(entity);
+    return data.aspect;
+  }
   getProjection(entity, input) {
     let data = this.getData(entity);
     let camera = entity.camera;
