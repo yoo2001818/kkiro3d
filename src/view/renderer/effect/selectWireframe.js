@@ -12,11 +12,13 @@ export default function selectWireframeEffect(renderer) {
   return {
     colorShaderHandler, wireframeGeoms,
     entity: (data, entity) => {
+      if (data == null) return;
       if (entity.mesh == null) return data;
       if (entity.id !== engine.state.global.selected) return data;
       let geomName = entity.mesh.geometry;
       let geometry = wireframeGeoms[geomName];
       if (geometry == null) {
+        if (renderer.geometries[geomName] == null) return data;
         // TODO What if the geometry gets updated?
         geometry = wireframeGeoms[geomName] =
           webglue.geometries.create(wireframe(renderer.geometries[geomName]));

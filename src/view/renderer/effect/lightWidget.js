@@ -34,11 +34,11 @@ export default function lightWidgetEffect(renderer) {
     require('../../../shader/dottedLine.frag')
   );
   let pointLightShader = webglue.shaders.create(
-    require('../../../shader/light.vert'),
+    require('../../../shader/point.vert'),
     require('../../../shader/pointLight.frag')
   );
   let directionalLightShader = webglue.shaders.create(
-    require('../../../shader/light.vert'),
+    require('../../../shader/point.vert'),
     require('../../../shader/directionalLight.frag')
   );
   function getLinePass(model) {
@@ -63,6 +63,7 @@ export default function lightWidgetEffect(renderer) {
     pointLightShader,
     entity: (data, entity) => {
       if (entity.light == null) return data;
+      if (data != null) return data;
       let isSelected = entity.id === engine.state.global.selected;
       let model = engine.systems.matrix.get(entity);
       switch (entity.light.type) {
