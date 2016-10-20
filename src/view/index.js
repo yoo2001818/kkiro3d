@@ -12,12 +12,14 @@ import initUI from './ui';
 import ObjectMode from './mode/object';
 import ModeManager from './modeManager';
 
+import mesh from './renderer/effect/mesh';
+import light from './renderer/effect/light';
+
 import selectWireframe from './renderer/effect/selectWireframe';
 import mousePick from './renderer/effect/mousePick';
 import depthPick from './renderer/effect/depthPick';
 import axis from './renderer/effect/axis';
 import widget from './renderer/effect/widget';
-import light from './renderer/effect/light';
 import lightWidget from './renderer/effect/lightWidget';
 
 export default function initView(engine) {
@@ -41,9 +43,12 @@ export default function initView(engine) {
     createGeometries(renderer),
     createShaders(renderer),
     createMaterials(renderer),
-    { selectWireframe, widget, mousePick, depthPick, axis, light, lightWidget }
+    { mesh, light, selectWireframe, widget, mousePick, depthPick, axis,
+      lightWidget }
   );
-  rendererView.setEffects(['selectWireframe', 'widget', 'light',
+  /* rendererView.setEffects(['selectWireframe', 'widget', 'light',
+    'lightWidget']); */
+  rendererView.setEffects(['mesh', 'light', 'selectWireframe', 'widget',
     'lightWidget']);
 
   let modeManager = new ModeManager(engine, rendererView);

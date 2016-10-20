@@ -2,8 +2,7 @@ export default class RendererView {
   constructor(engine, webglue, geometries, shaders, materials, effects) {
     this.webglue = webglue;
     this.engine = engine;
-    this.meshes = engine.systems.family.get('mesh', 'transform').entities;
-    this.lights = engine.systems.family.get('light', 'transform').entities;
+    this.entities = engine.systems.family.get('transform').entities;
     this.cameras = engine.systems.family.get('camera', 'transform');
 
     // TODO Users should be able to alter this in the game code - not in
@@ -43,26 +42,12 @@ export default class RendererView {
       return v.worldPre(data);
     }, world);
     let worldPasses = [world];
-    world.passes = this.meshes.map(entity => {
-      if (!entity.mesh.visible) return;
-      let material = this.materials[entity.mesh.material];
-      if (material == null) return;
-      let shader = this.shaders[material.shader];
+    world.passes = this.entities.map(entity => {
       return currentEffects.reduce((data, v) => {
-        if (v.mesh == null) return data;
-        return v.mesh(data, entity, world, worldPasses);
-      }, Object.assign({}, material, {
-        shader: shader,
-        geometry: this.geometries[entity.mesh.geometry],
-        uniforms: Object.assign({}, material.uniforms, {
-          uModel: this.engine.systems.matrix.get(entity),
-          uNormal: this.engine.systems.matrix.getNormal(entity)
-        })
-      }));
-    });
-    this.lights.forEach(entity => currentEffects.forEach(v => {
-      if (v.light) v.light(entity, world, worldPasses);
-    }));
+        if (v.entity == null) return data;
+        return v.entity(data, entity, world, worldPasses);
+      }, null);
+    }).filter(v => v != null);
     currentEffects.forEach(v => {
       if (v.world == null) return;
       return v.world(world, worldPasses);

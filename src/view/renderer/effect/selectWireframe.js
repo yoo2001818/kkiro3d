@@ -11,7 +11,8 @@ export default function selectWireframeEffect(renderer) {
   const webglue = renderer.webglue;
   return {
     colorShaderHandler, wireframeGeoms,
-    mesh: (data, entity) => {
+    entity: (data, entity) => {
+      if (entity.mesh == null) return data;
       if (entity.id !== engine.state.global.selected) return data;
       let geomName = entity.mesh.geometry;
       let geometry = wireframeGeoms[geomName];

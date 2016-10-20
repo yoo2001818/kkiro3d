@@ -1,5 +1,3 @@
-import { mat4 } from 'gl-matrix';
-
 function getLinePointerMatrix(entityMat) {
   let center = entityMat.subarray(12, 15);
   return [
@@ -26,6 +24,14 @@ export default function lightWidgetEffect(renderer) {
   let lineShader = webglue.shaders.create(
     require('../../../shader/minimal.vert'),
     require('../../../shader/monoColor.frag')
+  );
+  let dottedLine = webglue.geometries.create({
+    attributes: { aPosition: [[0, 0, 0], [0, 0, -10]] },
+    mode: gl.LINES
+  });
+  let dottedLineShader = webglue.shaders.create(
+    require('../../../shader/dottedLine.vert'),
+    require('../../../shader/dottedLine.frag')
   );
   let pointLightShader = webglue.shaders.create(
     require('../../../shader/light.vert'),
@@ -55,44 +61,57 @@ export default function lightWidgetEffect(renderer) {
   }
   return {
     pointLightShader,
-    light: (entity, world) => {
+    entity: (data, entity) => {
+      if (entity.light == null) return data;
       let isSelected = entity.id === engine.state.global.selected;
       let model = engine.systems.matrix.get(entity);
       switch (entity.light.type) {
       case 'point':
-        world.passes.push([{
+        return {
           uniforms: {
             uModel: model,
-            uColor: isSelected ? '#ffa400' : '#000000',
-            uWidth: 1.1/25,
-            uFill: 6/25,
-            uLine1: 18/25,
-            uLine2: 25/25,
-            uRadius: 25,
-            uResolution: shader =>
-              [1 / shader.renderer.width, 1 / shader.renderer.height]
+            uColor: isSelected ? '#ffa400' : '#000000'
           },
-          shader: pointLightShader,
-          geometry: point
-        }, getLinePass(model)]);
-        break;
+          passes: [{
+            uniforms: {
+              uWidth: 1.1/25,
+              uFill: 6/25,
+              uLine1: 18/25,
+              uLine2: 25/25,
+              uRadius: 25,
+              uResolution: shader =>
+                [1 / shader.renderer.width, 1 / shader.renderer.height]
+            },
+            shader: pointLightShader,
+            geometry: point
+          }, getLinePass(model)]
+        };
       case 'directional':
-        world.passes.push([{
+        return {
           uniforms: {
             uModel: model,
-            uColor: isSelected ? '#ffa400' : '#000000',
-            uWidth: 1.5/40,
-            uFill: 6/40,
-            uLine: 18/40,
-            uCrossStart: 22/40,
-            uRadius: 40,
-            uResolution: shader =>
-              [1 / shader.renderer.width, 1 / shader.renderer.height]
+            uColor: isSelected ? '#ffa400' : '#000000'
           },
-          shader: directionalLightShader,
-          geometry: point
-        }, getLinePass(model)]);
-        break;
+          passes: [{
+            uniforms: {
+              uWidth: 1.5/40,
+              uFill: 6/40,
+              uLine: 18/40,
+              uCrossStart: 22/40,
+              uRadius: 40,
+              uResolution: shader =>
+                [1 / shader.renderer.width, 1 / shader.renderer.height]
+            },
+            shader: directionalLightShader,
+            geometry: point
+          }, {
+            uniforms: {
+              uDotted: 0.1
+            },
+            shader: dottedLineShader,
+            geometry: dottedLine
+          }, getLinePass(model)]
+        };
       }
     }
   };

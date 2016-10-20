@@ -15,28 +15,29 @@ export default function lightEffect() {
       world.uniforms.uPointLight = [];
       return world;
     },
-    light: (light, world) => {
-      switch (light.light.type) {
+    entity: (data, entity, world) => {
+      if (entity.light == null) return data;
+      switch (entity.light.type) {
       case 'point': {
         world.uniforms.uPointLight.push({
-          position: light.transform.position,
-          color: light.light.color,
-          intensity: [light.light.ambient, light.light.diffuse,
-            light.light.specular, light.light.attenuation]
+          position: entity.transform.position,
+          color: entity.light.color,
+          intensity: [entity.light.ambient, entity.light.diffuse,
+            entity.light.specular, entity.light.attenuation]
         });
-        break;
+        return data;
       }
       case 'directional': {
         // TODO This should be in LightSystem or something... to cache the
         // quaternion projection result. Oh well.
         world.uniforms.uDirectionalLight.push({
           direction: vec3.transformQuat(vec3.create(), [0, 0, 1],
-            light.transform.rotation),
-          color: light.light.color,
-          intensity: [light.light.ambient, light.light.diffuse,
-            light.light.specular]
+            entity.transform.rotation),
+          color: entity.light.color,
+          intensity: [entity.light.ambient, entity.light.diffuse,
+            entity.light.specular]
         });
-        break;
+        return data;
       }
       }
     }

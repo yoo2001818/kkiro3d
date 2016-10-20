@@ -52,7 +52,7 @@ export default function depthPickEffect(renderer) {
     }),
     pick: function (x, y) {
       // Render depth pick framebuffer.. (using itself as a filter)
-      renderer.render([this]);
+      renderer.render([renderer.effects.mesh, this]);
       // Then extract the pixel from framebuffer
       let pixel = new Uint8Array(4);
       pickFramebuffer.readPixelsRGBA(x,
