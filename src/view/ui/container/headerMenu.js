@@ -2,23 +2,20 @@ import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
 import jsonReplacer from '../../../util/jsonReplacer';
 
+import ModalDialog from '../component/modal/dialog';
 import DropDown from '../component/ui/dropDown';
 
 class HeaderMenu extends Component {
   handleExport() {
-    this.props.execute('ui.setModal', {
-      title: 'Scene graph (JSON)',
-      content: (
+    this.props.execute('ui.setModal',
+      <ModalDialog title='Scene graph (JSON)' actions={[{name: 'OK'}]}>
         <textarea className='code'
           defaultValue={JSON.stringify(this.props.engine.getState(),
             jsonReplacer, 2)}
           readOnly
         />
-      ),
-      choices: [{
-        name: 'OK'
-      }]
-    });
+      </ModalDialog>
+    );
   }
   render() {
     return (
