@@ -50,17 +50,22 @@ export default class RotateMode {
   setRotation() {
     let tmpQuat = quat.create();
     let axis = this.alignAxis;
+    let modifier = 1;
+    // Shoot a ray from camera to model
+    let matrixSys = this.engine.systems.matrix;
+    let cameraPos = matrixSys.get(this.camera).subarray(12, 15);
+    let entityPos = matrixSys.get(this.entity).subarray(12, 15);
+    let cameraRay = vec3.create();
+    vec3.subtract(cameraRay, cameraPos, entityPos);
+    vec3.normalize(cameraRay, cameraRay);
     if (!this.align) {
-      // Shoot a ray from camera to model
-      let matrixSys = this.engine.systems.matrix;
-      let cameraPos = matrixSys.get(this.camera).subarray(12, 15);
-      let entityPos = matrixSys.get(this.entity).subarray(12, 15);
-      let pos = vec3.create();
-      vec3.subtract(pos, cameraPos, entityPos);
-      vec3.normalize(pos, pos);
-      axis = pos;
+      axis = cameraRay;
+    } else {
+      // Compare align axis and camera axis
+      let cos = vec3.dot(axis, cameraRay);
+      if (cos < 0) modifier = -1;
     }
-    quat.setAxisAngle(tmpQuat, axis, this.angle);
+    quat.setAxisAngle(tmpQuat, axis, this.angle * modifier);
     quat.multiply(tmpQuat, tmpQuat, this.startQuat);
     this.engine.actions.external.execute('transform.setRotation',
       this.entity, tmpQuat);
