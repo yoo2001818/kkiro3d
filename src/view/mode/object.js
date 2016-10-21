@@ -28,6 +28,8 @@ export default class ObjectAction {
   mousemove(e) {
     let offsetX = e.clientX - this.mouseX;
     let offsetY = e.clientY - this.mouseY;
+    this.mouseX = e.clientX;
+    this.mouseY = e.clientY;
     if (this.rightHeld &&
       Math.sqrt(offsetX * offsetX + offsetY * offsetY) > 4
     ) {
@@ -40,8 +42,6 @@ export default class ObjectAction {
       return;
     }
     if (!this.mouseHeld) return;
-    this.mouseX = e.clientX;
-    this.mouseY = e.clientY;
     if (e.shiftKey) {
       this.engine.actions.external.execute('blenderController.translate',
         this.getCamera(), offsetX / 600, offsetY / 600);
@@ -204,6 +204,15 @@ export default class ObjectAction {
       }
       this.engine.actions.external.execute('blenderController.lerpRotation',
         this.getCamera(), tempQuat);
+    }
+    // Translate
+    if (e.keyCode === 71) {
+      let prevEntity = this.engine.state.entities[this.engine.state.global.
+        selected];
+      if (prevEntity == null) return;
+      this.manager.push(new TranslateMode(prevEntity,
+        toNDC(this.mouseX, this.mouseY, this.renderer)
+      ));
     }
   }
   wheel(e) {

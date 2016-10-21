@@ -42,10 +42,7 @@ export default class TranslateMode {
     this.renderer.effects.axis.direction = this.align ? this.alignAxis : null;
     this.renderer.effects.axis.color = this.align && this.alignAxis.concat([1]);
   }
-  mousemove(e) {
-    let ndc = toNDC(e.clientX, e.clientY, this.renderer);
-    this.ndc = ndc;
-    vec2.subtract(ndc, ndc, this.relativeOffset);
+  setPos(ndc) {
     if (!this.align) {
       // Freestyle translation
       // Project current model position to projection space
@@ -91,25 +88,39 @@ export default class TranslateMode {
         this.entity, pos);
     }
   }
+  mousemove(e) {
+    let ndc = toNDC(e.clientX, e.clientY, this.renderer);
+    this.ndc = ndc;
+    vec2.subtract(ndc, ndc, this.relativeOffset);
+    this.setPos(ndc);
+  }
   mouseup(e) {
     if (e.buttons === 0) this.manager.pop();
   }
   keydown(e) {
-    if (e.keyCode === 67) {
+    if (e.keyCode === 27) {
+      this.engine.actions.external.execute('transform.setPosition',
+        this.entity, this.startPos);
+      this.manager.pop();
+    } else if (e.keyCode === 67) {
       this.align = false;
       this.setEffect();
+      this.setPos(this.ndc);
     } else if (e.keyCode === 88) {
       this.align = true;
       this.alignAxis = [1, 0, 0];
       this.setEffect();
+      this.setPos(this.ndc);
     } else if (e.keyCode === 89) {
       this.align = true;
       this.alignAxis = [0, 1, 0];
       this.setEffect();
+      this.setPos(this.ndc);
     } else if (e.keyCode === 90) {
       this.align = true;
       this.alignAxis = [0, 0, 1];
       this.setEffect();
+      this.setPos(this.ndc);
     }
   }
 }
