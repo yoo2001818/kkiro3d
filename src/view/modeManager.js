@@ -4,6 +4,8 @@ export default class ModeManager {
     this.renderer = renderer;
 
     this.modeStack = [];
+
+    engine.signals.external.render.post.add(() => this.processEvent('render'));
   }
   push(mode) {
     // 'Exit' previous mode

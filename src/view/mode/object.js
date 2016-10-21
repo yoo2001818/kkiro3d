@@ -1,6 +1,8 @@
 import { vec2, vec3, vec4, quat } from 'gl-matrix';
 import toNDC from '../../util/toNDC';
 import TranslateMode from './translate';
+import ScaleMode from './scale';
+import RotateMode from './rotate';
 
 let tempQuat = quat.create();
 
@@ -211,6 +213,24 @@ export default class ObjectAction {
         selected];
       if (prevEntity == null) return;
       this.manager.push(new TranslateMode(prevEntity,
+        toNDC(this.mouseX, this.mouseY, this.renderer)
+      ));
+    }
+    // Scale
+    if (e.keyCode === 83) {
+      let prevEntity = this.engine.state.entities[this.engine.state.global.
+        selected];
+      if (prevEntity == null) return;
+      this.manager.push(new ScaleMode(prevEntity,
+        toNDC(this.mouseX, this.mouseY, this.renderer)
+      ));
+    }
+    // Rotate
+    if (e.keyCode === 82) {
+      let prevEntity = this.engine.state.entities[this.engine.state.global.
+        selected];
+      if (prevEntity == null) return;
+      this.manager.push(new RotateMode(prevEntity,
         toNDC(this.mouseX, this.mouseY, this.renderer)
       ));
     }
