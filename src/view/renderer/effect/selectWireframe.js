@@ -14,7 +14,7 @@ export default function selectWireframeEffect(renderer) {
     entity: (data, entity) => {
       if (data == null) return;
       if (entity.mesh == null) return data;
-      if (entity.id !== engine.state.global.selected) return data;
+      if (entity.id !== engine.state.global.selectedEntity) return data;
       let geomName = entity.mesh.geometry;
       let geometry = wireframeGeoms[geomName];
       if (geometry == null) {

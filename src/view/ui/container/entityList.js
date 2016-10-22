@@ -5,7 +5,7 @@ import EntityTag from '../component/entityTag';
 
 class EntityList extends Component {
   handleClick(entity) {
-    this.props.execute('editor.select', entity);
+    this.props.execute('editor.selectEntity', entity);
   }
   render() {
     const { entities, selected } = this.props;
@@ -34,10 +34,10 @@ export default connect({
   'entity.create': true,
   'entity.delete': true,
   'external.load': true,
-  'editor.select': true,
+  'editor.selectEntity': true,
   'name.set': true
 }, ({ state, actions }) => ({
   entities: state.entities,
-  selected: state.global.selected,
+  selected: state.global.selectedEntity,
   execute: actions.external.execute
 }))(EntityList);

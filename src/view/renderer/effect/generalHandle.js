@@ -15,7 +15,7 @@ export default function generalHandleEffect(renderer) {
     pointShader,
     entity: (data, entity) => {
       if (data != null) return data;
-      let isSelected = entity.id === engine.state.global.selected;
+      let isSelected = entity.id === engine.state.global.selectedEntity;
       let model = engine.systems.matrix.get(entity);
       return {
         uniforms: {

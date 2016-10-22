@@ -22,7 +22,7 @@ PropertiesPane.propTypes = {
 };
 
 export default connect({
-  'editor.select': true
+  'editor.selectEntity': true
 }, ({ state }) => ({
-  entity: state.entities[state.global.selected]
+  entity: state.entities[state.global.selectedEntity]
 }))(PropertiesPane);

@@ -66,7 +66,7 @@ export default class ObjectAction {
       let entity = this.engine.state.entities[id];
       if (entity == null) return;
       this.rightHeld = true;
-      this.engine.actions.external.execute('editor.select', entity);
+      this.engine.actions.external.execute('editor.selectEntity', entity);
       return;
     }
     if (e.button === 0) {

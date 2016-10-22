@@ -169,18 +169,10 @@
     }
   }
   &.select-list {
-    a {
-      color: $grey-700;
-    }
-    & > .button .title {
-      padding: 0.3em;
-      text-align: right;
-    }
     & > .content > ul > li {
       display: block;
-      cursor: pointer;
-      font-size: 0.9em;
-      padding: 0.4em 0.5em;
+      // cursor: pointer;
+      // padding: 0.4em 0.5em;
       border-radius: 0;
       border: none;
       background-color: $grey-100;
@@ -192,10 +184,16 @@
         border: none;
         background-color: $blue-600;
         color: $blue-100;
+        & > a {
+          color: $blue-100;
+        }
       }
       &:hover, &.focus {
         background-color: $blue-200;
         color: $blue-800;
+        & > a {
+          color: $blue-800;
+        }
       }
     }
   }
