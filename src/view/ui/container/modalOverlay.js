@@ -8,13 +8,16 @@ class ModalOverlay extends Component {
   render() {
     const { modal } = this.props;
     if (modal == null) return false;
+    if (typeof modal === 'function') {
+      return modal(this.handleClose.bind(this));
+    }
     return cloneElement(modal, {onClose: this.handleClose.bind(this)});
   }
 }
 
 ModalOverlay.propTypes = {
   execute: PropTypes.func,
-  modal: PropTypes.object
+  modal: PropTypes.oneOf([PropTypes.object, PropTypes.func])
 };
 
 export default connect({

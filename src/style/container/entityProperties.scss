@@ -1,12 +1,9 @@
 .entity-properties {
   & > .add-component {
     padding: 0.3em 0.5em;
-    & > .drop-down-component {
+    & > button {
+      text-align: center;
       width: 100%;
-      .button-component {
-        text-align: center;
-        width: 100%;
-      }
     }
   }
 }

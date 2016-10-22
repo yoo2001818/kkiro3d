@@ -5,7 +5,8 @@ import EntityActions from './entityActions';
 import EntityComponentName from './entityComponent/name';
 import * as EntityComponents from './entityComponent';
 
-import DropDown from '../component/ui/dropDown';
+import ModalContext from '../component/modal/context';
+import FilterList from '../component/filterList';
 
 import capitalize from '../../../util/capitalize';
 
@@ -15,6 +16,28 @@ import capitalize from '../../../util/capitalize';
 class EntityProperties extends Component {
   handleAdd(name) {
     this.props.execute('entity.add.' + name, this.props.entity, undefined);
+  }
+  handleAddOpen() {
+    this.props.execute('ui.setModal', this.renderAdd.bind(this));
+  }
+  renderAdd(onClose) {
+    const { entity } = this.props;
+    return (
+      <ModalContext alignTo={this.addOpen} onClose={onClose}>
+        <div className='popup-menu'>
+          <FilterList data={
+            this.props.componentList.filter(name => entity[name] == null)
+            .map(name => ({
+              name: capitalize(name),
+              onClick: () => {
+                onClose();
+                this.handleAdd(name);
+              }
+            }))}
+          />
+        </div>
+      </ModalContext>
+    );
   }
   render() {
     const { entity } = this.props;
@@ -31,19 +54,12 @@ class EntityProperties extends Component {
           );
         }) }
         <div className='add-component'>
-          <DropDown className='top left small no-caret'
-            title={<div className='button-component'>Add Component</div>}
-          ><ul>
-            { this.props.componentList.filter(name => entity[name] == null)
-              .map(name => (
-                <li key={name} onClick={this.handleAdd.bind(this, name)}>
-                  <a href='#'>
-                    {capitalize(name)}
-                  </a>
-                </li>
-              ))
-            }
-          </ul></DropDown>
+          <button className='button-component'
+            onClick={this.handleAddOpen.bind(this)}
+            ref={node => this.addOpen = node}
+          >
+            Add Component
+          </button>
         </div>
       </div>
     );
