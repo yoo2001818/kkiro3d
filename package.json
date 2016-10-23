@@ -40,6 +40,7 @@
     "font-awesome": "^4.6.3",
     "fudge": "0.1.15",
     "gl-matrix": "^2.3.2",
+    "lodash.merge": "^4.6.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-fudge": "^0.1.12",
