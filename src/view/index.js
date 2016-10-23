@@ -1,9 +1,5 @@
 import Renderer from 'webglue/lib/renderer';
 
-import createGeometries from '../geom';
-import createShaders from '../shader';
-import createMaterials from '../material';
-
 import RendererView from './renderer';
 // import BlenderInputView from './blenderInput';
 
@@ -42,16 +38,9 @@ export default function initView(engine) {
   let renderer = new Renderer(gl);
 
   let rendererView = new RendererView(engine, renderer,
-    createGeometries(renderer),
-    createShaders(renderer),
-    createMaterials(renderer),
     { mesh, light, selectWireframe, widget, mousePick, depthPick, axis,
       lightWidget, cameraWidget, generalHandle }
   );
-  /* rendererView.setEffects(['selectWireframe', 'widget', 'light',
-    'lightWidget']); */
-  rendererView.setEffects(['mesh', 'light', 'selectWireframe', 'widget',
-    'lightWidget', 'cameraWidget', 'generalHandle']);
 
   let modeManager = new ModeManager(engine, rendererView);
   modeManager.push(new ObjectMode());
@@ -61,4 +50,6 @@ export default function initView(engine) {
   canvas.addEventListener('contextmenu', e => e.preventDefault());
 
   initUI(engine);
+
+  return rendererView;
 }

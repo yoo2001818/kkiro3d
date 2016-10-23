@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
-import capitalize from '../../../util/capitalize';
 
 import DropDown from '../component/ui/dropDown';
 import Pane from '../component/pane';
@@ -10,7 +9,7 @@ const TYPES = {
   entity: {
     name: 'Entities'
   },
-  component: {
+  /* component: {
     name: 'Components'
   },
   system: {
@@ -18,7 +17,7 @@ const TYPES = {
   },
   view: {
     name: 'Views'
-  },
+  }, */
   shader: {
     name: 'Shaders'
   },
@@ -41,17 +40,17 @@ class OutlinePane extends Component {
     this.props.execute('editor.setType', type);
   }
   render() {
-    const selectedType = TYPES[this.props.selectedType];
+    const outlineType = TYPES[this.props.outlineType];
     return (
       <Pane className='outline-pane'
         header={<div className='header-content'>
           <div className='title'>
-            <DropDown title={selectedType.name}
+            <DropDown title={outlineType.name}
               className='left small select-list'
             ><ul>
               {Object.keys(TYPES).map((value, i) => (
                 <li key={i}
-                  className={value === this.props.selectedType && 'selected'}
+                  className={value === this.props.outlineType && 'selected'}
                 >
                   <a href='#' onClick={this.handleType.bind(this, value)}>
                     {TYPES[value].name}
@@ -72,12 +71,12 @@ class OutlinePane extends Component {
 
 OutlinePane.propTypes = {
   execute: PropTypes.func,
-  selectedType: PropTypes.string
+  outlineType: PropTypes.string
 };
 
 export default connect({
   'editor.setType': true
 }, (engine) => ({
   execute: engine.actions.external.execute,
-  selectedType: engine.state.global.selectedType
+  outlineType: engine.state.global.outlineType
 }))(OutlinePane);

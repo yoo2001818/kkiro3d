@@ -18,10 +18,11 @@ export default function selectWireframeEffect(renderer) {
       let geomName = entity.mesh.geometry;
       let geometry = wireframeGeoms[geomName];
       if (geometry == null) {
-        if (renderer.geometries[geomName] == null) return data;
+        if (renderer.getSystem().geometries[geomName] == null) return data;
         // TODO What if the geometry gets updated?
         geometry = wireframeGeoms[geomName] =
-          webglue.geometries.create(wireframe(renderer.geometries[geomName]));
+          webglue.geometries.create(
+            wireframe(renderer.getSystem().geometries[geomName]));
       }
       return Object.assign(data, {
         passes: (data.passes || [{

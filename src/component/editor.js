@@ -4,6 +4,7 @@ export default {
   actions: {
     selectEntity: signalRaw(function ([entity]) {
       this.state.global.selectedEntity = entity ? entity.id : -1;
+      this.state.global.selectedType = 'entity';
     }),
     cursor: signalRaw(function ([pos]) {
       this.state.global.cursor = pos.slice(0, 3);
@@ -21,13 +22,14 @@ export default {
       this.state.global.running = running;
     }),
     setType: signalRaw(function ([type]) {
-      this.state.global.selectedType = type;
+      this.state.global.outlineType = type;
     })
   },
   global: {
     running: true,
     selectedEntity: -1,
+    selectedType: 'entity',
+    outlineType: 'entity',
     cursor: [0, 0, 0],
-    selectedType: 'entity'
   }
 };

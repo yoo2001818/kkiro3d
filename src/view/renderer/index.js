@@ -1,20 +1,12 @@
 export default class RendererView {
-  constructor(engine, webglue, geometries, shaders, materials, effects) {
+  constructor(engine, webglue, effects) {
     this.webglue = webglue;
     this.engine = engine;
     this.entities = engine.systems.family.get('transform').entities;
     this.cameras = engine.systems.family.get('camera', 'transform');
 
-    // TODO Users should be able to alter this in the game code - not in
-    // initialization code.
-    this.geometries = geometries;
-    this.shaders = shaders;
-    this.materials = materials;
     this.effects = {};
     for (let key in effects) this.effects[key] = effects[key](this);
-
-    this.effectList = [];
-
     this.viewports = [];
 
     this.cameras.onAdd.add((camera) => {
@@ -26,11 +18,13 @@ export default class RendererView {
     // TODO This generates render tree every frame; it can be optimized.
     engine.signals.external.render.post.add(() => this.render());
   }
-  setEffects(effectList) {
-    this.effectList = effectList.map(v => this.effects[v]);
+  getSystem() {
+    return this.engine.systems.renderer;
   }
   render(effects, viewports = this.viewports) {
-    let currentEffects = effects || this.effectList;
+    let rendererSystem = this.engine.systems.renderer;
+    let currentEffects = (effects || rendererSystem.effectList)
+      .map(v => this.effects[v]);
     const gl = this.webglue.gl;
     // Create world graph first.
     let world = {

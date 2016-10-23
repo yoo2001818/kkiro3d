@@ -9,12 +9,12 @@ export default function meshEffect(renderer) {
     },
     entity: (data, entity) => {
       if (entity.mesh == null || !entity.mesh.visible) return data;
-      let material = renderer.materials[entity.mesh.material];
+      let material = renderer.getSystem().materials[entity.mesh.material];
       if (material == null) return data;
-      let shader = renderer.shaders[material.shader];
+      let shader = renderer.getSystem().shaders[material.shader];
       return Object.assign({}, material, {
         shader: shader,
-        geometry: renderer.geometries[entity.mesh.geometry],
+        geometry: renderer.getSystem().geometries[entity.mesh.geometry],
         uniforms: Object.assign({}, material.uniforms, {
           uModel: engine.systems.matrix.get(entity),
           uNormal: engine.systems.matrix.getNormal(entity)

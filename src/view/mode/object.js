@@ -36,7 +36,7 @@ export default class ObjectAction {
       Math.sqrt(offsetX * offsetX + offsetY * offsetY) > 4
     ) {
       let prevEntity = this.engine.state.entities[this.engine.state.global.
-        selected];
+        selectedEntity];
       if (prevEntity == null) return;
       this.manager.push(new TranslateMode(prevEntity,
         toNDC(this.mouseX, this.mouseY, this.renderer)
@@ -71,7 +71,7 @@ export default class ObjectAction {
     }
     if (e.button === 0) {
       let prevEntity = this.engine.state.entities[this.engine.state.global.
-        selected];
+        selectedEntity];
       if (prevEntity != null) {
         // Project the widget axis to screen
         let ndc = toNDC(this.mouseX, this.mouseY, this.renderer);
@@ -210,7 +210,7 @@ export default class ObjectAction {
     // Translate
     if (e.keyCode === 71) {
       let prevEntity = this.engine.state.entities[this.engine.state.global.
-        selected];
+        selectedEntity];
       if (prevEntity == null) return;
       this.manager.push(new TranslateMode(prevEntity,
         toNDC(this.mouseX, this.mouseY, this.renderer)
@@ -219,7 +219,7 @@ export default class ObjectAction {
     // Scale
     if (e.keyCode === 83) {
       let prevEntity = this.engine.state.entities[this.engine.state.global.
-        selected];
+        selectedEntity];
       if (prevEntity == null) return;
       this.manager.push(new ScaleMode(prevEntity,
         toNDC(this.mouseX, this.mouseY, this.renderer)
@@ -228,7 +228,7 @@ export default class ObjectAction {
     // Rotate
     if (e.keyCode === 82) {
       let prevEntity = this.engine.state.entities[this.engine.state.global.
-        selected];
+        selectedEntity];
       if (prevEntity == null) return;
       this.manager.push(new RotateMode(prevEntity,
         toNDC(this.mouseX, this.mouseY, this.renderer)
