@@ -12,7 +12,6 @@ let engine = createEngine({}, {
     this.entities = engine.systems.family.get('transform').entities;
     let camera;
     let box;
-    let timer = 0;
     this.hooks = {
       'external.start!': () => {
         box = engine.actions.entity.create({
@@ -65,16 +64,7 @@ let engine = createEngine({}, {
         });
       },
       'external.update!': ([delta]) => {
-        timer += delta;
         engine.actions.transform.rotateY(box, delta);
-        // ....
-        engine.actions.renderer.material.update('test', {
-          uniforms: {
-            uMaterial: {
-              diffuse: [timer % 1, 0, 0]
-            }
-          }
-        });
         // engine.actions.transform.translate(box, [delta / 30, 0, 0]);
       }
     };

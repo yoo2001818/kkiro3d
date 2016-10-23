@@ -47,8 +47,17 @@ export default {
     },
     effect: {
       set: signalRaw(function ([list]) {
-        this.systems.renderer.effects = list;
-      })
+        this.systems.renderer.effectList = list;
+      }),
+      add: function (name) {
+        let effects = this.systems.renderer.effectList;
+        if (effects.indexOf(name) !== -1) return;
+        this.actions.renderer.effect.set(effects.concat(name));
+      },
+      remove: function (name) {
+        let effects = this.systems.renderer.effectList;
+        this.actions.renderer.effect.set(effects.filter(v => v !== name));
+      }
     }
   }
 };

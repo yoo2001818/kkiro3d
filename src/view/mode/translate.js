@@ -18,7 +18,7 @@ export default class TranslateMode {
     this.manager = manager;
     this.engine = manager.engine;
     this.renderer = manager.renderer;
-    this.renderer.effectList.push(this.renderer.effects.axis);
+    this.engine.actions.renderer.effect.add('axis');
     this.setEffect();
 
     this.camera = this.renderer.viewports[0].camera;
@@ -34,9 +34,7 @@ export default class TranslateMode {
   }
   exit() {
     // Remove axis effect
-    this.renderer.effectList.splice(this.renderer.effectList.indexOf(
-      this.renderer.effects.axis
-    ), 1);
+    this.engine.actions.renderer.effect.remove('axis');
   }
   setEffect() {
     this.renderer.effects.axis.direction = this.align ? this.alignAxis : null;
