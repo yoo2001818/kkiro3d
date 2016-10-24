@@ -64,6 +64,12 @@ export default class RendererView {
           viewport: viewport.viewport,
           camera: camera
         },
+        textureHandler: (texture) => {
+          if (typeof texture === 'string') {
+            return this.getSystem().textures[texture];
+          }
+          return texture;
+        },
         uniforms: {
           uView: cameraMatrix.getView(camera),
           uProjection: cameraMatrix.getProjection.bind(cameraMatrix,

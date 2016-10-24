@@ -16,7 +16,11 @@ export default {
       frag: require('./shader/phong.frag')
     }
   },
-  textures: {},
+  textures: {
+    '2': {
+      source: require('./texture/2.png')
+    }
+  },
   materials: {
     test: {
       shader: 'phong',
@@ -27,7 +31,8 @@ export default {
           specular: '#444444',
           reflectivity: '#8c292929',
           shininess: 90
-        }
+        },
+        uDiffuseMap: '2'
       }
     }
   }
