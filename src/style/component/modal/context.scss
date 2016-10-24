@@ -1,13 +1,14 @@
 .modal-context {
   z-index: 10100;
   & > .popup-menu {
-    width: 12em;
-    height: 12em;
+    width: 14em;
+    height: 14em;
     background-color: $grey-100;
     border: 1px solid $grey-400;
     padding: 0.2em;
     margin: 0.1em;
     border-radius: 0.1em;
     box-shadow: 0 0 3px -1px rgba(0, 0, 0, 0.5);
+    font-size: 0.85em;
   }
 }

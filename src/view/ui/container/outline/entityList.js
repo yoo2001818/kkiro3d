@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import connect from '../util/connect';
+import connect from '../../util/connect';
+import classNames from 'classnames';
 
-import EntityTag from '../component/entityTag';
+import FilterList from '../../component/filterList';
 
 class EntityList extends Component {
   handleClick(entity) {
@@ -10,16 +11,11 @@ class EntityList extends Component {
   render() {
     const { entities, selected } = this.props;
     return (
-      <ul className='entity-list'>
-        { entities.map((entity, id) => entity && (
-          <li key={id}>
-            <EntityTag entity={entity}
-              selected={entity.id === selected}
-              onClick={this.handleClick.bind(this, entity)}
-            />
-          </li>
-        ))}
-      </ul>
+      <FilterList data={ entities.map((entity) => ({
+        name: entity.name,
+        className: classNames({ selected: entity.id === selected }),
+        onClick: this.handleClick.bind(this, entity)
+      }))} />
     );
   }
 }

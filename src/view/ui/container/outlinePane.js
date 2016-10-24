@@ -3,11 +3,16 @@ import connect from '../util/connect';
 
 import DropDown from '../component/ui/dropDown';
 import Pane from '../component/pane';
-import EntityList from './entityList';
+import EntityList from './outline/entityList';
+import ShaderList from './outline/shaderList';
+import GeometryList from './outline/geometryList';
+import TextureList from './outline/textureList';
+import MaterialList from './outline/materialList';
 
 const TYPES = {
   entity: {
-    name: 'Entities'
+    name: 'Entities',
+    component: EntityList
   },
   /* component: {
     name: 'Components'
@@ -18,17 +23,21 @@ const TYPES = {
   view: {
     name: 'Views'
   }, */
+  geometry: {
+    name: 'Geometries',
+    component: GeometryList
+  },
   shader: {
-    name: 'Shaders'
+    name: 'Shaders',
+    component: ShaderList
   },
   texture: {
-    name: 'Textures'
+    name: 'Textures',
+    component: TextureList
   },
   material: {
-    name: 'Materials'
-  },
-  geometry: {
-    name: 'Geometries'
+    name: 'Materials',
+    component: MaterialList
   }
 };
 
@@ -41,6 +50,7 @@ class OutlinePane extends Component {
   }
   render() {
     const outlineType = TYPES[this.props.outlineType];
+    const OutlineComponent = outlineType.component;
     return (
       <Pane className='outline-pane'
         header={<div className='header-content'>
@@ -63,7 +73,7 @@ class OutlinePane extends Component {
             title='Add' />
         </div>}
       >
-        <EntityList />
+        <OutlineComponent />
       </Pane>
     );
   }

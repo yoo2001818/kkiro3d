@@ -26,7 +26,7 @@ export default class FilterList extends Component {
             {data.filter(e =>
               e.name.toLowerCase().indexOf(query.toLowerCase()) !== -1)
             .map((entry, i) => (
-              <li key={i} onClick={entry.onClick}>
+              <li key={i} onClick={entry.onClick} className={entry.className}>
                 {entry.name}
               </li>
             ))}

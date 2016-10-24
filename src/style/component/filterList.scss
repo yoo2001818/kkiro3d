@@ -1,7 +1,7 @@
 .filter-list-component {
   display: flex;
   flex-direction: column;
-  font-size: 0.85em;
+  // font-size: 0.85em;
   height: 100%;
 
   & > .header {
@@ -23,14 +23,14 @@
       overflow-y: scroll;
       & > li {
         margin: 0.2em 0;
-        padding: 0.2em 0.5em;
+        padding: 0.3em 0.5em;
         border-radius: 0.1em;
         color: $grey-700;
         &:hover {
           background-color: $blue-200;
           color: $blue-800;
         }
-        &.active {
+        &.active, &.selected {
           background-color: $blue-600;
           color: $blue-100;
         }
