@@ -17,7 +17,8 @@ export default function axisEffect(renderer) {
     direction: [1, 0, 0],
     color: '#ff0000',
     entity: function (data, entity) {
-      if (entity.id !== engine.state.global.selectedEntity) return data;
+      if (engine.state.global.selectedType !== 'entity') return data;
+      if (entity.id !== engine.state.global.selected) return data;
       if (this.direction == null) return data;
       let direction = this.direction;
       let position = entity.transform.position;

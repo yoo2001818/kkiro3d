@@ -6,7 +6,7 @@ import FilterList from '../../component/filterList';
 
 class EntityList extends Component {
   handleClick(entity) {
-    this.props.execute('editor.selectEntity', entity);
+    this.props.execute('editor.select', 'entity', entity ? entity.id : -1);
   }
   render() {
     const { entities, selected } = this.props;
@@ -30,10 +30,10 @@ export default connect({
   'entity.create': true,
   'entity.delete': true,
   'external.load': true,
-  'editor.selectEntity': true,
+  'editor.select': true,
   'name.set': true
 }, ({ state, actions }) => ({
   entities: state.entities,
-  selected: state.global.selectedEntity,
+  selected: state.global.selectedType === 'entity' && state.global.selected,
   execute: actions.external.execute
 }))(EntityList);

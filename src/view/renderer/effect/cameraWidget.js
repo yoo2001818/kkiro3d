@@ -34,7 +34,8 @@ export default function cameraWidgetEffect(renderer) {
     entity: (data, entity) => {
       if (data != null) return data;
       if (entity.camera == null) return data;
-      let isSelected = entity.id === engine.state.global.selectedEntity;
+      let isSelected = engine.state.global.selectedType === 'entity' &&
+        entity.id === engine.state.global.selected;
       let model = engine.systems.matrix.get(entity);
       let aspect = engine.systems.cameraMatrix.getCurrentAspect(entity);
       let scale = [1, 1, 1];

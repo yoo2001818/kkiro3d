@@ -16,7 +16,8 @@ export default function generalHandleEffect(renderer) {
     entity: (data, entity) => {
       if (data != null) return data;
       if (entity.transform == null) return data;
-      let isSelected = entity.id === engine.state.global.selectedEntity;
+      let isSelected = engine.state.global.selectedType === 'entity' &&
+        entity.id === engine.state.global.selected;
       let model = engine.systems.matrix.get(entity);
       return {
         uniforms: {

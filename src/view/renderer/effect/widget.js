@@ -23,9 +23,11 @@ export default function widgetEffect(renderer) {
     translateWidget, widgetShader,
     world: (data) => {
       // Add widget to draw passes if an entity is selected
-      let entityId = engine.state.global.selectedEntity;
+      let entityId = engine.state.global.selected;
       let entity = engine.state.entities[entityId];
-      if (entity != null && entity.transform != null) {
+      if (engine.state.global.selectedType === 'entity' &&
+        entity != null && entity.transform != null
+      ) {
         // Create model matrix for it (Sigh)
         let model = mat4.create();
         model.set(entity.transform.position, 12);

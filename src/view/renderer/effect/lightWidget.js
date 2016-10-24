@@ -65,7 +65,8 @@ export default function lightWidgetEffect(renderer) {
       if (entity.transform == null) return data;
       if (entity.light == null) return data;
       if (data != null) return data;
-      let isSelected = entity.id === engine.state.global.selectedEntity;
+      let isSelected = engine.state.global.selectedType === 'entity' &&
+        entity.id === engine.state.global.selected;
       let model = engine.systems.matrix.get(entity);
       switch (entity.light.type) {
       case 'point':
