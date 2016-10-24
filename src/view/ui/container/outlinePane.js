@@ -3,11 +3,11 @@ import connect from '../util/connect';
 
 import DropDown from '../component/ui/dropDown';
 import Pane from '../component/pane';
-import EntityList from './outline/entityList';
-import ShaderList from './outline/shaderList';
-import GeometryList from './outline/geometryList';
-import TextureList from './outline/textureList';
-import MaterialList from './outline/materialList';
+import EntityList from './list/entityList';
+import ShaderList from './list/shaderList';
+import GeometryList from './list/geometryList';
+import TextureList from './list/textureList';
+import MaterialList from './list/materialList';
 
 const TYPES = {
   entity: {

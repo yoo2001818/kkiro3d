@@ -13,6 +13,7 @@ export default function selectWireframeEffect(renderer) {
     colorShaderHandler, wireframeGeoms,
     entity: (data, entity) => {
       if (data == null) return;
+      if (entity.transform == null) return data;
       if (entity.mesh == null) return data;
       if (entity.id !== engine.state.global.selectedEntity) return data;
       let geomName = entity.mesh.geometry;

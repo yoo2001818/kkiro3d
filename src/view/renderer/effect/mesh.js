@@ -8,6 +8,7 @@ export default function meshEffect(renderer) {
       return world;
     },
     entity: (data, entity) => {
+      if (entity.transform == null) return data;
       if (entity.mesh == null || !entity.mesh.visible) return data;
       let material = renderer.getSystem().materials[entity.mesh.material];
       if (material == null) return data;

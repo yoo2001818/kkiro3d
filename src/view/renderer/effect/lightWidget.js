@@ -62,6 +62,7 @@ export default function lightWidgetEffect(renderer) {
   return {
     pointLightShader,
     entity: (data, entity) => {
+      if (entity.transform == null) return data;
       if (entity.light == null) return data;
       if (data != null) return data;
       let isSelected = entity.id === engine.state.global.selectedEntity;

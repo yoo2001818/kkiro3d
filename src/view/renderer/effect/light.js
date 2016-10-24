@@ -16,6 +16,7 @@ export default function lightEffect() {
       return world;
     },
     entity: (data, entity, world) => {
+      if (entity.transform == null) return data;
       if (entity.light == null) return data;
       switch (entity.light.type) {
       case 'point': {

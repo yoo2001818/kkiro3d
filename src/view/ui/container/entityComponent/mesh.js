@@ -4,8 +4,11 @@ import getHandler from '../../util/getComponentHandler';
 
 import EntityComponentSection from '../../component/entityComponentSection';
 import Field from '../../component/ui/field';
-import CachedTextInput from '../../component/ui/cachedTextInput';
 import CheckboxInput from '../../component/ui/checkboxInput';
+
+import ModalInput from '../ui/modalInput';
+import GeometryList from '../list/geometryList';
+import MaterialList from '../list/materialList';
 
 class EntityComponentMesh extends Component {
   render() {
@@ -16,13 +19,15 @@ class EntityComponentMesh extends Component {
         onRemove={() => execute('entity.remove.mesh', entity)}
       >
         <Field label='Geometry'>
-          <CachedTextInput value={entity.mesh.geometry}
+          <ModalInput value={entity.mesh.geometry}
+            listComponent={GeometryList}
             onChange={getHandler(this,
               (entity, value) => ['mesh.setGeometry', entity, value])}
           />
         </Field>
         <Field label='Material'>
-          <CachedTextInput value={entity.mesh.material}
+          <ModalInput value={entity.mesh.material}
+            listComponent={MaterialList}
             onChange={getHandler(this,
               (entity, value) => ['mesh.setMaterial', entity, value])}
           />
