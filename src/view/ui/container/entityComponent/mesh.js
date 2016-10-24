@@ -7,8 +7,7 @@ import Field from '../../component/ui/field';
 import CheckboxInput from '../../component/ui/checkboxInput';
 
 import ModalInput from '../ui/modalInput';
-import GeometryList from '../list/geometryList';
-import MaterialList from '../list/materialList';
+import RenderAssetList from '../list/renderAsset';
 
 class EntityComponentMesh extends Component {
   render() {
@@ -20,17 +19,19 @@ class EntityComponentMesh extends Component {
       >
         <Field label='Geometry'>
           <ModalInput value={entity.mesh.geometry}
-            listComponent={GeometryList}
             onChange={getHandler(this,
               (entity, value) => ['mesh.setGeometry', entity, value])}
-          />
+          >
+            <RenderAssetList type='geometries' />
+          </ModalInput>
         </Field>
         <Field label='Material'>
           <ModalInput value={entity.mesh.material}
-            listComponent={MaterialList}
             onChange={getHandler(this,
               (entity, value) => ['mesh.setMaterial', entity, value])}
-          />
+          >
+            <RenderAssetList type='materials' />
+          </ModalInput>
         </Field>
         <Field label='Visible'>
           <CheckboxInput value={entity.mesh.visible}

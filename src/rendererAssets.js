@@ -34,6 +34,18 @@ export default {
         },
         uDiffuseMap: '2'
       }
+    },
+    test2: {
+      shader: 'phong',
+      uniforms: {
+        uMaterial: {
+          ambient: '#ffffff',
+          diffuse: '#999999',
+          specular: '#222222',
+          reflectivity: '#5352514F',
+          shininess: 90
+        }
+      }
     }
   }
 };

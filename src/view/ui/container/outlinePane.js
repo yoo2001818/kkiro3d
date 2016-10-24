@@ -3,16 +3,13 @@ import connect from '../util/connect';
 
 import DropDown from '../component/ui/dropDown';
 import Pane from '../component/pane';
-import EntityList from './list/entityList';
-import ShaderList from './list/shaderList';
-import GeometryList from './list/geometryList';
-import TextureList from './list/textureList';
-import MaterialList from './list/materialList';
+import EntityList from './list/entity';
+import RenderAssetList from './list/renderAsset';
 
 const TYPES = {
   entity: {
     name: 'Entities',
-    component: EntityList
+    component: <EntityList />
   },
   /* component: {
     name: 'Components'
@@ -25,19 +22,19 @@ const TYPES = {
   }, */
   geometry: {
     name: 'Geometries',
-    component: GeometryList
+    component: <RenderAssetList type='geometries' />
   },
   shader: {
     name: 'Shaders',
-    component: ShaderList
+    component: <RenderAssetList type='shaders' />
   },
   texture: {
     name: 'Textures',
-    component: TextureList
+    component: <RenderAssetList type='textures' />
   },
   material: {
     name: 'Materials',
-    component: MaterialList
+    component: <RenderAssetList type='materials' />
   }
 };
 
@@ -73,7 +70,7 @@ class OutlinePane extends Component {
             title='Add' />
         </div>}
       >
-        <OutlineComponent />
+        {OutlineComponent}
       </Pane>
     );
   }

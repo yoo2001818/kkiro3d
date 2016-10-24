@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, cloneElement, Children } from 'react';
 import connect from '../../util/connect';
 import classNames from 'classnames';
 
@@ -21,14 +21,17 @@ class ModalInput extends Component {
     }
   }
   renderPopup(onClose) {
-    const ListComponent = this.props.listComponent;
+    const { children } = this.props;
     return (
       <ModalContext alignTo={this.input} onClose={onClose}>
         <div className='popup-menu'>
-          <ListComponent selected={this.props.value} onSelect={v => {
-            onClose();
-            this.handleSelect(v);
-          }} />
+          { cloneElement(Children.only(children), {
+            selected: this.props.value,
+            onSelect: v => {
+              onClose();
+              this.handleSelect(v);
+            }
+          })}
         </div>
       </ModalContext>
     );
@@ -51,11 +54,11 @@ class ModalInput extends Component {
 }
 
 ModalInput.propTypes = {
-  value: PropTypes.bool,
+  value: PropTypes.string,
   className: PropTypes.string,
   onChange: PropTypes.func,
   execute: PropTypes.func,
-  listComponent: PropTypes.func
+  children: PropTypes.node
 };
 
 export default connect({}, (engine) => ({

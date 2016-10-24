@@ -17,7 +17,7 @@ let engine = createEngine({}, {
         box = engine.actions.entity.create({
           name: 'Box',
           transform: {},
-          mesh: { geometry: 'box', material: 'test' }
+          mesh: { geometry: 'box', material: 'test2' }
         });
         engine.actions.entity.create({
           name: 'Teapot',
