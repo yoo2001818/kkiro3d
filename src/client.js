@@ -34,6 +34,10 @@ let engine = createEngine({}, {
           camera: {},
           blenderController: {}
         });
+        engine.actions.entity.create({
+          name: 'Skybox',
+          skybox: { texture: 'skybox' }
+        });
         let light = engine.actions.entity.create({
           name: 'Light',
           transform: {
@@ -74,7 +78,7 @@ let engine = createEngine({}, {
 let renderer = createView(engine);
 engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
   ['mesh', 'light', 'selectWireframe', 'widget',
-    'lightWidget', 'cameraWidget', 'generalHandle']));
+    'lightWidget', 'cameraWidget', 'generalHandle', 'skybox']));
 
 let domCounter = 0;
 let prevTime = -1;

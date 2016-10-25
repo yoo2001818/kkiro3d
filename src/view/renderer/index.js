@@ -2,7 +2,7 @@ export default class RendererView {
   constructor(engine, webglue, effects) {
     this.webglue = webglue;
     this.engine = engine;
-    this.entities = engine.systems.family.get('transform').entities;
+    this.entities = engine.state.entities;
     this.cameras = engine.systems.family.get('camera', 'transform');
 
     this.effects = {};
@@ -37,6 +37,7 @@ export default class RendererView {
     }, world);
     let worldPasses = [world];
     world.passes = this.entities.map(entity => {
+      if (entity == null) return null;
       return currentEffects.reduce((data, v) => {
         if (v.entity == null) return data;
         return v.entity(data, entity, world, worldPasses);
@@ -65,8 +66,10 @@ export default class RendererView {
           camera: camera
         },
         textureHandler: (texture) => {
+          if (texture == null) return false;
           if (typeof texture === 'string') {
-            return this.getSystem().textures[texture];
+            let textureObj = this.getSystem().textures[texture];
+            return textureObj != null ? textureObj : false;
           }
           return texture;
         },
@@ -77,7 +80,7 @@ export default class RendererView {
           uProjectionView: cameraMatrix.getProjectionView.bind(cameraMatrix,
             camera)
         },
-        passes: [worldPasses]
+        passes: worldPasses
       });
     });
     this.webglue.render(viewportPasses);

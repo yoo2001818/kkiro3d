@@ -19,6 +19,16 @@ export default {
   textures: {
     '2': {
       source: require('./texture/2.png')
+    },
+    skybox: {
+      source: [
+        require('./texture/stormyday/front.jpg'),
+        require('./texture/stormyday/back.jpg'),
+        require('./texture/stormyday/down.jpg'),
+        require('./texture/stormyday/up.jpg'),
+        require('./texture/stormyday/right.jpg'),
+        require('./texture/stormyday/left.jpg')
+      ]
     }
   },
   materials: {

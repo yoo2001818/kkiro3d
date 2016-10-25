@@ -19,6 +19,7 @@ import widget from './renderer/effect/widget';
 import lightWidget from './renderer/effect/lightWidget';
 import cameraWidget from './renderer/effect/cameraWidget';
 import generalHandle from './renderer/effect/generalHandle';
+import skybox from './renderer/effect/skybox';
 
 export default function initView(engine) {
   // Canvas init
@@ -39,7 +40,7 @@ export default function initView(engine) {
 
   let rendererView = new RendererView(engine, renderer,
     { mesh, light, selectWireframe, widget, mousePick, depthPick, axis,
-      lightWidget, cameraWidget, generalHandle }
+      lightWidget, cameraWidget, generalHandle, skybox }
   );
 
   let modeManager = new ModeManager(engine, rendererView);
