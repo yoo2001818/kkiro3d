@@ -26,19 +26,21 @@ export default function selectWireframeEffect(renderer) {
           webglue.geometries.create(
             wireframe(renderer.getSystem().geometries[geomName]));
       }
-      return Object.assign(data, {
-        passes: (data.passes || [{
+      if (data.passes == null) {
+        data.passes = [{
           options: {
             polygonOffset: [1, 0]
           }
-        }]).concat([{
-          uniforms: {
-            uColor: '#ffa400'
-          },
-          shader: colorShaderHandler(data.shader, data.uniforms, webglue),
-          geometry: geometry
-        }])
+        }];
+      }
+      data.passes.push({
+        uniforms: {
+          uColor: '#ffa400'
+        },
+        shader: colorShaderHandler(data.shader, data.uniforms, webglue),
+        geometry: geometry
       });
+      return data;
     }
   };
 }

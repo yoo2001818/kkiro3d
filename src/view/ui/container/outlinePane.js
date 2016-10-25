@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, cloneElement } from 'react';
 import connect from '../util/connect';
 
 import DropDown from '../component/ui/dropDown';
@@ -45,19 +45,22 @@ class OutlinePane extends Component {
   handleType(type) {
     this.props.execute('editor.setType', type);
   }
+  handleSelect(selected) {
+    this.props.execute('editor.select', this.props.outlineType, selected);
+  }
   render() {
-    const outlineType = TYPES[this.props.outlineType];
-    const OutlineComponent = outlineType.component;
+    const { selected, selectedType, outlineType } = this.props;
+    const outlineData = TYPES[outlineType];
     return (
       <Pane className='outline-pane'
         header={<div className='header-content'>
           <div className='title'>
-            <DropDown title={outlineType.name}
+            <DropDown title={outlineData.name}
               className='left small select-list'
             ><ul>
               {Object.keys(TYPES).map((value, i) => (
                 <li key={i}
-                  className={value === this.props.outlineType && 'selected'}
+                  className={value === outlineType && 'selected'}
                 >
                   <a href='#' onClick={this.handleType.bind(this, value)}>
                     {TYPES[value].name}
@@ -70,7 +73,10 @@ class OutlinePane extends Component {
             title='Add' />
         </div>}
       >
-        {OutlineComponent}
+        {cloneElement(outlineData.component, {
+          selected: selectedType === outlineType ? selected : null,
+          onSelect: this.handleSelect.bind(this)
+        })}
       </Pane>
     );
   }
@@ -78,12 +84,17 @@ class OutlinePane extends Component {
 
 OutlinePane.propTypes = {
   execute: PropTypes.func,
+  selected: PropTypes.any,
+  selectedType: PropTypes.string,
   outlineType: PropTypes.string
 };
 
 export default connect({
-  'editor.setType': true
+  'editor.setType': true,
+  'editor.select': true
 }, (engine) => ({
   execute: engine.actions.external.execute,
+  selected: engine.state.global.selected,
+  selectedType: engine.state.global.selectedType,
   outlineType: engine.state.global.outlineType
 }))(OutlinePane);

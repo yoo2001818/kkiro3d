@@ -5,8 +5,8 @@ import classNames from 'classnames';
 import FilterList from '../../component/filterList';
 
 class EntityList extends Component {
-  handleClick(entity) {
-    this.props.execute('editor.select', 'entity', entity ? entity.id : -1);
+  handleSelect(entity) {
+    if (this.props.onSelect) this.props.onSelect(entity);
   }
   render() {
     const { entities, selected } = this.props;
@@ -14,7 +14,7 @@ class EntityList extends Component {
       <FilterList data={ entities.map((entity) => ({
         name: entity.name,
         className: classNames({ selected: entity.id === selected }),
-        onClick: this.handleClick.bind(this, entity)
+        onClick: this.handleSelect.bind(this, entity.id)
       }))} />
     );
   }
@@ -23,7 +23,7 @@ class EntityList extends Component {
 EntityList.propTypes = {
   entities: PropTypes.array,
   selected: PropTypes.number,
-  execute: PropTypes.func
+  onSelect: PropTypes.func
 };
 
 export default connect({
@@ -32,8 +32,6 @@ export default connect({
   'external.load': true,
   'editor.select': true,
   'name.set': true
-}, ({ state, actions }) => ({
-  entities: state.entities,
-  selected: state.global.selectedType === 'entity' && state.global.selected,
-  execute: actions.external.execute
+}, ({ state }) => ({
+  entities: state.entities
 }))(EntityList);
