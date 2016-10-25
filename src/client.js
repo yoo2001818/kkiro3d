@@ -24,7 +24,7 @@ let engine = createEngine({}, {
           transform: {
             position: [3, 0, 0]
           },
-          mesh: { geometry: 'teapot', material: 'test' }
+          mesh: { geometry: 'teapot', material: 'test2' }
         });
         engine.actions.entity.create({
           name: 'Camera',

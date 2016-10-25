@@ -6,6 +6,11 @@ import Field from '../component/ui/field';
 
 import lookup from 'gl-constants/lookup';
 
+function mapArrayOrObject(data, callback) {
+  if (Array.isArray(data)) return data.map(callback);
+  return callback(data, 0);
+}
+
 class TextureProperties extends Component {
   render() {
     const { texture, selected } = this.props;
@@ -21,6 +26,13 @@ class TextureProperties extends Component {
           <Field label='Loaded?'>{ texture.loaded ? 'Yes' : 'No' }</Field>
           <Field label='Width'>{ texture.width }</Field>
           <Field label='Height'>{ texture.height }</Field>
+        </Section>
+        <Section header='Source' className='source-section'>
+          { mapArrayOrObject(options.source, (image, i) => image != null && (
+            <a href={image.src} target='_blank' key={i}>
+              <img src={image.src} />
+            </a>
+          ))}
         </Section>
         <Section header='Options'>
           <Field label='Type'>
