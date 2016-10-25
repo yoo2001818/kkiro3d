@@ -43,7 +43,7 @@ class EntityProperties extends Component {
     const { entity } = this.props;
     if (entity == null) return false;
     return (
-      <div className='entity-properties'>
+      <div className='entity-properties properties'>
         <EntityActions entity={entity} />
         <EntityComponentName entity={entity} />
         { Object.keys(entity).map(component => {
@@ -69,18 +69,19 @@ class EntityProperties extends Component {
 EntityProperties.propTypes = {
   entity: PropTypes.object,
   componentList: PropTypes.array,
-  execute: PropTypes.func
+  execute: PropTypes.func,
+  selected: PropTypes.number
 };
 
-let checkUpdate = ([entity], { entity: propEntity }) => entity === propEntity;
+let checkUpdate = ([entity], { selected }) => entity.id === selected;
 
 export default connect({
   'entity.add.*': checkUpdate,
   'entity.remove.*': checkUpdate,
   'entity.delete': checkUpdate
-}, (engine, { entity: propEntity }) => ({
+}, (engine, { selected }) => ({
   // This happens because fudge objects are mutable :/
-  entity: engine.state.entities[propEntity.id],
+  entity: engine.state.entities[selected],
   // This should be provided as a global variable, but what the heck.
   componentList: engine.components.list,
   execute: engine.actions.external.execute

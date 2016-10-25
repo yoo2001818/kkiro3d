@@ -3,27 +3,33 @@ import connect from '../util/connect';
 
 import Pane from '../component/pane';
 import EntityProperties from './entityProperties';
+import TextureProperties from './textureProperties';
+
+const TYPES = {
+  entity: EntityProperties,
+  texture: TextureProperties
+};
 
 class PropertiesPane extends Component {
   render() {
-    const { entity } = this.props;
+    const { selected, selectedType } = this.props;
+    const Component = TYPES[selectedType];
     return (
       <Pane header='Properties' className='properties-pane'>
-        { entity && (
-          <EntityProperties entity={entity} />
-        )}
+        <Component selected={selected} />
       </Pane>
     );
   }
 }
 
 PropertiesPane.propTypes = {
-  entity: PropTypes.object
+  selected: PropTypes.any,
+  selectedType: PropTypes.string
 };
 
 export default connect({
   'editor.select': true
 }, ({ state }) => ({
-  entity: state.entities[state.global.selectedType === 'entity' &&
-    state.global.selected]
+  selected: state.global.selected,
+  selectedType: state.global.selectedType
 }))(PropertiesPane);
