@@ -4,10 +4,12 @@ import connect from '../util/connect';
 import Pane from '../component/pane';
 import EntityProperties from './entityProperties';
 import TextureProperties from './textureProperties';
+import GeometryProperties from './geometryProperties';
 
 const TYPES = {
   entity: EntityProperties,
-  texture: TextureProperties
+  texture: TextureProperties,
+  geometry: GeometryProperties
 };
 
 class PropertiesPane extends Component {
