@@ -25,7 +25,7 @@ export default class BatteryManager {
       });
     } else {
       // Cannot find battery; cancel saving mode
-      this.mode = false;
+      this.mode = 0;
     }
   }
 }

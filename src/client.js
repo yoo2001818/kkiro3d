@@ -89,9 +89,11 @@ let battery = new BatteryManager();
 engine.start();
 
 function update(time) {
-  stepCounter = (stepCounter + 1) % battery.mode;
   window.requestAnimationFrame(update);
-  if (stepCounter !== 0 && battery.mode !== 0) return;
+  if (battery.mode !== 0) {
+    stepCounter = (stepCounter + 1) % battery.mode;
+    if (stepCounter !== 0) return;
+  }
   if (prevTime === -1) prevTime = time;
   let delta = (time - prevTime) / 1000;
   prevTime = time;

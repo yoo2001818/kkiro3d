@@ -6,3 +6,11 @@
   padding: 0 1em;
   margin: 0;
 }
+.properties-text-area > textarea {
+  width: 100%;
+  font-size: 1em;
+  font-family: monospace;
+  white-space: pre;
+  resize: none;
+  height: 20em;
+}

@@ -6,12 +6,14 @@ import EntityProperties from './entityProperties';
 import TextureProperties from './textureProperties';
 import GeometryProperties from './geometryProperties';
 import ShaderProperties from './shaderProperties';
+import MaterialProperties from './materialProperties';
 
 const TYPES = {
   entity: EntityProperties,
   texture: TextureProperties,
   geometry: GeometryProperties,
-  shader: ShaderProperties
+  shader: ShaderProperties,
+  material: MaterialProperties
 };
 
 class PropertiesPane extends Component {
