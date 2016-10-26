@@ -75,7 +75,7 @@ export default class ObjectAction {
       const { selected, selectedType } = this.engine.state.global;
       if (selectedType !== 'entity') return;
       let prevEntity = this.engine.state.entities[selected];
-      if (prevEntity != null) {
+      if (prevEntity != null && prevEntity.transform != null) {
         // Project the widget axis to screen
         let ndc = toNDC(this.mouseX, this.mouseY, this.renderer);
         let camera = this.getCamera();
