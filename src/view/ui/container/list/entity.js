@@ -33,5 +33,5 @@ export default connect({
   'editor.select': true,
   'name.set': true
 }, ({ state }) => ({
-  entities: state.entities
+  entities: state.entities.filter(v => v != null)
 }))(EntityList);

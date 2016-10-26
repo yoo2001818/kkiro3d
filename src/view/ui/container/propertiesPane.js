@@ -5,11 +5,13 @@ import Pane from '../component/pane';
 import EntityProperties from './entityProperties';
 import TextureProperties from './textureProperties';
 import GeometryProperties from './geometryProperties';
+import ShaderProperties from './shaderProperties';
 
 const TYPES = {
   entity: EntityProperties,
   texture: TextureProperties,
-  geometry: GeometryProperties
+  geometry: GeometryProperties,
+  shader: ShaderProperties
 };
 
 class PropertiesPane extends Component {
