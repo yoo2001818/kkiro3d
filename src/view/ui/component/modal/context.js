@@ -36,7 +36,7 @@ export default class ModalContext extends Component {
     }
   }
   render() {
-    const { children, onClose } = this.props;
+    const { children } = this.props;
     return (
       <div>
         <div className='full-overlay' onClick={this.handleClose.bind(this)} />
@@ -48,10 +48,7 @@ export default class ModalContext extends Component {
           }}
           ref={node => this.node = node}
         >
-          {typeof children === 'function' ?
-            children(onClose) :
-            cloneElement(children, { onClose })
-          }
+          { children }
         </div>
       </div>
     );
@@ -60,7 +57,7 @@ export default class ModalContext extends Component {
 
 ModalContext.propTypes = {
   onClose: PropTypes.func,
-  children: PropTypes.oneOf([PropTypes.func, PropTypes.element]),
+  children: PropTypes.node,
   alignTo: PropTypes.object,
   top: PropTypes.bool
 };

@@ -1,0 +1,9 @@
+.material-actions {
+  padding: 0.2em;
+  & > .remove-button {
+    &:after {
+      @include fa-icon();
+      content: $fa-var-trash;
+    }
+  }
+}

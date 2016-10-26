@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../../util/connect';
 
+import MaterialActions from '../materialActions';
+
 import Section from '../../component/section';
 import CachedTextArea from '../../component/ui/cachedTextArea';
 
@@ -41,6 +43,7 @@ class MaterialProperties extends Component {
     if (material == null) return false;
     return (
       <div className='material-properties properties'>
+        <MaterialActions name={selected} />
         <div className='properties-name-readonly'>
           { selected }
         </div>

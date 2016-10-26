@@ -17,7 +17,7 @@ class ModalOverlay extends Component {
 
 ModalOverlay.propTypes = {
   execute: PropTypes.func,
-  modal: PropTypes.oneOf([PropTypes.object, PropTypes.func])
+  modal: PropTypes.any
 };
 
 export default connect({
