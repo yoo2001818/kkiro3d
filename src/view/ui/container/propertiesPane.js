@@ -2,11 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
 
 import Pane from '../component/pane';
-import EntityProperties from './entityProperties';
-import TextureProperties from './textureProperties';
-import GeometryProperties from './geometryProperties';
-import ShaderProperties from './shaderProperties';
-import MaterialProperties from './materialProperties';
+import EntityProperties from './properties/entity';
+import TextureProperties from './properties/texture';
+import GeometryProperties from './properties/geometry';
+import ShaderProperties from './properties/shader';
+import MaterialProperties from './properties/material';
 
 const TYPES = {
   entity: EntityProperties,

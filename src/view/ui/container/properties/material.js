@@ -1,9 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import connect from '../util/connect';
+import connect from '../../util/connect';
 
-import Section from '../component/section';
-import CachedTextArea from '../component/ui/cachedTextArea';
-// import Field from '../component/ui/field';
+import Section from '../../component/section';
+import CachedTextArea from '../../component/ui/cachedTextArea';
+
+// TODO We should provide actual fields instead of JSON
+
+// import Field from '../../component/ui/field';
 
 // import ModalInput from './ui/modalInput';
 // import RenderAssetList from './list/renderAsset';

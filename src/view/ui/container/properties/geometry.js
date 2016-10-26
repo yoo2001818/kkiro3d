@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import connect from '../util/connect';
+import connect from '../../util/connect';
 
-import Section from '../component/section';
-import Field from '../component/ui/field';
+import Section from '../../component/section';
+import Field from '../../component/ui/field';
 
 import lookup from 'gl-constants/lookup';
 

@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react';
-import connect from '../util/connect';
+import connect from '../../util/connect';
 
-import EntityActions from './entityActions';
-import EntityComponentName from './entityComponent/name';
-import * as EntityComponents from './entityComponent';
+import EntityActions from '../entityActions';
+import EntityComponentName from '../entityComponent/name';
+import * as EntityComponents from '../entityComponent';
 
-import ModalContext from '../component/modal/context';
-import FilterList from '../component/filterList';
+import ModalContext from '../../component/modal/context';
+import FilterList from '../../component/filterList';
 
-import capitalize from '../../../util/capitalize';
+import capitalize from '../../../../util/capitalize';
 
 // let componentList = ['name', 'transform', 'mesh'];
 

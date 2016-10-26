@@ -40,7 +40,7 @@ const TYPES = {
 
 class OutlinePane extends Component {
   handleAdd() {
-    this.props.execute('editor.create', {});
+    this.props.execute('editor.createEntity', {});
   }
   handleType(type) {
     this.props.execute('editor.setType', type);

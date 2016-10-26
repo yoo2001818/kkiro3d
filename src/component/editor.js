@@ -13,7 +13,7 @@ export default {
     cursor: signalRaw(function ([pos]) {
       this.state.global.cursor = pos.slice(0, 3);
     }),
-    create: function (data) {
+    createEntity: function (data) {
       let position = this.state.global.cursor || [0, 0, 0];
       let entity = this.actions.entity.create(Object.assign({}, data, {
         transform: { position },
