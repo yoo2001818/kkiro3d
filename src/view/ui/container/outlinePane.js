@@ -27,19 +27,19 @@ const TYPES = {
   }, */
   geometry: {
     name: 'Geometries',
-    component: <RenderAssetList type='geometries' />
+    component: <RenderAssetList type='geometry' />
   },
   shader: {
     name: 'Shaders',
-    component: <RenderAssetList type='shaders' />
+    component: <RenderAssetList type='shader' />
   },
   texture: {
     name: 'Textures',
-    component: <RenderAssetList type='textures' />
+    component: <RenderAssetList type='texture' />
   },
   material: {
     name: 'Materials',
-    component: <RenderAssetList type='materials' />,
+    component: <RenderAssetList type='material' />,
     add: function() {
       // TODO Put this in a form to make 'Enter' key work.... However,
       // there's no way to call 'onClose' :(
@@ -48,6 +48,7 @@ const TYPES = {
         <ModalDialog title='Add new Material' actions={[
           {name: 'OK', onClick: () => {
             let val = input.value;
+            debugger;
             if (val != '') this.props.execute('renderer.material.add', val, {});
           }},
           {name: 'Cancel', type: 'red'}

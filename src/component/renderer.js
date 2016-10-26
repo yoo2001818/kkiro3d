@@ -4,6 +4,7 @@ import merge from 'lodash.merge';
 export default {
   actions: {
     material: {
+      '*': callback => args => callback(['material'].concat(args)),
       add: signalRaw(function ([name, material]) {
         this.systems.renderer.addMaterial(name, material);
       }),
@@ -16,6 +17,7 @@ export default {
       })
     },
     texture: {
+      '*': callback => args => callback(['texture'].concat(args)),
       add: signalRaw(function ([name, texture]) {
         this.systems.renderer.addTexture(name, texture);
       }),
@@ -25,6 +27,7 @@ export default {
       })
     },
     shader: {
+      '*': callback => args => callback(['shader'].concat(args)),
       add: signalRaw(function ([name, shader]) {
         this.systems.renderer.addShader(name, shader);
       }),
@@ -34,6 +37,7 @@ export default {
       })
     },
     geometry: {
+      '*': callback => args => callback(['geometry'].concat(args)),
       add: signalRaw(function ([name, geometry]) {
         this.systems.renderer.addGeometry(name, geometry);
       }),
@@ -46,6 +50,7 @@ export default {
       })
     },
     effect: {
+      '*': callback => args => callback(['effect'].concat(args)),
       set: signalRaw(function ([list]) {
         this.systems.renderer.effectList = list;
       }),

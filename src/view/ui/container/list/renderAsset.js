@@ -4,6 +4,13 @@ import classNames from 'classnames';
 
 import FilterList from '../../component/filterList';
 
+const PLURAL = {
+  geometry: 'geometries',
+  shader: 'shaders',
+  texture: 'textures',
+  material: 'materials'
+};
+
 class RenderAssetList extends Component {
   handleSelect(asset) {
     if (this.props.onSelect) this.props.onSelect(asset);
@@ -28,9 +35,8 @@ RenderAssetList.propTypes = {
 };
 
 export default connect({
-  // TODO Use function to validate update?
-  'renderer.*': true,
+  'renderer.*': (args, { type }) => args[0] === type,
   'external.load': true
 }, ({ systems }, { type }) => ({
-  assets: systems.renderer[type]
+  assets: systems.renderer[PLURAL[type]]
 }))(RenderAssetList);

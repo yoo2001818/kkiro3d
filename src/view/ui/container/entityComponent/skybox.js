@@ -21,7 +21,7 @@ class EntityComponentSkybox extends Component {
             onChange={getHandler(this,
               (entity, value) => ['skybox.setTexture', entity, value])}
           >
-            <RenderAssetList type='textures' />
+            <RenderAssetList type='texture' />
           </ModalInput>
         </Field>
       </EntityComponentSection>

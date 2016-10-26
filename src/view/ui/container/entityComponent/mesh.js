@@ -22,7 +22,7 @@ class EntityComponentMesh extends Component {
             onChange={getHandler(this,
               (entity, value) => ['mesh.setGeometry', entity, value])}
           >
-            <RenderAssetList type='geometries' />
+            <RenderAssetList type='geometry' />
           </ModalInput>
         </Field>
         <Field label='Material'>
@@ -30,7 +30,7 @@ class EntityComponentMesh extends Component {
             onChange={getHandler(this,
               (entity, value) => ['mesh.setMaterial', entity, value])}
           >
-            <RenderAssetList type='materials' />
+            <RenderAssetList type='material' />
           </ModalInput>
         </Field>
         <Field label='Visible'>
