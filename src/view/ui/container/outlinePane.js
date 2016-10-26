@@ -6,10 +6,15 @@ import Pane from '../component/pane';
 import EntityList from './list/entity';
 import RenderAssetList from './list/renderAsset';
 
+import ModalDialog from '../component/modal/dialog';
+
 const TYPES = {
   entity: {
     name: 'Entities',
-    component: <EntityList />
+    component: <EntityList />,
+    add: function() {
+      this.props.execute('editor.createEntity', {});
+    }
   },
   /* component: {
     name: 'Components'
@@ -34,13 +39,31 @@ const TYPES = {
   },
   material: {
     name: 'Materials',
-    component: <RenderAssetList type='materials' />
+    component: <RenderAssetList type='materials' />,
+    add: function() {
+      // TODO Put this in a form to make 'Enter' key work.... However,
+      // there's no way to call 'onClose' :(
+      let input;
+      this.props.execute('ui.setModal',
+        <ModalDialog title='Add new Material' actions={[
+          {name: 'OK', onClick: () => {
+            let val = input.value;
+            if (val != '') this.props.execute('renderer.material.add', val, {});
+          }},
+          {name: 'Cancel', type: 'red'}
+        ]}>
+          <input type='text' placeholder='Name' ref={v => input = v}/>
+        </ModalDialog>
+      );
+    }
   }
 };
 
 class OutlinePane extends Component {
   handleAdd() {
-    this.props.execute('editor.createEntity', {});
+    const { outlineType } = this.props;
+    const outlineData = TYPES[outlineType];
+    outlineData.add.call(this);
   }
   handleType(type) {
     this.props.execute('editor.setType', type);
@@ -69,8 +92,10 @@ class OutlinePane extends Component {
               ))}
             </ul></DropDown>
           </div>
-          <div className='add-button' onClick={this.handleAdd.bind(this)}
-            title='Add' />
+          { outlineData.add && (
+            <div className='add-button' onClick={this.handleAdd.bind(this)}
+              title='Add' />
+          )}
         </div>}
       >
         {cloneElement(outlineData.component, {

@@ -34,5 +34,5 @@ ModalDialog.propTypes = {
   onClose: PropTypes.func,
   title: PropTypes.node,
   children: PropTypes.node,
-  actions: PropTypes.node
+  actions: PropTypes.array
 };
