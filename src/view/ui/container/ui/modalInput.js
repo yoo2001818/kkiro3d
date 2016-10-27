@@ -37,13 +37,13 @@ class ModalInput extends Component {
     );
   }
   render() {
-    const { value, className } = this.props;
+    const { displayValue, value, className } = this.props;
     return (
       <div
         className={classNames('modal-input-component', className)}
       >
         <input type='text' readOnly
-          value={value}
+          value={displayValue || value}
           onChange={this.handleChange.bind(this)}
           onFocus={this.handleFocus.bind(this)}
           ref={input => this.input = input}
@@ -54,7 +54,8 @@ class ModalInput extends Component {
 }
 
 ModalInput.propTypes = {
-  value: PropTypes.string,
+  displayValue: PropTypes.any,
+  value: PropTypes.any,
   className: PropTypes.string,
   onChange: PropTypes.func,
   execute: PropTypes.func,

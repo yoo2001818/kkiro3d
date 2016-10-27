@@ -4,6 +4,7 @@ export { default as light } from './light';
 export { default as mesh } from './mesh';
 export { default as skybox } from './skybox';
 export { default as editor } from './editor';
+export { default as parent } from './parent';
 export { default as transform } from './transform';
 export { default as external } from './external';
 export { default as name } from './name';

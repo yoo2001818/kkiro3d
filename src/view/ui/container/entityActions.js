@@ -6,7 +6,7 @@ class EntityActions extends Component {
     this.props.execute('entity.delete', this.props.entity);
   }
   handleClone() {
-    this.props.execute('editor.create', this.props.entity);
+    this.props.execute('editor.createEntity', this.props.entity);
   }
   render() {
     return (
