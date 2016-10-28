@@ -1,5 +1,7 @@
 import { mat3, mat4 } from 'gl-matrix';
 
+const MAT4_IDENTITY = mat4.create();
+
 // Local bits
 const LOCAL_MATRIX_BIT = 1;
 const LOCAL_NORMAL_BIT = 2;
@@ -164,5 +166,18 @@ export default class MatrixSystem {
   getPosition(entity) {
     let matrix = this.get(entity);
     return matrix.subarray(12, 15);
+  }
+  // Get parent model space
+  getParent(entity) {
+    if (entity.parent == null) return MAT4_IDENTITY;
+    let parent = this.engine.state.entities[entity.parent];
+    if (parent == null) return MAT4_IDENTITY;
+    return this.get(parent);
+  }
+  getParentInverse(entity) {
+    if (entity.parent == null) return MAT4_IDENTITY;
+    let parent = this.engine.state.entities[entity.parent];
+    if (parent == null) return MAT4_IDENTITY;
+    return this.getInverse(parent);
   }
 }

@@ -1,4 +1,4 @@
-import { quat, vec3 } from 'gl-matrix';
+import { quat, vec3, mat4 } from 'gl-matrix';
 import { signalRaw } from 'fudge';
 import lookAt from '../util/lookAt';
 
@@ -12,18 +12,36 @@ export default {
     rotation: data.rotation ? new Float32Array(data.rotation) : quat.create()
   }),
   actions: {
-    setPosition: signalRaw(([entity, target]) => {
+    setPosition: signalRaw(function ([entity, target, isGlobal]) {
       vec3.copy(entity.transform.position, target);
+      if (isGlobal && entity.parent != null) {
+        // Convert world space to model space of the parent
+        let parentInv = this.systems.matrix.getParentInverse(entity);
+        vec3.transformMat4(
+          entity.transform.position, entity.transform.position, parentInv);
+      }
     }),
     translate: function (entity, target) {
       vec3.add(tmp, entity.transform.position, target);
       this.actions.transform.setPosition(entity, tmp);
     },
+    // What does local scale mean? :/
     setScale: signalRaw(([entity, target]) => {
       vec3.copy(entity.transform.scale, target);
     }),
-    setRotation: signalRaw(([entity, target]) => {
+    setRotation: signalRaw(([entity, target, isGlobal]) => {
       quat.copy(entity.transform.rotation, target);
+      if (isGlobal && entity.parent != null) {
+        // Convert world space to model space of the parent
+        let parent = this.state.entities[entity.parent];
+        if (parent == null) return;
+        let parentMat = this.systems.matrix.get(parent);
+        mat4.getRotation(tmpQuat, parentMat);
+        quat.normalize(tmpQuat, tmpQuat);
+        quat.conjugate(tmpQuat, tmpQuat);
+        quat.multiply(
+          entity.transform.rotation, tmpQuat, entity.transform.rotation);
+      }
     }),
     rotateX: function (entity, target) {
       quat.rotateX(tmpQuat, entity.transform.rotation, target);

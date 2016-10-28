@@ -5,7 +5,6 @@ export default class TranslateMode {
   constructor(entity, ndc, alignAxis = null) {
     this.entity = entity;
     this.startPos = vec3.create();
-    vec3.copy(this.startPos, this.entity.transform.position);
 
     this.mouseHeld = true;
     this.ndc = ndc;
@@ -22,6 +21,9 @@ export default class TranslateMode {
     this.setEffect();
 
     this.camera = this.renderer.viewports[0].camera;
+
+    vec3.copy(this.startPos, this.engine.systems.matrix
+      .getPosition(this.entity));
 
     let perspPos = vec4.fromValues(0, 0, 0, 1);
     vec4.transformMat4(perspPos, perspPos,
@@ -59,7 +61,7 @@ export default class TranslateMode {
         this.engine.systems.matrix.get(this.camera));
       // Last, write the pos to transform
       this.engine.actions.external.execute('transform.setPosition',
-        this.entity, perspPos);
+        this.entity, perspPos, true);
     } else {
       // Project current model position to projection space
       let perspPos = vec4.fromValues(0, 0, 0, 1);
@@ -83,7 +85,7 @@ export default class TranslateMode {
       vec3.add(pos, translation, this.startPos);
       // Last, write the pos to transform
       this.engine.actions.external.execute('transform.setPosition',
-        this.entity, pos);
+        this.entity, pos, true);
     }
   }
   mousemove(e) {
@@ -98,7 +100,7 @@ export default class TranslateMode {
   keydown(e) {
     if (e.keyCode === 27) {
       this.engine.actions.external.execute('transform.setPosition',
-        this.entity, this.startPos);
+        this.entity, this.startPos, true);
       this.manager.pop();
     } else if (e.keyCode === 67) {
       this.align = false;

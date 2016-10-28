@@ -1,10 +1,11 @@
-import { vec2, vec3, vec4, quat } from 'gl-matrix';
+import { vec2, vec3, vec4, quat, mat4 } from 'gl-matrix';
 import toNDC from '../../util/toNDC';
 
 export default class RotateMode {
   constructor(entity, ndc, alignAxis = null) {
     this.entity = entity;
     this.startQuat = quat.create();
+
     quat.copy(this.startQuat, this.entity.transform.rotation);
 
     this.mouseHeld = true;
@@ -23,6 +24,10 @@ export default class RotateMode {
     this.renderer = manager.renderer;
     this.engine.actions.renderer.effect.add('axis');
     this.setEffect();
+
+    let matrixSys = this.engine.systems.matrix;
+    let mat = matrixSys.get(this.entity);
+    mat4.getRotation(this.startQuat, mat);
 
     this.camera = this.renderer.viewports[0].camera;
 
@@ -51,8 +56,8 @@ export default class RotateMode {
     let modifier = 1;
     // Shoot a ray from camera to model
     let matrixSys = this.engine.systems.matrix;
-    let cameraPos = matrixSys.get(this.camera).subarray(12, 15);
-    let entityPos = matrixSys.get(this.entity).subarray(12, 15);
+    let cameraPos = matrixSys.getPosition(this.camera);
+    let entityPos = matrixSys.getPosition(this.entity);
     let cameraRay = vec3.create();
     vec3.subtract(cameraRay, cameraPos, entityPos);
     vec3.normalize(cameraRay, cameraRay);
@@ -63,7 +68,14 @@ export default class RotateMode {
       let cos = vec3.dot(axis, cameraRay);
       if (cos < 0) modifier = -1;
     }
+    // Convert it to local space (if any)
+    let parentMat = matrixSys.getParent(this.entity);
+    let parentQuat = quat.create();
+    mat4.getRotation(parentQuat, parentMat);
+    quat.invert(parentQuat, parentQuat);
+
     quat.setAxisAngle(tmpQuat, axis, this.angle * modifier);
+    quat.multiply(tmpQuat, parentQuat, tmpQuat);
     quat.multiply(tmpQuat, tmpQuat, this.startQuat);
     this.engine.actions.external.execute('transform.setRotation',
       this.entity, tmpQuat);
