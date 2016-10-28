@@ -13,6 +13,7 @@ export default function axisEffect(renderer) {
     },
     mode: gl.LINES
   });
+  let matrixSystem = engine.systems.matrix;
   return {
     direction: [1, 0, 0],
     color: '#ff0000',
@@ -21,7 +22,7 @@ export default function axisEffect(renderer) {
       if (entity.id !== engine.state.global.selected) return data;
       if (this.direction == null) return data;
       let direction = this.direction;
-      let position = entity.transform.position;
+      let position = matrixSystem.getPosition(entity);
       return Object.assign(data, {
         passes: (data.passes || [{}]).concat([{
           uniforms: {

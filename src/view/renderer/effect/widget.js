@@ -25,12 +25,13 @@ export default function widgetEffect(renderer) {
       // Add widget to draw passes if an entity is selected
       let entityId = engine.state.global.selected;
       let entity = engine.state.entities[entityId];
+      let matrixSystem = engine.systems.matrix;
       if (engine.state.global.selectedType === 'entity' &&
         entity != null && entity.transform != null
       ) {
         // Create model matrix for it (Sigh)
         let model = mat4.create();
-        model.set(entity.transform.position, 12);
+        model.set(matrixSystem.getPosition(entity), 12);
         data.passes.push({
           uniforms: {
             uModel: model

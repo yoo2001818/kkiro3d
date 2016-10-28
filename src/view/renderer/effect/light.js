@@ -8,7 +8,9 @@
 */
 import { vec3 } from 'gl-matrix';
 
-export default function lightEffect() {
+export default function lightEffect(renderer) {
+  const engine = renderer.engine;
+  let matrixSystem = engine.systems.matrix;
   return {
     worldPre: (world) => {
       world.uniforms.uDirectionalLight = [];
@@ -21,7 +23,7 @@ export default function lightEffect() {
       switch (entity.light.type) {
       case 'point': {
         world.uniforms.uPointLight.push({
-          position: entity.transform.position,
+          position: matrixSystem.getPosition(entity),
           color: entity.light.color,
           intensity: [entity.light.ambient, entity.light.diffuse,
             entity.light.specular, entity.light.attenuation]
@@ -29,11 +31,13 @@ export default function lightEffect() {
         return data;
       }
       case 'directional': {
+        let ray = vec3.fromValues(0, 0, 1);
+        vec3.transformMat4(ray, ray, matrixSystem.get(entity));
+        vec3.normalize(ray, ray);
         // TODO This should be in LightSystem or something... to cache the
         // quaternion projection result. Oh well.
         world.uniforms.uDirectionalLight.push({
-          direction: vec3.transformQuat(vec3.create(), [0, 0, 1],
-            entity.transform.rotation),
+          direction: ray,
           color: entity.light.color,
           intensity: [entity.light.ambient, entity.light.diffuse,
             entity.light.specular]
