@@ -26,12 +26,27 @@ export default class NumberInput extends Component {
       if (this.props.onChange) this.props.onChange(e);
     }
   }
+  componentWillReceiveProps(next) {
+    if (!this.state.locked && next.locked) {
+      const { value, precision = 3 } = this.props;
+      this.setState({
+        locked: true,
+        editValue: (value || 0).toFixed(precision)
+      });
+    }
+    if (this.state.locked && this.props.locked && next.locked === false) {
+      this.setState({
+        locked: false
+      });
+    }
+  }
   handleFocus(e) {
     this.focus = true;
     this.setState({
       locked: true,
       editValue: e.target.value
     });
+    if (this.props.onFocus) this.props.onFocus(e);
   }
   handleBlur(e) {
     this.focus = false;
@@ -39,6 +54,7 @@ export default class NumberInput extends Component {
       locked: false
     });
     // Emit change event
+    if (this.props.onBlur) this.props.onBlur(e);
     if (this.props.onChange) this.props.onChange(e);
   }
   handleMouseDown(e) {
@@ -65,6 +81,7 @@ export default class NumberInput extends Component {
           locked: true,
           editValue: this.dragValue.toFixed(precision)
         });
+        if (this.props.onFocus) this.props.onFocus(e);
       }
       this.dragging = true;
     }
@@ -91,6 +108,7 @@ export default class NumberInput extends Component {
       this.setState({
         locked: false
       });
+      if (this.props.onBlur) this.props.onBlur(e);
       if (this.props.onChange) {
         this.props.onChange({
           target: {
@@ -111,7 +129,9 @@ export default class NumberInput extends Component {
     const { locked, editValue } = this.state;
     return (
       <div
-        className={classNames('number-input-component', { locked }, className)}
+        className={classNames('number-input-component', {
+          locked: this.focus || this.dragging
+        }, className)}
         onMouseDown={this.handleMouseDown.bind(this)}
       >
         <input
@@ -131,5 +151,8 @@ NumberInput.propTypes = {
   value: PropTypes.number,
   precision: PropTypes.number,
   className: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+  locked: PropTypes.bool
 };

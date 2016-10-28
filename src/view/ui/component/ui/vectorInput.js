@@ -4,6 +4,29 @@ import classNames from 'classnames';
 import NumberInput from './numberInput';
 
 export default class VectorInput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      locked: false
+    };
+    this.shouldLock = false;
+  }
+  handleFocus() {
+    this.shouldLock = false;
+    this.setState({
+      locked: true
+    });
+  }
+  handleBlur() {
+    this.shouldLock = true;
+    // A slight delay for focus regain...
+    setTimeout(() => {
+      if (!this.shouldLock) return;
+      this.setState({
+        locked: false
+      });
+    }, 10);
+  }
   handleChange(pos, e) {
     let vec = this.props.value.slice();
     vec[pos] = parseFloat(e.target.value);
@@ -26,6 +49,9 @@ export default class VectorInput extends Component {
           className={className}
           onChange={this.handleChange.bind(this, i)}
           key={i}
+          onFocus={this.handleFocus.bind(this)}
+          onBlur={this.handleBlur.bind(this)}
+          locked={this.state.locked}
         />
       );
     }
