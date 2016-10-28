@@ -1,24 +1,26 @@
 .entity-component-transform {
-  & > .content {
-    display: flex;
-    align-items: stretch;
-    // This is really awful.
-    & > .field-component {
-      flex: 1 1 auto;
-      width: 0;
-      margin: 0 0.1em;
-      overflow: hidden;
-      display: block;
-      & > .content, & > .label {
+  & > .content > .transform-field {
+    & > .content {
+      display: flex;
+      align-items: stretch;
+      // This is really awful.
+      & > .field-component {
+        flex: 1 1 auto;
+        width: 0;
+        margin: 0 0.1em;
+        overflow: hidden;
         display: block;
-        padding: 0;
-        text-align: center;
-        width: 100%;
-        margin-bottom: 0.1em;
-      }
-      & > .content {
-        input {
-          padding: 0.3em 0.4em;
+        & > .content, & > .label {
+          display: block;
+          padding: 0;
+          text-align: center;
+          width: 100%;
+          margin-bottom: 0.1em;
+        }
+        & > .content {
+          input {
+            padding: 0.3em 0.4em;
+          }
         }
       }
     }

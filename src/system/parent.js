@@ -40,4 +40,10 @@ export default class ParentSystem {
   getChildren(parent) {
     return this.childrens[parent.id];
   }
+  isConnected(parent, child) {
+    if (child === parent) return true;
+    if (parent == null || child == null) return false;
+    if (child.parent == null) return false;
+    return this.isConnected(parent, this.engine.state.entities[child.parent]);
+  }
 }

@@ -1,6 +1,7 @@
-import { quat, vec3, mat4 } from 'gl-matrix';
+import { quat, vec3, vec4, mat4 } from 'gl-matrix';
 import { signalRaw } from 'fudge';
 import lookAt from '../util/lookAt';
+import getScaling from '../util/getScaling';
 
 let tmp = vec3.create();
 let tmpQuat = quat.create();
@@ -26,10 +27,17 @@ export default {
       this.actions.transform.setPosition(entity, tmp);
     },
     // What does local scale mean? :/
-    setScale: signalRaw(([entity, target]) => {
-      vec3.copy(entity.transform.scale, target);
+    setScale: signalRaw(function ([entity, target, isGlobal]) {
+      if (isGlobal && entity.parent != null) {
+        let parent = this.systems.matrix.getParent(entity);
+        getScaling(tmp, parent);
+        vec3.copy(entity.transform.scale, target);
+        vec3.divide(entity.transform.scale, entity.transform.scale, tmp);
+      } else {
+        vec3.copy(entity.transform.scale, target);
+      }
     }),
-    setRotation: signalRaw(([entity, target, isGlobal]) => {
+    setRotation: signalRaw(function ([entity, target, isGlobal]) {
       quat.copy(entity.transform.rotation, target);
       if (isGlobal && entity.parent != null) {
         // Convert world space to model space of the parent

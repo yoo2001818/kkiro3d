@@ -6,7 +6,6 @@ export default class RotateMode {
     this.entity = entity;
     this.startQuat = quat.create();
 
-    quat.copy(this.startQuat, this.entity.transform.rotation);
 
     this.mouseHeld = true;
     this.ndc = ndc;
@@ -28,6 +27,7 @@ export default class RotateMode {
     let matrixSys = this.engine.systems.matrix;
     let mat = matrixSys.get(this.entity);
     mat4.getRotation(this.startQuat, mat);
+    quat.normalize(this.startQuat, this.startQuat);
 
     this.camera = this.renderer.viewports[0].camera;
 
@@ -72,7 +72,8 @@ export default class RotateMode {
     let parentMat = matrixSys.getParent(this.entity);
     let parentQuat = quat.create();
     mat4.getRotation(parentQuat, parentMat);
-    quat.invert(parentQuat, parentQuat);
+    quat.normalize(parentQuat, parentQuat);
+    quat.conjugate(parentQuat, parentQuat);
 
     quat.setAxisAngle(tmpQuat, axis, this.angle * modifier);
     quat.multiply(tmpQuat, parentQuat, tmpQuat);
@@ -106,7 +107,7 @@ export default class RotateMode {
   keydown(e) {
     if (e.keyCode === 27) {
       this.engine.actions.external.execute('transform.setRotation',
-        this.entity, this.startQuat);
+        this.entity, this.startQuat, true);
       this.manager.pop();
     } else if (e.keyCode === 67) {
       this.align = false;

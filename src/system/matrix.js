@@ -1,4 +1,5 @@
 import { mat3, mat4 } from 'gl-matrix';
+import getScaling from '../util/getScaling';
 
 const MAT4_IDENTITY = mat4.create();
 
@@ -136,7 +137,7 @@ export default class MatrixSystem {
   getInverse(entity, data = this.getData(entity), noCheck) {
     if (data.inverse == null) data.inverse = mat4.create();
     // Unlike local ones, we're not sure if it's totally valid unless checked.
-    let matrix = data.matrix;
+    let matrix = data.matrix || data.localMatrix;
     if (!noCheck) matrix = this.get(entity, data);
     if ((data.valid & INVERSE_BIT) === 0) {
       data.valid |= INVERSE_BIT;
@@ -166,6 +167,14 @@ export default class MatrixSystem {
   getPosition(entity) {
     let matrix = this.get(entity);
     return matrix.subarray(12, 15);
+  }
+  getRotation(out, entity) {
+    let matrix = this.get(entity);
+    return mat4.getRotation(out, matrix);
+  }
+  getScale(out, entity) {
+    let matrix = this.get(entity);
+    return getScaling(out, matrix);
   }
   // Get parent model space
   getParent(entity) {

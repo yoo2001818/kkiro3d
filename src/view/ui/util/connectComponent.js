@@ -1,16 +1,17 @@
 import connect from './connect';
 
-const ACTION_VALIDATOR = ([entity], { entity: propEntity }) =>
+const VALIDATOR = ([entity], { entity: propEntity }) =>
   entity === propEntity;
 
 // Whyyyy
-export default function connectComponent(actions) {
+export default function connectComponent(actions, validator = VALIDATOR) {
   let actionTable = {};
-  actions.forEach(v => actionTable[v] = ACTION_VALIDATOR);
+  actions.forEach(v => actionTable[v] = validator);
   return connect(actionTable, (engine, { entity: propEntity }) => ({
     // This happens because fudge objects are mutable :/
     entity: propEntity,
-    execute: engine.actions.external.execute
+    execute: engine.actions.external.execute,
+    engine
   }), undefined, {
     pure: true, updateEvent: 'external.domRender:post'
   });
