@@ -8,6 +8,19 @@ export default {
     fov: Math.PI / 180 * 70,
     zoom: 1
   },
+  schema: {
+    type: {
+      type: 'select',
+      options: [
+        {value: 'persp', label: 'Perspective'},
+        {value: 'ortho', label: 'Orthogonal'}
+      ]
+    },
+    near: { type: 'number' },
+    far: { type: 'number' },
+    fov: { type: 'degree', precision: 2 },
+    zoom: { type: 'number' }
+  },
   actions: {
     setPersp: signalRaw(([entity, fov, near, far]) => {
       entity.camera.type = 'persp';

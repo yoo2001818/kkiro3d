@@ -10,6 +10,14 @@ export default {
     center: vec3.create(),
     radius: 5
   }, data),
+  schema: {
+    center: {
+      type: 'vector'
+    },
+    radius: {
+      type: 'number'
+    }
+  },
   actions: {
     rotate: function (entity, x, y) {
       quat.identity(rotTemp);
@@ -49,6 +57,9 @@ export default {
           0.1, 100);
       }
     },
+    set: signalRaw(([entity, data]) => {
+      Object.assign(entity.blenderController, data);
+    }),
     lerpCenter: function (entity, pos) {
       // TODO
       this.actions.blenderController.setCenter(entity, pos);

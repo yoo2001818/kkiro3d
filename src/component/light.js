@@ -9,6 +9,34 @@ export default {
     specular: 1.0,
     attenuation: 0.0001
   },
+  schema: {
+    type: {
+      type: 'select',
+      options: [
+        {value: 'point', label: 'Point'},
+        {value: 'directional', label: 'Directional'}
+      ]
+    },
+    color: {
+      type: 'color'
+    },
+    ambient: {
+      type: 'number',
+      precision: 5
+    },
+    diffuse: {
+      type: 'number',
+      precision: 5
+    },
+    specular: {
+      type: 'number',
+      precision: 5
+    },
+    attenuation: {
+      type: 'number',
+      precision: 5
+    }
+  },
   actions: {
     setType: signalRaw(([entity, type]) => {
       entity.light.type = type;

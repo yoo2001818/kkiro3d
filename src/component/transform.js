@@ -1,4 +1,4 @@
-import { quat, vec3, vec4, mat4 } from 'gl-matrix';
+import { quat, vec3, mat4 } from 'gl-matrix';
 import { signalRaw } from 'fudge';
 import lookAt from '../util/lookAt';
 import getScaling from '../util/getScaling';

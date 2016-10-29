@@ -7,6 +7,11 @@ export default {
     visible: true
     // TODO castShadow receiveShadow visible
   },
+  schema: {
+    geometry: { type: 'geometry' },
+    material: { type: 'material' },
+    visible: { type: 'checkbox' }
+  },
   actions: {
     setGeometry: signalRaw(([entity, target]) => {
       entity.mesh.geometry = target;
@@ -16,6 +21,9 @@ export default {
     }),
     setVisible: signalRaw(([entity, value]) => {
       entity.mesh.visible = value;
+    }),
+    set: signalRaw(([entity, data]) => {
+      Object.assign(entity.mesh, data);
     })
   }
 };
