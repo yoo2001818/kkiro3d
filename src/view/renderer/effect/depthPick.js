@@ -55,8 +55,8 @@ export default function depthPickEffect(renderer) {
       renderer.render(['mesh', 'generalHandle', 'depthPick']);
       // Then extract the pixel from framebuffer
       let pixel = new Uint8Array(4);
-      pickFramebuffer.readPixelsRGBA(x,
-        pickFramebuffer.height - y, 1, 1, pixel);
+      pickFramebuffer.readPixelsRGBA((x - renderer.left),
+        pickFramebuffer.height - (y - renderer.top), 1, 1, pixel);
       let ndc = toNDC(x, y, renderer);
       let camera = renderer.viewports[0].camera;
       return decodePos(pixel, ndc[0], ndc[1],

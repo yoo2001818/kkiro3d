@@ -25,14 +25,13 @@ export default function initView(engine) {
   // Canvas init
   let canvas = document.createElement('canvas');
   canvas.className = 'engine-canvas';
-  document.body.appendChild(canvas);
-  canvas.width = document.documentElement.clientWidth;
+  /* canvas.width = document.documentElement.clientWidth;
   canvas.height = document.documentElement.clientHeight;
 
   window.addEventListener('resize', () => {
     canvas.width = document.documentElement.clientWidth;
     canvas.height = document.documentElement.clientHeight;
-  });
+  }); */
 
   let gl = canvas.getContext('webgl', { antialias: true }) ||
     canvas.getContext('experimental-webgl');
@@ -42,6 +41,7 @@ export default function initView(engine) {
     { mesh, light, selectWireframe, widget, mousePick, depthPick, axis,
       lightWidget, cameraWidget, generalHandle, skybox }
   );
+  rendererView.canvas = canvas;
 
   let modeManager = new ModeManager(engine, rendererView);
   modeManager.push(new ObjectMode());

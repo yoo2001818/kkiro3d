@@ -9,16 +9,14 @@ html, body, .appContainer, .app-wrapper, #app {
   overflow: hidden;
 }
 
+
 .engine-canvas {
   display: block;
-  position: fixed;
-  // This will make sure that canvas itself will never get events
-  // (Of course, this means that we have to pass events to canvas)
-  z-index: -1;
-  top: 0;
-  left: 0;
+  position: absolute;
+  z-index: 100000;
   // Don't specify right and bottom
 }
+
 
 button, input, textarea {
   font-family: 나눔바른고딕, 나눔고딕, NanumGothic,

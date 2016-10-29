@@ -57,8 +57,8 @@ export default function mousePickEffect(renderer) {
       renderer.render(['mesh', 'generalHandle', 'mousePick']);
       // Then extract the pixel from framebuffer
       let pixel = new Uint8Array(4);
-      pickFramebuffer.readPixelsRGBA(x,
-        pickFramebuffer.height - y, 1, 1, pixel);
+      pickFramebuffer.readPixelsRGBA((x - renderer.left),
+        pickFramebuffer.height - (y - renderer.top), 1, 1, pixel);
       return unpackColor(pixel);
     }
   };
