@@ -8,10 +8,6 @@ export default class CameraMatrixSystem {
   constructor() {
     this.data = [];
     this.hooks = {
-      'transform.*!': ([entity]) => {
-        let data = this.data[entity.id];
-        if (data != null) data.valid = data.valid & ~PROJECTION_VIEW_BIT;
-      },
       'camera.*!': ([entity]) => {
         let data = this.data[entity.id];
         if (data != null) data.valid = 0;
@@ -23,6 +19,7 @@ export default class CameraMatrixSystem {
     this.family = engine.systems.family.get('camera', 'transform');
     this.family.onAdd.addRaw(([entity]) => {
       this.data[entity.id] = {
+        parentTicks: -1,
         valid: 0,
         aspect: 1,
         projection: null,
@@ -92,11 +89,16 @@ export default class CameraMatrixSystem {
     let data = this.getData(entity);
     let camera = entity.camera;
     this.calculateProjection(data, camera, input);
-    if ((data.valid & PROJECTION_VIEW_BIT) === 0) {
+    let matData = this.engine.systems.matrix.getData(entity);
+    let viewMat = this.engine.systems.matrix.getInverse(entity, matData);
+    if (data.ticks !== matData.ticks ||
+      (data.valid & PROJECTION_VIEW_BIT) === 0
+    ) {
+      data.ticks = matData.ticks;
       data.valid |= PROJECTION_VIEW_BIT;
       if (data.projectionView == null) data.projectionView = mat4.create();
       mat4.multiply(data.projectionView, data.projection,
-        this.getView(entity));
+        viewMat);
     }
     return data.projectionView;
   }

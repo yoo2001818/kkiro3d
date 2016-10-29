@@ -6,7 +6,7 @@
   intensity: [0.3, 0.7, 1.0]
 }
 */
-import { vec3 } from 'gl-matrix';
+import { vec3, vec4 } from 'gl-matrix';
 
 export default function lightEffect(renderer) {
   const engine = renderer.engine;
@@ -31,13 +31,13 @@ export default function lightEffect(renderer) {
         return data;
       }
       case 'directional': {
-        let ray = vec3.fromValues(0, 0, 1);
-        vec3.transformMat4(ray, ray, matrixSystem.get(entity));
+        let ray = vec4.fromValues(0, 0, 1, 0);
+        vec4.transformMat4(ray, ray, matrixSystem.get(entity));
         vec3.normalize(ray, ray);
         // TODO This should be in LightSystem or something... to cache the
         // quaternion projection result. Oh well.
         world.uniforms.uDirectionalLight.push({
-          direction: ray,
+          direction: ray.subarray(0, 3),
           color: entity.light.color,
           intensity: [entity.light.ambient, entity.light.diffuse,
             entity.light.specular]
