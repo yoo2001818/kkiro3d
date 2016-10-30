@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import connectComponent from '../../util/connectComponent';
+import connectComponent from '../../../util/connectComponent';
 
 class EntityComponentName extends Component {
   handleChange(e) {

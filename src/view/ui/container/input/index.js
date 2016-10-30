@@ -19,8 +19,16 @@ export const number = (value, callback, props) => (
 );
 
 export const degree = (value, callback, props) => (
-  <NumberInput value={value} onChange={callback} className='degree'
-    {...props} />
+  <NumberInput
+    value={value / Math.PI * 180}
+    onChange={e => callback({
+      target: {
+        value: e.target.value * Math.PI / 180
+      }
+    })}
+    className='degree'
+    {...props}
+  />
 );
 
 export const select = (value, callback, props) => (
@@ -37,6 +45,10 @@ export const string = (value, callback, props) => (
 
 export const text = (value, callback, props) => (
   <CachedTextArea value={value} onChange={callback} {...props} />
+);
+
+export const color = (value, callback, props) => (
+  <input type='color' value={value} onChange={callback} {...props} />
 );
 
 export const entity = (value, callback, props) => (

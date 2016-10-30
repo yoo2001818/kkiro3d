@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import connectComponent from '../../util/connectComponent';
+import connectComponent from '../../../util/connectComponent';
 
 import { vec3 } from 'gl-matrix';
 import { quatToEuler, eulerToQuat } from 'webglue/lib/util/euler';
 
-import EntityComponentSection from '../../component/entityComponentSection';
-import Field from '../../component/ui/field';
-import VectorInput from '../../component/ui/vectorInput';
+import EntityComponentSection from '../../../component/entityComponentSection';
+import Field from '../../../component/ui/field';
+import VectorInput from '../../../component/ui/vectorInput';
 
 class TransformSection extends Component {
   constructor(props) {
