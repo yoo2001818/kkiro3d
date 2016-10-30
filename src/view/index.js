@@ -25,6 +25,7 @@ export default function initView(engine) {
   // Canvas init
   let canvas = document.createElement('canvas');
   canvas.className = 'engine-canvas';
+  canvas.tabIndex = 0;
   /* canvas.width = document.documentElement.clientWidth;
   canvas.height = document.documentElement.clientHeight;
 

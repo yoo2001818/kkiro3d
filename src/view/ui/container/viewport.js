@@ -3,11 +3,12 @@ import connect from '../util/connect';
 
 class Viewport extends Component {
   componentDidMount() {
+    let canvasNode = this.props.renderer.canvas;
     ['mousedown', 'mousemove', 'mouseup', 'contextmenu', 'wheel',
       'keydown', 'keyup'].forEach(
-      v => this.node.addEventListener(v, e => this.props.processEvent(v, e))
+      v => canvasNode.addEventListener(v, e => this.props.processEvent(v, e))
     );
-    this.node.appendChild(this.props.renderer.canvas);
+    this.node.appendChild(canvasNode);
     window.addEventListener('resize', () => this.setViewport());
     // Delay until next animation frame
     requestAnimationFrame(() => this.setViewport());
@@ -25,7 +26,7 @@ class Viewport extends Component {
   }
   render() {
     return (
-      <div className='viewport' ref={node => this.node = node} tabIndex={0}>
+      <div className='viewport' ref={node => this.node = node}>
       </div>
     );
   }
