@@ -25,7 +25,7 @@ export default class ObjectAction {
 
   }
   getCamera() {
-    return this.renderer.viewports[0].camera;
+    return this.engine.systems.renderer.viewportList[0].camera;
   }
   mousemove(e) {
     let offsetX = e.clientX - this.mouseX;

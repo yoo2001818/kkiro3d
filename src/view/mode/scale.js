@@ -23,7 +23,7 @@ export default class ScaleMode {
     this.engine.actions.renderer.effect.add('axis');
     this.setEffect();
 
-    this.camera = this.renderer.viewports[0].camera;
+    this.camera = this.engine.systems.renderer.viewportList[0].camera;
 
     let perspPos = vec4.fromValues(0, 0, 0, 1);
     vec4.transformMat4(perspPos, perspPos,

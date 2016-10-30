@@ -63,6 +63,12 @@ export default {
         let effects = this.systems.renderer.effectList;
         this.actions.renderer.effect.set(effects.filter(v => v !== name));
       }
+    },
+    camera: {
+      set: signalRaw(function ([camera]) {
+        // We don't even need viewports for now... :/
+        this.systems.renderer.viewportList[0].camera = camera;
+      })
     }
   }
 };

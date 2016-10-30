@@ -30,11 +30,20 @@ export default class RendererSystem {
     this.textures = {};
 
     this.effectList = effectList;
+    this.viewportList = [];
 
     this.loadData(initialData);
   }
   attach(engine) {
     this.engine = engine;
+
+    this.cameras = engine.systems.family.get('camera', 'transform');
+    this.cameras.onAdd.add((camera) => {
+      if (this.viewportList.length >= 1) return;
+      this.viewportList.push({
+        camera
+      });
+    });
   }
   loadData(data) {
     // This looks odd..

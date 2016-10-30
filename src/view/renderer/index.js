@@ -7,13 +7,6 @@ export default class RendererView {
 
     this.effects = {};
     for (let key in effects) this.effects[key] = effects[key](this);
-    this.viewports = [];
-
-    this.cameras.onAdd.add((camera) => {
-      this.viewports.push({
-        camera
-      });
-    });
 
     // TODO This generates render tree every frame; it can be optimized.
     engine.signals.external.render.post.add(() => this.render());
@@ -21,7 +14,7 @@ export default class RendererView {
   getSystem() {
     return this.engine.systems.renderer;
   }
-  render(effects, viewports = this.viewports) {
+  render(effects, viewports = this.engine.systems.renderer.viewportList) {
     let rendererSystem = this.engine.systems.renderer;
     let currentEffects = (effects || rendererSystem.effectList)
       .map(v => this.effects[v]);
@@ -50,8 +43,6 @@ export default class RendererView {
     // Last, make viewports.
     let cameraMatrix = this.engine.systems.cameraMatrix;
     let viewportPasses = viewports.map((viewport, index) => {
-      // TODO Currently, just ignore viewport larger than 1
-      if (index >= 1) return null;
       let { camera } = viewport;
       return currentEffects.reduce((data, v) => {
         if (v.viewport == null) return data;

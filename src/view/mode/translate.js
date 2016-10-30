@@ -20,7 +20,7 @@ export default class TranslateMode {
     this.engine.actions.renderer.effect.add('axis');
     this.setEffect();
 
-    this.camera = this.renderer.viewports[0].camera;
+    this.camera = this.engine.systems.renderer.viewportList[0].camera;
 
     vec3.copy(this.startPos, this.engine.systems.matrix
       .getPosition(this.entity));

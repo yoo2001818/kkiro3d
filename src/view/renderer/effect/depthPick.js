@@ -58,7 +58,8 @@ export default function depthPickEffect(renderer) {
       pickFramebuffer.readPixelsRGBA((x - renderer.left),
         pickFramebuffer.height - (y - renderer.top), 1, 1, pixel);
       let ndc = toNDC(x, y, renderer);
-      let camera = renderer.viewports[0].camera;
+      let viewports = renderer.engine.systems.renderer.viewportList;
+      let camera = viewports[0].camera;
       return decodePos(pixel, ndc[0], ndc[1],
         renderer.engine.systems.cameraMatrix.getProjectionInverse(camera),
         renderer.engine.systems.matrix.get(camera)

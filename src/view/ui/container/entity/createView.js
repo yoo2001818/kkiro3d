@@ -38,8 +38,10 @@ export default function createView(name, schema) {
 
             let returned = inputTypes[entry.type](value, setter,
               Object.assign({ key: key }, entry));
+
+            if (entry.noField) return returned;
             return (
-              <Field label={capitalize(key)}>
+              <Field label={capitalize(key)} key={key}>
                 { returned }
               </Field>
             );

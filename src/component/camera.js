@@ -26,6 +26,13 @@ export default {
     zoom: {
       type: 'number',
       visible: entity => entity.camera.type === 'ortho'
+    },
+    use: {
+      type: 'button',
+      value: 'Use Camera',
+      setValue: (entity) => ['renderer.camera.set', entity],
+      noField: true,
+      className: 'properties-full-button green'
     }
   },
   actions: {

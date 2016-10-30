@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import CachedTextInput from '../../component/ui/cachedTextInput';
 import CachedTextArea from '../../component/ui/cachedTextArea';
 import VectorInput from '../../component/ui/vectorInput';
@@ -15,7 +15,15 @@ export const vector = (value, callback, props) => (
 );
 
 export const number = (value, callback, props) => (
-  <NumberInput value={value} onChange={callback} {...props} />
+  <NumberInput
+    value={value}
+    onChange={e => callback({
+      target: {
+        value: parseFloat(e.target.value)
+      }
+    })}
+    {...props}
+  />
 );
 
 export const degree = (value, callback, props) => (
@@ -23,13 +31,26 @@ export const degree = (value, callback, props) => (
     value={value / Math.PI * 180}
     onChange={e => callback({
       target: {
-        value: e.target.value * Math.PI / 180
+        value: parseFloat(e.target.value) * Math.PI / 180
       }
     })}
     className='degree'
     {...props}
   />
 );
+
+export const button = (value, callback, props) => (
+  <button onClick={callback} className={props.className} key={props.key}>
+    {props.value}
+  </button>
+);
+
+// What the heck is wrong with eslint?
+button.propTypes = {
+  value: PropTypes.node,
+  className: PropTypes.string,
+  key: PropTypes.any
+};
 
 export const select = (value, callback, props) => (
   <SelectInput value={value} onChange={callback} className='list' {...props} />

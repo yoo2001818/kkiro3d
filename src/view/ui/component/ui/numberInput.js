@@ -71,7 +71,7 @@ export default class NumberInput extends Component {
     if (!this.mouseDown) return;
     let deltaX = e.clientX - this.startX;
     let deltaY = e.clientY - this.startY;
-    let { precision = 3 } = this.props;
+    let { precision = 4 } = this.props;
     if (!this.dragging) {
       // Threshold
       if (Math.sqrt(deltaX * deltaX + deltaY * deltaY) < 3) return;
@@ -125,7 +125,7 @@ export default class NumberInput extends Component {
     document.removeEventListener('mouseup', this.handleMouseUp);
   }
   render() {
-    const { value, precision = 3, className } = this.props;
+    const { value, precision = 4, className } = this.props;
     const { locked, editValue } = this.state;
     return (
       <div
