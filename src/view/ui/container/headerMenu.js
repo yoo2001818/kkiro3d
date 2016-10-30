@@ -24,6 +24,15 @@ class HeaderMenu extends Component {
       </ModalDialog>
     );
   }
+  handleLoadCookie() {
+    if (window.localStorage.savedData == null) return;
+    this.props.execute('editor.load',
+      JSON.parse(window.localStorage.savedData));
+  }
+  handleSaveCookie() {
+    window.localStorage.savedData =
+      JSON.stringify(this.props.engine.getState(), jsonReplacer);
+  }
   render() {
     return (
       <div className='header-menu'>
@@ -33,6 +42,13 @@ class HeaderMenu extends Component {
           </a></li>
           <li><a href='#' onClick={this.handleExport.bind(this)}>
             Export JSON
+          </a></li>
+          <hr />
+          <li><a href='#' onClick={this.handleLoadCookie.bind(this)}>
+            Load from LocalStorage
+          </a></li>
+          <li><a href='#' onClick={this.handleSaveCookie.bind(this)}>
+            Save to LocalStorage
           </a></li>
         </ul></DropDown>
       </div>

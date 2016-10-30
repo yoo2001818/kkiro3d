@@ -7,9 +7,7 @@ class SceneLoadForm extends Component {
   handleSubmit(e) {
     if (e) e.preventDefault();
     // STOPPP
-    this.props.execute('external.stop');
-    this.props.execute('external.load', JSON.parse(this.area.value));
-    this.props.execute('external.start');
+    this.props.execute('editor.load', JSON.parse(this.area.value));
     this.props.onClose();
   }
   render() {

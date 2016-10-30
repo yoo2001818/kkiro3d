@@ -28,6 +28,11 @@ export default {
     }),
     setType: signalRaw(function ([type]) {
       this.state.global.outlineType = type;
+    }),
+    load: signalRaw(function ([data]) {
+      this.actions.external.stop();
+      this.actions.external.load(data);
+      this.actions.external.start();
     })
   },
   global: {
