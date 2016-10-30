@@ -8,6 +8,8 @@ export default {
   geometries: {
     box: calcNormals(box()),
     teapot: channel(loadOBJ(require('./geom/wt-teapot.obj'))),
+    door1: channel(loadOBJ(require('./geom/door1.obj'))),
+    door: channel(loadOBJ(require('./geom/door.obj'))),
     translateWidget: translateWidget()
   },
   shaders: {
@@ -19,6 +21,9 @@ export default {
   textures: {
     '2': {
       source: require('./texture/2.png')
+    },
+    door: {
+      source: require('./texture/door.png')
     },
     skybox: {
       source: [

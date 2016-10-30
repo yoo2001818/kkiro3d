@@ -4,13 +4,16 @@ export default {
   component: {
     geometry: null,
     material: null,
-    visible: true
+    visible: true,
+    // Inverts culling
+    mirror: false
     // TODO castShadow receiveShadow visible
   },
   schema: {
     geometry: { type: 'geometry' },
     material: { type: 'material' },
-    visible: { type: 'checkbox' }
+    visible: { type: 'checkbox' },
+    mirror: { type: 'checkbox' }
   },
   actions: {
     setGeometry: signalRaw(([entity, target]) => {
