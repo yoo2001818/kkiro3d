@@ -3,6 +3,9 @@ export default class ParentSystem {
     // It's actually list of children... so... 'childrens' is right? Maybe?
     this.childrens = [];
     this.hooks = {
+      'external.load!': () => {
+        this.childrens = [];
+      },
       'parent.*!': ([entity, parent]) => {
         this.removeChild(entity.parent, entity.id);
         this.addChild(parent, entity.id);

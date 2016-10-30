@@ -1,12 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes, cloneElement } from 'react';
 
 import Dialog, { Controls } from '../../component/ui/dialog';
 import FullOverlay from '../../component/ui/fullOverlay';
 
 export default class ModalDialog extends Component {
   handleClose(key) {
-    let onClick = this.props.actions[key].onClick;
-    if (onClick) onClick();
+    if (key != null) {
+      let onClick = this.props.actions[key].onClick;
+      if (onClick) onClick();
+    }
     if (this.props.onClose) this.props.onClose();
   }
   render() {
@@ -14,7 +16,9 @@ export default class ModalDialog extends Component {
     return (
       <FullOverlay filter>
         <Dialog title={title}>
-          <p>{children}</p>
+          { cloneElement(children, {
+            onClose: this.handleClose.bind(this)
+          }) }
           <Controls>
             { actions.map((choice, key) => (
               <button onClick={this.handleClose.bind(this, key)}

@@ -37,9 +37,10 @@ export default class ModalContext extends Component {
   }
   render() {
     const { children } = this.props;
+    let handleClose = this.handleClose.bind(this);
     return (
       <div>
-        <div className='full-overlay' onClick={this.handleClose.bind(this)} />
+        <div className='full-overlay' onClick={handleClose} />
         <div className='modal-context'
           style={{
             position: 'fixed',
@@ -48,7 +49,9 @@ export default class ModalContext extends Component {
           }}
           ref={node => this.node = node}
         >
-          { children }
+          { cloneElement(children, {
+            onClose: handleClose
+          }) }
         </div>
       </div>
     );

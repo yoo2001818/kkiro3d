@@ -8,6 +8,9 @@ export default class CameraMatrixSystem {
   constructor() {
     this.data = [];
     this.hooks = {
+      'external.load!': () => {
+        this.data = [];
+      },
       'camera.*!': ([entity]) => {
         let data = this.data[entity.id];
         if (data != null) data.valid = 0;

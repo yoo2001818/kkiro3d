@@ -32,6 +32,9 @@ export default class MatrixSystem {
   constructor(engine) {
     this.engine = engine;
     this.hooks = {
+      'external.load!': () => {
+        this.data = [];
+      },
       'parent.set!': ([entity]) => {
         if (entity.transform == null) return;
         // Invalidate parent... at all.

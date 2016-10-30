@@ -5,7 +5,14 @@ import jsonReplacer from '../../../util/jsonReplacer';
 import ModalDialog from '../component/modal/dialog';
 import DropDown from '../component/ui/dropDown';
 
+import SceneLoadForm from './form/sceneLoadForm';
+
 class HeaderMenu extends Component {
+  handleLoad() {
+    this.props.execute('ui.setModal',
+      <SceneLoadForm />
+    );
+  }
   handleExport() {
     this.props.execute('ui.setModal',
       <ModalDialog title='Scene graph (JSON)' actions={[{name: 'OK'}]}>
@@ -21,6 +28,9 @@ class HeaderMenu extends Component {
     return (
       <div className='header-menu'>
         <DropDown title='File' className='left no-caret'><ul>
+          <li><a href='#' onClick={this.handleLoad.bind(this)}>
+            Load JSON
+          </a></li>
           <li><a href='#' onClick={this.handleExport.bind(this)}>
             Export JSON
           </a></li>

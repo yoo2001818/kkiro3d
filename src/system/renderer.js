@@ -36,7 +36,11 @@ export default class RendererSystem {
   }
   attach(engine) {
     this.engine = engine;
-
+    this.hooks = {
+      'external.load!': () => {
+        this.viewportList = [];
+      }
+    };
     this.cameras = engine.systems.family.get('camera', 'transform');
     this.cameras.onAdd.add((camera) => {
       if (this.viewportList.length >= 1) return;

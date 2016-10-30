@@ -2,8 +2,6 @@ export default class RendererView {
   constructor(engine, webglue, effects) {
     this.webglue = webglue;
     this.engine = engine;
-    this.entities = engine.state.entities;
-    this.cameras = engine.systems.family.get('camera', 'transform');
 
     this.effects = {};
     for (let key in effects) this.effects[key] = effects[key](this);
@@ -29,7 +27,7 @@ export default class RendererView {
       return v.worldPre(data);
     }, world);
     let worldPasses = [world];
-    world.passes = this.entities.map(entity => {
+    world.passes = this.engine.state.entities.map(entity => {
       if (entity == null) return null;
       return currentEffects.reduce((data, v) => {
         if (v.entity == null) return data;

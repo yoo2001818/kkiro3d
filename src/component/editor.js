@@ -17,7 +17,8 @@ export default {
       let position = this.state.global.cursor || [0, 0, 0];
       let entity = this.actions.entity.create(Object.assign({}, data, {
         transform: { position },
-        name: data.name ? data.name : 'New Entity'
+        name: data.name ? data.name : 'New Entity',
+        id: null
       }), true);
       this.actions.editor.select('entity', entity.id);
       return entity;
