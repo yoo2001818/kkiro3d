@@ -34,7 +34,8 @@ export default {
     },
     attenuation: {
       type: 'number',
-      precision: 5
+      precision: 5,
+      visible: entity => entity.light.type !== 'directional'
     }
   },
   actions: {

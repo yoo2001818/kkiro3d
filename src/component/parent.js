@@ -3,7 +3,11 @@ import { signalRaw } from 'fudge';
 export default {
   component: -1,
   schema: {
-    parent: { type: 'entity', getValue: (entity) => entity.parent },
+    parent: {
+      type: 'entity',
+      getValue: (entity) => entity.parent,
+      setValue: (entity, value) => ['parent.set', entity, value]
+    },
   },
   actions: {
     set: signalRaw(([entity, parent]) => {

@@ -18,8 +18,15 @@ export default {
     },
     near: { type: 'number' },
     far: { type: 'number' },
-    fov: { type: 'degree', precision: 2 },
-    zoom: { type: 'number' }
+    fov: {
+      type: 'degree',
+      precision: 2,
+      visible: entity => entity.camera.type === 'persp'
+    },
+    zoom: {
+      type: 'number',
+      visible: entity => entity.camera.type === 'ortho'
+    }
   },
   actions: {
     setPersp: signalRaw(([entity, fov, near, far]) => {
