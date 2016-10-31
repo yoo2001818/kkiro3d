@@ -10,3 +10,4 @@ export { default as external } from './external';
 export { default as name } from './name';
 export { default as ui } from './ui';
 export { default as renderer } from './renderer';
+export { default as animation } from './animation';

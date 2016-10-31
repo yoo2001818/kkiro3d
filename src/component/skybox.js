@@ -10,6 +10,9 @@ export default {
   actions: {
     setTexture: signalRaw(([entity, target]) => {
       entity.skybox.texture = target;
+    }),
+    set: signalRaw(([entity, data]) => {
+      Object.assign(entity.skybox, data);
     })
   }
 };

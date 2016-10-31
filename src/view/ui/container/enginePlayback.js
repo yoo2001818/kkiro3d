@@ -24,6 +24,7 @@ EnginePlayback.propTypes = {
 };
 
 export default connect({
+  'external.load:post': true,
   'editor.setRunning': true
 }, (engine) => ({
   execute: engine.actions.external.execute,
