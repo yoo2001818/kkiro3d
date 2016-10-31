@@ -13,7 +13,7 @@ const TYPES = {
     name: 'Entities',
     component: <EntityList />,
     add: function() {
-      this.props.execute('editor.createEntity', {});
+      this.props.execute('editor.createEntity', undefined);
     }
   },
   /* component: {
@@ -48,7 +48,6 @@ const TYPES = {
         <ModalDialog title='Add new Material' actions={[
           {name: 'OK', onClick: () => {
             let val = input.value;
-            debugger;
             if (val != '') this.props.execute('renderer.material.add', val, {});
           }},
           {name: 'Cancel', type: 'red'}

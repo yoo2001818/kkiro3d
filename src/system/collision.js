@@ -1,6 +1,7 @@
 import { vec3 } from 'gl-matrix';
 
 let tmpVec = vec3.create();
+let tmpVec2 = vec3.create();
 
 export default class CollisionSystem {
   constructor() {
@@ -11,6 +12,10 @@ export default class CollisionSystem {
       },
       'collision.set!': ([entity]) => {
         this.data[entity.id].valid = false;
+      },
+      'transform.*:post!': ([entity]) => {
+        // Check collision
+        if (entity.collision != null) this.checkCollisionFor(entity);
       }
     };
   }
@@ -66,5 +71,29 @@ export default class CollisionSystem {
   getAABBMax(entity, data = this.getData(entity)) {
     this.calculateBounds(entity, data);
     return data.aabbMax;
+  }
+  checkCollisionFor(entity, data = this.getData(entity)) {
+    if (!entity.collision.enabled) return;
+    let aabbMin = this.getAABBMin(entity, data);
+    let aabbMax = this.getAABBMax(entity, data);
+    // Check for each entity
+    this.family.entities.forEach(other => {
+      if (entity === other) return;
+      if (!other.collision.enabled) return;
+      let otherData = this.getData(other);
+      let otherMin = this.getAABBMin(other, otherData);
+      let otherMax = this.getAABBMax(other, otherData);
+      // Check intersection....
+      vec3.max(tmpVec, aabbMin, otherMin);
+      vec3.min(tmpVec2, aabbMax, otherMax);
+      if (tmpVec[0] > tmpVec2[0]) return;
+      if (tmpVec[1] > tmpVec2[1]) return;
+      if (tmpVec[2] > tmpVec2[2]) return;
+      // Then, create bounds object
+      let bounds = {};
+      bounds.min = tmpVec;
+      bounds.max = tmpVec2;
+      this.engine.actions.collision.collide(entity, other, bounds);
+    });
   }
 }
