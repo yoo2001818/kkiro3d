@@ -11,7 +11,8 @@ export default {
   },
   actions: {
     set: signalRaw(([entity, parent]) => {
-      entity.parent = parent.id != null ? parent.id : parent;
+      entity.parent = (parent != null && parent.id != null) ?
+        parent.id : parent;
     })
   }
 };

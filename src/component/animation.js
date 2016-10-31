@@ -31,6 +31,13 @@ export default {
     },
     duration: {
       type: 'number'
+    },
+    parent: {
+      type: 'entity'
+    },
+    channels: {
+      type: 'json',
+      noField: true
     }
   },
   actions: {

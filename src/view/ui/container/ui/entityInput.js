@@ -9,7 +9,7 @@ class EntityInput extends Component {
     const { entity, value } = this.props;
     return (
       <ModalInput displayValue={
-        (entity && entity.name) || value
+        (entity && entity.name) || value || '(None)'
       } {...this.props} />
     );
   }

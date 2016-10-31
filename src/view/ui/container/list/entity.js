@@ -9,13 +9,23 @@ class EntityList extends Component {
     if (this.props.onSelect) this.props.onSelect(entity);
   }
   render() {
-    const { entities, selected } = this.props;
+    const { entities, selected, allowNull } = this.props;
+    let data = entities.map((entity) => ({
+      name: entity.name,
+      className: classNames({ selected: entity.id === selected }),
+      onClick: this.handleSelect.bind(this, entity.id)
+    }));
+    if (allowNull) {
+      data.unshift({
+        name: '(None)',
+        className: classNames({
+          selected: selected === -1 || selected === null
+        }),
+        onClick: this.handleSelect.bind(this, null)
+      });
+    }
     return (
-      <FilterList data={ entities.map((entity) => ({
-        name: entity.name,
-        className: classNames({ selected: entity.id === selected }),
-        onClick: this.handleSelect.bind(this, entity.id)
-      }))} />
+      <FilterList data={data} />
     );
   }
 }
@@ -23,7 +33,8 @@ class EntityList extends Component {
 EntityList.propTypes = {
   entities: PropTypes.array,
   selected: PropTypes.number,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  allowNull: PropTypes.bool
 };
 
 export default connect({

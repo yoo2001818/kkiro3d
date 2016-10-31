@@ -74,7 +74,7 @@ export const color = (value, callback, props) => (
 
 export const entity = (value, callback, props) => (
   <EntityInput value={value} onChange={callback} {...props}>
-    <EntityList />
+    <EntityList allowNull />
   </EntityInput>
 );
 
@@ -100,4 +100,28 @@ export const texture = (value, callback, props) => (
   <ModalInput value={value} onChange={callback} {...props}>
     <RenderAssetList type='texture' />
   </ModalInput>
+);
+
+export const json = (value, callback, props) => (
+  <CachedTextArea
+    value={JSON.stringify(value, null, 2)}
+    onChange={(e) => {
+      const value = e.target.value;
+      let parsed;
+      // Try to parse the value...
+      try {
+        parsed = JSON.parse(value);
+      } catch (e) {
+        // Do nothing if an error has occurred
+        return;
+      }
+      callback({
+        target: {
+          value: parsed
+        }
+      });
+    }}
+    className='properties-text-area'
+    {...props}
+  />
 );

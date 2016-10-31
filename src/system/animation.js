@@ -118,8 +118,7 @@ export default class AnimationSystem {
       // But doing it for each channel is just bad.
       useEuler = false;
       eulerData = [null, null, null];
-      // Update every channel....
-      animation.channels.forEach(channel => {
+      let handleChannel = channel => {
         // TODO Implement interpolator
         // Find first one that is bigger than current offset
         let index = channel.input.findIndex(v => v > offset);
@@ -130,7 +129,17 @@ export default class AnimationSystem {
         if (interpolator == null) interpolator = this.interpolators.linear;
         this.channels[channel.channel](entity,
           interpolator(offset, channel, prevIndex, index));
-      });
+      };
+      // Update every channel....
+      // If parent is available, use them. :)
+      // (Actually parent is just a method to copy animation frames.)
+      if (animation.parent) {
+        let parentEntity = this.engine.state.entities[animation.parent];
+        if (parentEntity != null && parentEntity.animation) {
+          parentEntity.animation.channels.forEach(handleChannel);
+        }
+      }
+      if (animation.channels != null) animation.channels.forEach(handleChannel);
       // Now, process the Euler degrees.
       if (useEuler) {
         quatToEuler(tmpVec3, entity.transform.rotation);
