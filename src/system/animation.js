@@ -1,4 +1,5 @@
 import { vec3 } from 'gl-matrix';
+import * as bezier from '../util/bezier';
 let tmpVec3 = vec3.create();
 
 export default class BlenderControllerSystem {
@@ -8,6 +9,37 @@ export default class BlenderControllerSystem {
       'external.update!': ([delta]) => {
         this.time += delta;
         this.update();
+      }
+    };
+    // Why can't we generalize it? Because COLLADA format requires
+    // 'absolute' position for intangent / outtangent
+    this.interpolators = {
+      'bezier': (offset, channel, prevIndex, index) => {
+        let x = channel.input[index];
+        let y = channel.output[index];
+        let xPrev = channel.input[prevIndex];
+        let yPrev = channel.output[prevIndex];
+        let xIn = channel.inTangent[index * 2];
+        let yIn = channel.inTangent[index * 2 + 1];
+        let xOut = channel.outTangent[prevIndex * 2];
+        let yOut = channel.outTangent[prevIndex * 2 + 1];
+        if (x === xPrev) return y;
+        // Ugh...
+        let time = offset;
+        if (time < xPrev) return yPrev;
+        if (time > x) time = x;
+        return bezier.YfromX(time, xPrev, yPrev, xOut, yOut, xIn, yIn, x, y);
+      },
+      'linear': (offset, channel, prevIndex, index) => {
+        let input = channel.input[index];
+        let prevInput = channel.input[prevIndex];
+        let output = channel.output[index];
+        let prevOutput = channel.output[prevIndex];
+        if (prevInput === input) prevInput = input + 1;
+        // INTERPOLATE!!!!
+        let time = (offset - prevInput) / (input - prevInput);
+        if (offset > input) time = 1;
+        return prevOutput + (output - prevOutput) * time;
       }
     };
     this.channels = {
@@ -40,17 +72,10 @@ export default class BlenderControllerSystem {
         if (index === -1) index = channel.input.length - 1;
         let prevIndex = index - 1;
         if (prevIndex < 0) prevIndex = 0;
-        let input = channel.input[index];
-        let prevInput = channel.input[prevIndex];
-        let output = channel.output[index];
-        let prevOutput = channel.output[prevIndex];
-        // :/
-        if (prevInput === input) prevInput = input + 1;
-        // INTERPOLATE!!!!
-        let time = (offset - prevInput) / (input - prevInput);
-        if (offset > input) time = 1;
-        let value = prevOutput + (output - prevOutput) * time;
-        this.channels[channel.channel](entity, value);
+        let interpolator = this.interpolators[channel.interpolation[prevIndex]];
+        if (interpolator == null) interpolator = this.interpolators.linear;
+        this.channels[channel.channel](entity,
+          interpolator(offset, channel, prevIndex, index));
       });
     });
   }
