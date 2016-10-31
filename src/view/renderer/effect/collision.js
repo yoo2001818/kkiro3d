@@ -1,5 +1,3 @@
-import { vec3 } from 'gl-matrix';
-
 export default function collisionEffect(renderer) {
   const engine = renderer.engine;
   const webglue = renderer.webglue;
@@ -31,25 +29,8 @@ export default function collisionEffect(renderer) {
       let isSelected = engine.state.global.selectedType === 'entity' &&
         entity.id === engine.state.global.selected;
       if (!isSelected) return data;
-      let model = engine.systems.matrix.get(entity);
-      // Calculate boundary matrix..
-      let tmp = vec3.create();
-      // We only have AABBs for now. :P
-      let min = vec3.fromValues(Infinity, Infinity, Infinity);
-      let max = vec3.fromValues(-Infinity, -Infinity, -Infinity);
-      // What the heck
-      for (let x = -1; x <= 1; x += 2) {
-        for (let y = -1; y <= 1; y += 2) {
-          for (let z = -1; z <= 1; z += 2) {
-            tmp[0] = x * entity.collision.size[0] + entity.collision.center[0];
-            tmp[1] = y * entity.collision.size[1] + entity.collision.center[1];
-            tmp[2] = z * entity.collision.size[2] + entity.collision.center[2];
-            vec3.transformMat4(tmp, tmp, model);
-            vec3.min(min, min, tmp);
-            vec3.max(max, max, tmp);
-          }
-        }
-      }
+      let max = engine.systems.collision.getAABBMax(entity);
+      let min = engine.systems.collision.getAABBMin(entity);
       // Then, create the matrix
       let matrix = [
         (max[0] - min[0]) / 2, 0, 0, 0,
