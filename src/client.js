@@ -10,20 +10,11 @@ import BatteryManager from './util/batteryManager';
 let engine = createEngine({}, {
   test: function TestSystem (engine) {
     this.entities = engine.systems.family.get('transform').entities;
-    let box;
     this.init = () => {
-      box = engine.actions.entity.create({
+      engine.actions.entity.create({
         name: 'Box',
         transform: {},
         mesh: { geometry: 'box', material: 'test2' }
-      });
-      engine.actions.entity.create({
-        name: 'Teapot',
-        transform: {
-          position: [3, 0, 0]
-        },
-        mesh: { geometry: 'teapot', material: 'test2' },
-        parent: box.id
       });
       engine.actions.entity.create({
         name: 'Camera',
@@ -33,14 +24,10 @@ let engine = createEngine({}, {
         camera: {},
         blenderController: {}
       });
-      engine.actions.entity.create({
-        name: 'Skybox',
-        skybox: { texture: 'skybox' }
-      });
       let light = engine.actions.entity.create({
         name: 'Light',
         transform: {
-          position: [2, 2, 2]
+          position: [3, 4, 2]
         },
         light: {
           type: 'directional',
@@ -51,27 +38,6 @@ let engine = createEngine({}, {
         }
       });
       engine.actions.transform.lookAtPos(light, [0, 0, 0], [0, 1, 0]);
-      engine.actions.entity.create({
-        name: 'PointLight',
-        transform: {
-          position: [-2, 0, 0]
-        },
-        light: {
-          type: 'point',
-          color: '#ff0000',
-          ambient: 0.3,
-          diffuse: 1.0,
-          specular: 1.0,
-          attenuation: 0.8
-        }
-      });
-    };
-    this.hooks = {
-      'external.update!': ([delta]) => {
-        if (box == null) return;
-        engine.actions.transform.rotateY(box, delta);
-        // engine.actions.transform.translate(box, [delta / 30, 0, 0]);
-      }
     };
   }
 });
@@ -79,7 +45,7 @@ let engine = createEngine({}, {
 let renderer = createView(engine);
 engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
   ['mesh', 'light', 'selectWireframe', 'widget',
-    'lightWidget', 'cameraWidget', 'generalHandle', 'skybox']));
+    'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
 
 let domCounter = 0;
 let prevTime = -1;

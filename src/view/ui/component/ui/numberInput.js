@@ -28,7 +28,7 @@ export default class NumberInput extends Component {
   }
   componentWillReceiveProps(next) {
     if (!this.state.locked && next.locked) {
-      const { value, precision = 3 } = this.props;
+      const { value, precision = 4 } = this.props;
       this.setState({
         locked: true,
         editValue: (value || 0).toFixed(precision)

@@ -20,6 +20,7 @@ import lightWidget from './renderer/effect/lightWidget';
 import cameraWidget from './renderer/effect/cameraWidget';
 import generalHandle from './renderer/effect/generalHandle';
 import skybox from './renderer/effect/skybox';
+import collision from './renderer/effect/collision';
 
 export default function initView(engine) {
   // Canvas init
@@ -40,7 +41,7 @@ export default function initView(engine) {
 
   let rendererView = new RendererView(engine, renderer,
     { mesh, light, selectWireframe, widget, mousePick, depthPick, axis,
-      lightWidget, cameraWidget, generalHandle, skybox }
+      lightWidget, cameraWidget, generalHandle, skybox, collision }
   );
   rendererView.canvas = canvas;
 
