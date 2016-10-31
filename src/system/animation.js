@@ -1,8 +1,49 @@
-import { vec3 } from 'gl-matrix';
+import { vec3, quat } from 'gl-matrix';
+import { quatToEuler, eulerToQuat } from 'webglue/lib/util/euler';
 import * as bezier from '../util/bezier';
 let tmpVec3 = vec3.create();
+let tmpQuat = quat.create();
+let useEuler = false;
+let eulerData = null;
 
-export default class BlenderControllerSystem {
+function createSetPosition(system, index) {
+  return (entity, value) => {
+    // Interpolate! Sort of.
+    vec3.copy(tmpVec3, entity.transform.position);
+    if (tmpVec3[index] === value) return;
+    tmpVec3[index] = value;
+    system.engine.actions.transform.setPosition(entity, tmpVec3);
+  };
+}
+
+function createSetScale(system, index) {
+  return (entity, value) => {
+    // Interpolate! Sort of.
+    vec3.copy(tmpVec3, entity.transform.scale);
+    if (tmpVec3[index] === value) return;
+    tmpVec3[index] = value;
+    system.engine.actions.transform.setScale(entity, tmpVec3);
+  };
+}
+
+function createSetRotation(system, index) {
+  return (entity, value) => {
+    quat.copy(tmpQuat, entity.transform.rotation);
+    if (tmpQuat[index] === value) return;
+    tmpQuat[index] = value;
+    system.engine.actions.transform.setRotation(entity, tmpQuat);
+  };
+}
+
+function createSetEulerRotation(system, index) {
+  return (entity, value) => {
+    // AnimationSystem will handle this :)
+    useEuler = true;
+    eulerData[index] = value;
+  };
+}
+
+export default class AnimationSystem {
   constructor() {
     this.time = 0;
     this.hooks = {
@@ -27,7 +68,7 @@ export default class BlenderControllerSystem {
         // Ugh...
         let time = offset;
         if (time < xPrev) return yPrev;
-        if (time > x) time = x;
+        if (time > x) return y;
         return bezier.YfromX(time, xPrev, yPrev, xOut, yOut, xIn, yIn, x, y);
       },
       'linear': (offset, channel, prevIndex, index) => {
@@ -43,12 +84,19 @@ export default class BlenderControllerSystem {
       }
     };
     this.channels = {
-      'transform.position.x': (entity, value) => {
-        // Interpolate! Sort of.
-        vec3.copy(tmpVec3, entity.transform.position);
-        tmpVec3[0] = value;
-        this.engine.actions.transform.setPosition(entity, tmpVec3);
-      }
+      'transform.position.x': createSetPosition(this, 0),
+      'transform.position.y': createSetPosition(this, 1),
+      'transform.position.z': createSetPosition(this, 2),
+      'transform.scale.x': createSetScale(this, 0),
+      'transform.scale.y': createSetScale(this, 1),
+      'transform.scale.z': createSetScale(this, 2),
+      'transform.rotation.x': createSetRotation(this, 0),
+      'transform.rotation.y': createSetRotation(this, 1),
+      'transform.rotation.z': createSetRotation(this, 2),
+      'transform.rotation.w': createSetRotation(this, 3),
+      'transform.rotation.eulerX': createSetEulerRotation(this, 0),
+      'transform.rotation.eulerY': createSetEulerRotation(this, 1),
+      'transform.rotation.eulerZ': createSetEulerRotation(this, 2),
     };
   }
   attach(engine) {
@@ -64,6 +112,12 @@ export default class BlenderControllerSystem {
       let loops = offset / animation.duration;
       offset %= animation.duration;
       if (animation.repeat > 0 && loops >= animation.repeat) return;
+      // Pre-handle Euler rotation
+      // Why do we need this? Because the engine only uses quaternion,
+      // we have to convert it to Euler degrees / and convert it back.
+      // But doing it for each channel is just bad.
+      useEuler = false;
+      eulerData = [null, null, null];
       // Update every channel....
       animation.channels.forEach(channel => {
         // TODO Implement interpolator
@@ -77,6 +131,19 @@ export default class BlenderControllerSystem {
         this.channels[channel.channel](entity,
           interpolator(offset, channel, prevIndex, index));
       });
+      // Now, process the Euler degrees.
+      if (useEuler) {
+        quatToEuler(tmpVec3, entity.transform.rotation);
+        vec3.scale(tmpVec3, tmpVec3, 180 / Math.PI);
+        // Apply the set value.
+        if (eulerData[0] != null) tmpVec3[0] = eulerData[0];
+        if (eulerData[1] != null) tmpVec3[1] = eulerData[1];
+        if (eulerData[2] != null) tmpVec3[2] = eulerData[2];
+        // Revert it back
+        vec3.scale(tmpVec3, tmpVec3, Math.PI / 180);
+        eulerToQuat(tmpQuat, tmpVec3);
+        this.engine.actions.transform.setRotation(entity, tmpQuat);
+      }
     });
   }
 }
