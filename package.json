@@ -42,7 +42,7 @@
     "gl-constants": "^1.0.0",
     "gl-matrix": "^2.3.2",
     "locksmith": "^0.2.6",
-    "locksmith-connector-ws": "^0.2.6",
+    "locksmith-connector-ws": "0.3.1",
     "lodash.merge": "^4.6.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",

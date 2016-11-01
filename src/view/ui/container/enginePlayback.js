@@ -4,7 +4,7 @@ import connect from '../util/connect';
 
 class EnginePlayback extends Component {
   handleToggle() {
-    this.props.execute('editor.setRunning', !this.props.running);
+    this.props.execute('time.setRunning', !this.props.running);
   }
   render() {
     const { running } = this.props;
@@ -25,7 +25,7 @@ EnginePlayback.propTypes = {
 
 export default connect({
   'external.load:post': true,
-  'editor.setRunning': true
+  'time.setRunning': true
 }, (engine) => ({
   execute: engine.actions.external.execute,
   running: engine.state.global.running

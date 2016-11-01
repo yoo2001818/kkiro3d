@@ -7,9 +7,13 @@ export default {
     }),
     add: function (delta) {
       this.actions.time.set((this.state.global.time || 0) + delta);
-    }
+    },
+    setRunning: signalRaw(function ([running]) {
+      this.state.global.running = running;
+    }),
   },
   global: {
-    time: 0
+    time: 0,
+    running: true
   }
 };

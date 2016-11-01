@@ -13,3 +13,4 @@ export { default as renderer } from './renderer';
 export { default as animation } from './animation';
 export { default as collision } from './collision';
 export { default as time } from './time';
+export { default as network } from './network';

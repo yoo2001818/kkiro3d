@@ -4,6 +4,7 @@ import jsonReplacer from './util/jsonReplacer';
 
 import createEngine from './engine';
 import CollisionPushSystem from './system/collisionPush';
+
 let engine = createEngine({}, {
   test: function TestSystem (engine) {
     this.entities = engine.systems.family.get('transform').entities;
@@ -40,34 +41,13 @@ let engine = createEngine({}, {
 });
 engine.addSystem('collisionPush', CollisionPushSystem);
 
-let machine = {
-  getState() {
-    return engine.getState();
-  },
-  loadState(state) {
-    engine.stop();
-    engine.actions.external.load(state);
-    engine.start();
-  },
-  run(action) {
-    // Remap arg
-    console.log(action);
-    let args = action.args.map(v => {
-      if (v != null && v.__entity != null) {
-        return engine.state.entities[v.__entity];
-      }
-      return v;
-    });
-    engine.actions.external.executeLocal.raw(args);
-  }
-};
-
 let connector = new WebSocketServerConnector({
   port: 23482
 });
 connector.replacer = jsonReplacer;
 
-let synchronizer = new HostSynchronizer(machine, connector, {
+let synchronizer = new HostSynchronizer(engine.systems.network.machine,
+connector, {
   dynamic: false,
   dynamicPushWait: 10,
   dynamicTickWait: 10,
@@ -76,33 +56,20 @@ let synchronizer = new HostSynchronizer(machine, connector, {
   disconnectWait: 10000,
   freezeWait: 1000
 });
+synchronizer.connectionHandler = (data, clientId) => ({
+  id: clientId
+});
+synchronizer.on('connect', (clientId) => {
+  engine.actions.external.execute('network.connect', clientId);
+  if (clientId === 0) engine.actions.network.connectSelf();
+});
+synchronizer.on('disconnect', (clientId) => {
+  engine.actions.external.execute('network.disconnect', clientId);
+  if (clientId === 0) engine.actions.network.disconnectSelf();
+});
 connector.synchronizer = synchronizer;
 
-engine.addSystem('network', function NetworkSystem(engine) {
-  this.hooks = {
-    'external.execute:pre!': (args) => {
-      // Send it to the engine, while mapping the entity
-      synchronizer.push({
-        args: args.map(v => {
-          if (v && v.id != null && engine.state.entities[v.id] === v) {
-            return {
-              __entity: v.id
-            };
-          }
-          if (v instanceof Float32Array) {
-            let a = [];
-            for (let i = 0; i < v.length; ++i) {
-              a[i] = v[i];
-            }
-            return a;
-          }
-          return v;
-        })
-      });
-      return null;
-    }
-  };
-});
+engine.systems.network.synchronizer = synchronizer;
 
 engine.start();
 engine.systems.test.init();

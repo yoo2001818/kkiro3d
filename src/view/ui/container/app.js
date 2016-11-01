@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Header from '../component/header';
 import HeaderMenu from './headerMenu';
 import EnginePlayback from './enginePlayback';
+import NetworkStatus from './networkStatus';
 import Viewport from './viewport';
 import OutlinePane from './outlinePane';
 import PropertiesPane from './propertiesPane';
@@ -16,7 +17,10 @@ export default class App extends Component {
     return (
       <div className='app'>
         <Header right={
-          <EnginePlayback />
+          <div>
+            <NetworkStatus />
+            <EnginePlayback />
+          </div>
         }>
           <HeaderMenu />
         </Header>

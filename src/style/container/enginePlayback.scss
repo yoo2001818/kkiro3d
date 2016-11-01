@@ -1,4 +1,5 @@
 .engine-playback {
+  display: inline-block;
   & > .pause-button {
     background: none;
     color: $green-300;

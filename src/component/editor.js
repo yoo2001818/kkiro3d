@@ -2,10 +2,6 @@ import { signalRaw } from 'fudge';
 
 export default {
   actions: {
-    selectEntity: function (entity) {
-      console.warn('selectEntity action is deprecated');
-      this.actions.editor.select('entity', entity ? entity.id : -1);
-    },
     select: signalRaw(function ([type, id]) {
       this.state.global.selected = id;
       this.state.global.selectedType = type;
@@ -30,9 +26,6 @@ export default {
       this.actions.editor.select('entity', entity.id);
       return entity;
     },
-    setRunning: signalRaw(function ([running]) {
-      this.state.global.running = running;
-    }),
     setType: signalRaw(function ([type]) {
       this.state.global.outlineType = type;
     }),
@@ -43,7 +36,6 @@ export default {
     })
   },
   global: {
-    running: true,
     selected: -1,
     selectedType: 'entity',
     outlineType: 'entity',

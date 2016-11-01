@@ -33,15 +33,21 @@ class HeaderMenu extends Component {
     window.localStorage.savedData =
       JSON.stringify(this.props.engine.getState(), jsonReplacer);
   }
+  handleConnect() {
+
+  }
+  handleDisconnect() {
+    
+  }
   render() {
     return (
       <div className='header-menu'>
         <DropDown title='File' className='left no-caret'><ul>
           <li><a href='#' onClick={this.handleLoad.bind(this)}>
-            Load JSON
+            Load JSON...
           </a></li>
           <li><a href='#' onClick={this.handleExport.bind(this)}>
-            Export JSON
+            Export JSON...
           </a></li>
           <hr />
           <li><a href='#' onClick={this.handleLoadCookie.bind(this)}>
@@ -49,6 +55,14 @@ class HeaderMenu extends Component {
           </a></li>
           <li><a href='#' onClick={this.handleSaveCookie.bind(this)}>
             Save to LocalStorage
+          </a></li>
+        </ul></DropDown>
+        <DropDown title='Network' className='left no-caret'><ul>
+          <li><a href='#' onClick={this.handleConnect.bind(this)}>
+            Connect...
+          </a></li>
+          <li><a href='#' onClick={this.handleDisconnect.bind(this)}>
+            Disconnect
           </a></li>
         </ul></DropDown>
       </div>
