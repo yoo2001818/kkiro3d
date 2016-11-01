@@ -47,6 +47,9 @@ export default class AnimationSystem {
   constructor() {
     this.time = 0;
     this.hooks = {
+      'external.load!': () => {
+        this.time = 0;
+      },
       'external.update!': ([delta]) => {
         this.time += delta;
         this.update();

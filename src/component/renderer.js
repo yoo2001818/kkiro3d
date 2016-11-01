@@ -1,57 +1,64 @@
 import { signalRaw } from 'fudge';
 import merge from 'lodash.merge';
 
+function signalRawNoop(callback) {
+  return signalRaw(function (args) {
+    if (this.systems.renderer == null) return;
+    callback.call(this, args);
+  });
+}
+
 export default {
   actions: {
     material: {
       '*': callback => args => callback(['material'].concat(args)),
-      add: signalRaw(function ([name, material]) {
+      add: signalRawNoop(function ([name, material]) {
         this.systems.renderer.addMaterial(name, material);
       }),
-      update: signalRaw(function ([name, material]) {
+      update: signalRawNoop(function ([name, material]) {
         merge(this.systems.renderer.materials[name], material);
       }),
-      remove: signalRaw(function ([name]) {
+      remove: signalRawNoop(function ([name]) {
         // We just delete them :P
         delete this.systems.renderer.materials[name];
       })
     },
     texture: {
       '*': callback => args => callback(['texture'].concat(args)),
-      add: signalRaw(function ([name, texture]) {
+      add: signalRawNoop(function ([name, texture]) {
         this.systems.renderer.addTexture(name, texture);
       }),
-      remove: signalRaw(function ([name]) {
+      remove: signalRawNoop(function ([name]) {
         this.systems.renderer.textures[name].dispose();
         delete this.systems.renderer.textures[name];
       })
     },
     shader: {
       '*': callback => args => callback(['shader'].concat(args)),
-      add: signalRaw(function ([name, shader]) {
+      add: signalRawNoop(function ([name, shader]) {
         this.systems.renderer.addShader(name, shader);
       }),
-      remove: signalRaw(function ([name]) {
+      remove: signalRawNoop(function ([name]) {
         this.systems.renderer.shaders[name].dispose();
         delete this.systems.renderer.shaders[name];
       })
     },
     geometry: {
       '*': callback => args => callback(['geometry'].concat(args)),
-      add: signalRaw(function ([name, geometry]) {
+      add: signalRawNoop(function ([name, geometry]) {
         this.systems.renderer.addGeometry(name, geometry);
       }),
-      update: signalRaw(function ([name, geometry]) {
+      update: signalRawNoop(function ([name, geometry]) {
         this.systems.renderer.geometries[name].update(geometry);
       }),
-      remove: signalRaw(function ([name]) {
+      remove: signalRawNoop(function ([name]) {
         this.systems.renderer.geometries[name].dispose();
         delete this.systems.renderer.geometries[name];
       })
     },
     effect: {
       '*': callback => args => callback(['effect'].concat(args)),
-      set: signalRaw(function ([list]) {
+      set: signalRawNoop(function ([list]) {
         this.systems.renderer.effectList = list;
       }),
       add: function (name) {
@@ -65,7 +72,7 @@ export default {
       }
     },
     camera: {
-      set: signalRaw(function ([camera]) {
+      set: signalRawNoop(function ([camera]) {
         // We don't even need viewports for now... :/
         this.systems.renderer.viewportList[0].camera = camera;
       })

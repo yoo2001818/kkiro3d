@@ -44,7 +44,7 @@ const TYPES = {
       // TODO Put this in a form to make 'Enter' key work.... However,
       // there's no way to call 'onClose' :(
       let input;
-      this.props.execute('ui.setModal',
+      this.props.executeLocal('ui.setModal',
         <ModalDialog title='Add new Material' actions={[
           {name: 'OK', onClick: () => {
             let val = input.value;
@@ -109,6 +109,7 @@ class OutlinePane extends Component {
 
 OutlinePane.propTypes = {
   execute: PropTypes.func,
+  executeLocal: PropTypes.func,
   selected: PropTypes.any,
   selectedType: PropTypes.string,
   outlineType: PropTypes.string
@@ -119,6 +120,7 @@ export default connect({
   'editor.select': true
 }, (engine) => ({
   execute: engine.actions.external.execute,
+  executeLocal: engine.actions.external.executeLocal,
   selected: engine.state.global.selected,
   selectedType: engine.state.global.selectedType,
   outlineType: engine.state.global.outlineType

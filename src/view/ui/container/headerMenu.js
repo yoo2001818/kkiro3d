@@ -9,12 +9,12 @@ import SceneLoadForm from './form/sceneLoadForm';
 
 class HeaderMenu extends Component {
   handleLoad() {
-    this.props.execute('ui.setModal',
+    this.props.executeLocal('ui.setModal',
       <SceneLoadForm />
     );
   }
   handleExport() {
-    this.props.execute('ui.setModal',
+    this.props.executeLocal('ui.setModal',
       <ModalDialog title='Scene graph (JSON)' actions={[{name: 'OK'}]}>
         <textarea className='code'
           defaultValue={JSON.stringify(this.props.engine.getState(),
@@ -58,12 +58,14 @@ class HeaderMenu extends Component {
 
 HeaderMenu.propTypes = {
   execute: PropTypes.func,
+  executeLocal: PropTypes.func,
   ui: PropTypes.object,
   engine: PropTypes.object
 };
 
 export default connect({}, (engine) => ({
   execute: engine.actions.external.execute,
+  executeLocal: engine.actions.external.executeLocal,
   ui: engine.systems.ui,
   engine: engine
 }))(HeaderMenu);

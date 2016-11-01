@@ -18,7 +18,7 @@ class EntityProperties extends Component {
     this.props.execute('entity.add.' + name, this.props.entity, undefined);
   }
   handleAddOpen() {
-    this.props.execute('ui.setModal', this.renderAdd.bind(this));
+    this.props.executeLocal('ui.setModal', this.renderAdd.bind(this));
   }
   renderAdd(onClose) {
     const { entity } = this.props;
@@ -75,6 +75,7 @@ EntityProperties.propTypes = {
   entity: PropTypes.object,
   componentList: PropTypes.array,
   execute: PropTypes.func,
+  executeLocal: PropTypes.func,
   selected: PropTypes.number
 };
 
@@ -90,5 +91,6 @@ export default connect({
   entity: engine.state.entities[selected],
   // This should be provided as a global variable, but what the heck.
   componentList: engine.components.list,
-  execute: engine.actions.external.execute
+  execute: engine.actions.external.execute,
+  executeLocal: engine.actions.external.executeLocal
 }))(EntityProperties);

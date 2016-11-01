@@ -1,17 +1,9 @@
-import './style/index.scss';
-
-import rendererAssets from './rendererAssets';
-
-import createView from './view';
-import createEngine from './engine';
-import RendererSystem from './system/renderer';
-import CollisionPushSystem from './system/collisionPush';
-// import BatteryManager from './util/batteryManager';
-import WebSocketClientConnector from
-  'locksmith-connector-ws/lib/webSocketClientConnector';
-import { Synchronizer } from 'locksmith';
+import { WebSocketServerConnector } from 'locksmith-connector-ws';
+import { HostSynchronizer } from 'locksmith';
 import jsonReplacer from './util/jsonReplacer';
 
+import createEngine from './engine';
+import CollisionPushSystem from './system/collisionPush';
 let engine = createEngine({}, {
   test: function TestSystem (engine) {
     this.entities = engine.systems.family.get('transform').entities;
@@ -46,13 +38,7 @@ let engine = createEngine({}, {
     };
   }
 });
-
-let renderer = createView(engine);
-engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
-  ['mesh', 'light', 'selectWireframe', 'widget',
-    'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
 engine.addSystem('collisionPush', CollisionPushSystem);
-
 
 let machine = {
   getState() {
@@ -65,6 +51,7 @@ let machine = {
   },
   run(action) {
     // Remap arg
+    console.log(action);
     let args = action.args.map(v => {
       if (v != null && v.__entity != null) {
         return engine.state.entities[v.__entity];
@@ -75,10 +62,20 @@ let machine = {
   }
 };
 
-let connector = new WebSocketClientConnector('ws://localhost:23482');
+let connector = new WebSocketServerConnector({
+  port: 23482
+});
 connector.replacer = jsonReplacer;
 
-let synchronizer = new Synchronizer(machine, connector);
+let synchronizer = new HostSynchronizer(machine, connector, {
+  dynamic: false,
+  dynamicPushWait: 10,
+  dynamicTickWait: 10,
+  fixedTick: 50,
+  fixedBuffer: 0,
+  disconnectWait: 10000,
+  freezeWait: 1000
+});
 connector.synchronizer = synchronizer;
 
 engine.addSystem('network', function NetworkSystem(engine) {
@@ -111,40 +108,7 @@ engine.start();
 engine.systems.test.init();
 
 connector.start();
-// synchronizer.start();
+synchronizer.start();
 synchronizer.on('tick', () => {
   engine.update(50/1000);
-  engine.actions.external.render(50);
-  engine.actions.external.domRender(50);
 });
-
-/*
-
-let domCounter = 0;
-let prevTime = -1;
-let stepCounter = 0;
-let battery = new BatteryManager();
-// let timer = 0;
-
-engine.start();
-engine.systems.test.init();
-
-function update(time) {
-  window.requestAnimationFrame(update);
-  if (battery.mode !== 0) {
-    stepCounter = (stepCounter + 1) % battery.mode;
-    if (stepCounter !== 0) return;
-  }
-  if (prevTime === -1) prevTime = time;
-  let delta = (time - prevTime) / 1000;
-  prevTime = time;
-  // timer += delta;
-
-  if (engine.state.global.running) engine.actions.external.update(delta);
-  engine.actions.external.render(delta);
-  domCounter += 1;
-  if (domCounter % 3 === 0) engine.actions.external.domRender(delta);
-}
-
-window.requestAnimationFrame(update);
-*/

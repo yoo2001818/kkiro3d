@@ -37,6 +37,10 @@ module.exports = {
     chunkFilename: '[id].js'
   },
   plugins: plugins,
+  node: {
+    fs: 'empty',
+    tls: 'empty'
+  },
   module: {
     loaders: [
       {

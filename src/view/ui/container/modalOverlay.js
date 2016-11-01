@@ -3,7 +3,7 @@ import connect from '../util/connect';
 
 class ModalOverlay extends Component {
   handleClose() {
-    this.props.execute('ui.closeModal');
+    this.props.executeLocal('ui.closeModal');
   }
   render() {
     const { modal } = this.props;
@@ -16,13 +16,13 @@ class ModalOverlay extends Component {
 }
 
 ModalOverlay.propTypes = {
-  execute: PropTypes.func,
+  executeLocal: PropTypes.func,
   modal: PropTypes.any
 };
 
 export default connect({
   'ui.setModal': true
 }, (engine) => ({
-  execute: engine.actions.external.execute,
+  executeLocal: engine.actions.external.executeLocal,
   modal: engine.systems.ui.modal
 }))(ModalOverlay);

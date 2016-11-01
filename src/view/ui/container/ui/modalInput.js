@@ -9,7 +9,7 @@ class ModalInput extends Component {
     // No-op
   }
   handleFocus() {
-    this.props.execute('ui.setModal', this.renderPopup.bind(this));
+    this.props.executeLocal('ui.setModal', this.renderPopup.bind(this));
   }
   handleSelect(v) {
     if (this.props.onChange) {
@@ -58,10 +58,10 @@ ModalInput.propTypes = {
   value: PropTypes.any,
   className: PropTypes.string,
   onChange: PropTypes.func,
-  execute: PropTypes.func,
+  executeLocal: PropTypes.func,
   children: PropTypes.node
 };
 
 export default connect({}, (engine) => ({
-  execute: engine.actions.external.execute
+  executeLocal: engine.actions.external.executeLocal
 }))(ModalInput);

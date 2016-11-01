@@ -6,11 +6,7 @@ import createView from './view';
 import createEngine from './engine';
 import RendererSystem from './system/renderer';
 import CollisionPushSystem from './system/collisionPush';
-// import BatteryManager from './util/batteryManager';
-import WebSocketClientConnector from
-  'locksmith-connector-ws/lib/webSocketClientConnector';
-import { Synchronizer } from 'locksmith';
-import jsonReplacer from './util/jsonReplacer';
+import BatteryManager from './util/batteryManager';
 
 let engine = createEngine({}, {
   test: function TestSystem (engine) {
@@ -53,73 +49,6 @@ engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
     'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
 engine.addSystem('collisionPush', CollisionPushSystem);
 
-
-let machine = {
-  getState() {
-    return engine.getState();
-  },
-  loadState(state) {
-    engine.stop();
-    engine.actions.external.load(state);
-    engine.start();
-  },
-  run(action) {
-    // Remap arg
-    let args = action.args.map(v => {
-      if (v != null && v.__entity != null) {
-        return engine.state.entities[v.__entity];
-      }
-      return v;
-    });
-    engine.actions.external.executeLocal.raw(args);
-  }
-};
-
-let connector = new WebSocketClientConnector('ws://localhost:23482');
-connector.replacer = jsonReplacer;
-
-let synchronizer = new Synchronizer(machine, connector);
-connector.synchronizer = synchronizer;
-
-engine.addSystem('network', function NetworkSystem(engine) {
-  this.hooks = {
-    'external.execute:pre!': (args) => {
-      // Send it to the engine, while mapping the entity
-      synchronizer.push({
-        args: args.map(v => {
-          if (v && v.id != null && engine.state.entities[v.id] === v) {
-            return {
-              __entity: v.id
-            };
-          }
-          if (v instanceof Float32Array) {
-            let a = [];
-            for (let i = 0; i < v.length; ++i) {
-              a[i] = v[i];
-            }
-            return a;
-          }
-          return v;
-        })
-      });
-      return null;
-    }
-  };
-});
-
-engine.start();
-engine.systems.test.init();
-
-connector.start();
-// synchronizer.start();
-synchronizer.on('tick', () => {
-  engine.update(50/1000);
-  engine.actions.external.render(50);
-  engine.actions.external.domRender(50);
-});
-
-/*
-
 let domCounter = 0;
 let prevTime = -1;
 let stepCounter = 0;
@@ -147,4 +76,3 @@ function update(time) {
 }
 
 window.requestAnimationFrame(update);
-*/
