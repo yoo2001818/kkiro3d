@@ -13,11 +13,16 @@ export default {
     cursor: signalRaw(function ([pos]) {
       this.state.global.cursor = pos.slice(0, 3);
     }),
-    createEntity: function (data = {
-      transform: {
-        position: this.state.global.cursor || [0, 0, 0]
+    createEntity: function (_data) {
+      let data = _data;
+      // JSON uses 'null' even if it should be 'undefined'
+      if (data == null) {
+        data = {
+          transform: {
+            position: this.state.global.cursor || [0, 0, 0]
+          }
+        };
       }
-    }) {
       let entity = this.actions.entity.create(Object.assign({}, data, {
         name: data.name ? data.name : 'New Entity',
         id: null

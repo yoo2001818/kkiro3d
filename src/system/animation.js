@@ -45,13 +45,8 @@ function createSetEulerRotation(system, index) {
 
 export default class AnimationSystem {
   constructor() {
-    this.time = 0;
     this.hooks = {
-      'external.load!': () => {
-        this.time = 0;
-      },
-      'external.update!': ([delta]) => {
-        this.time += delta;
+      'external.update!': () => {
         this.update();
       }
     };
@@ -111,7 +106,7 @@ export default class AnimationSystem {
     this.family.entities.forEach(entity => {
       let animation = entity.animation;
       if (animation == null || !animation.playing) return;
-      let offset = this.time - animation.start;
+      let offset = this.engine.state.global.time - animation.start;
       let loops = offset / animation.duration;
       offset %= animation.duration;
       if (animation.repeat > 0 && loops >= animation.repeat) return;

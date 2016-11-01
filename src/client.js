@@ -6,7 +6,7 @@ import createView from './view';
 import createEngine from './engine';
 import RendererSystem from './system/renderer';
 import CollisionPushSystem from './system/collisionPush';
-// import BatteryManager from './util/batteryManager';
+import BatteryManager from './util/batteryManager';
 import WebSocketClientConnector from
   'locksmith-connector-ws/lib/webSocketClientConnector';
 import { Synchronizer } from 'locksmith';
@@ -113,21 +113,14 @@ engine.systems.test.init();
 connector.start();
 // synchronizer.start();
 synchronizer.on('tick', () => {
-  engine.update(50/1000);
-  engine.actions.external.render(50);
-  engine.actions.external.domRender(50);
+  engine.update(1/60);
 });
-
-/*
 
 let domCounter = 0;
 let prevTime = -1;
 let stepCounter = 0;
 let battery = new BatteryManager();
 // let timer = 0;
-
-engine.start();
-engine.systems.test.init();
 
 function update(time) {
   window.requestAnimationFrame(update);
@@ -140,11 +133,9 @@ function update(time) {
   prevTime = time;
   // timer += delta;
 
-  if (engine.state.global.running) engine.actions.external.update(delta);
   engine.actions.external.render(delta);
   domCounter += 1;
   if (domCounter % 3 === 0) engine.actions.external.domRender(delta);
 }
 
 window.requestAnimationFrame(update);
-*/

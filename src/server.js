@@ -71,7 +71,7 @@ let synchronizer = new HostSynchronizer(machine, connector, {
   dynamic: false,
   dynamicPushWait: 10,
   dynamicTickWait: 10,
-  fixedTick: 50,
+  fixedTick: 1000/60,
   fixedBuffer: 0,
   disconnectWait: 10000,
   freezeWait: 1000
@@ -110,5 +110,5 @@ engine.systems.test.init();
 connector.start();
 synchronizer.start();
 synchronizer.on('tick', () => {
-  engine.update(50/1000);
+  engine.update(1/60);
 });

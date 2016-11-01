@@ -9,8 +9,14 @@ function sign(x) {
 }
 
 export default function collisionPush(engine) {
+  this.looped = [];
   this.hooks = {
+    'external.update!': () => {
+      this.looped = [];
+    },
     'collision.collide!': ([entity, other, bounds]) => {
+      if (this.looped[other.id]) return;
+      this.looped[other.id] = true;
       // Test - pushing other object
       vec3.subtract(tmpVec2, bounds.max, bounds.min);
       // Choose biggest one
