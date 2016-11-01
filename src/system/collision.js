@@ -26,6 +26,7 @@ export default class CollisionSystem {
       this.data[entity.id] = {
         valid: false,
         ticks: -1,
+        center: vec3.create(),
         aabbMin: vec3.create(),
         aabbMax: vec3.create()
       };
@@ -46,6 +47,7 @@ export default class CollisionSystem {
     if (matrixData.ticks === data.ticks && data.valid) return;
     data.ticks = matrixData.ticks;
     data.valid = true;
+    vec3.transformMat4(data.center, entity.collision.center, model);
     // Calculate boundary matrix..
     // We only have AABBs for now. :P
     vec3.set(data.aabbMin, Infinity, Infinity, Infinity);
@@ -63,6 +65,10 @@ export default class CollisionSystem {
         }
       }
     }
+  }
+  getCenter(entity, data = this.getData(entity)) {
+    this.calculateBounds(entity, data);
+    return data.center;
   }
   getAABBMin(entity, data = this.getData(entity)) {
     this.calculateBounds(entity, data);
@@ -86,9 +92,9 @@ export default class CollisionSystem {
       // Check intersection....
       vec3.max(tmpVec, aabbMin, otherMin);
       vec3.min(tmpVec2, aabbMax, otherMax);
-      if (tmpVec[0] > tmpVec2[0]) return;
-      if (tmpVec[1] > tmpVec2[1]) return;
-      if (tmpVec[2] > tmpVec2[2]) return;
+      if (tmpVec[0] >= tmpVec2[0]) return;
+      if (tmpVec[1] >= tmpVec2[1]) return;
+      if (tmpVec[2] >= tmpVec2[2]) return;
       // Then, create bounds object
       let bounds = {};
       bounds.min = tmpVec;

@@ -22,9 +22,13 @@ export default {
           entity.transform.position, entity.transform.position, parentInv);
       }
     }),
-    translate: function (entity, target) {
-      vec3.add(tmp, entity.transform.position, target);
-      this.actions.transform.setPosition(entity, tmp);
+    translate: function (entity, target, isGlobal) {
+      if (isGlobal) {
+        vec3.add(tmp, this.systems.matrix.getPosition(entity), target);
+      } else {
+        vec3.add(tmp, entity.transform.position, target);
+      }
+      this.actions.transform.setPosition(entity, tmp, isGlobal);
     },
     // What does local scale mean? :/
     setScale: signalRaw(function ([entity, target, isGlobal]) {

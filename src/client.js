@@ -5,6 +5,7 @@ import rendererAssets from './rendererAssets';
 import createView from './view';
 import createEngine from './engine';
 import RendererSystem from './system/renderer';
+import CollisionPushSystem from './system/collisionPush';
 import BatteryManager from './util/batteryManager';
 
 let engine = createEngine({}, {
@@ -46,6 +47,7 @@ let renderer = createView(engine);
 engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
   ['mesh', 'light', 'selectWireframe', 'widget',
     'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
+engine.addSystem('collisionPush', CollisionPushSystem);
 
 let domCounter = 0;
 let prevTime = -1;
