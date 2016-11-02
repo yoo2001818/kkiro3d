@@ -4,6 +4,7 @@ export default class NetworkSystem {
     this.clients = [];
     this.clientData = [{}];
     this.synchronizer = null;
+    this.connectHandler = null;
     this.machine = {
       getState: () => {
         let state = this.engine.getState();
@@ -74,5 +75,17 @@ export default class NetworkSystem {
     this.engine = engine;
     // NetworkSystem doesn't handle ticks and stuff - it should be done by
     // client entry code.
+  }
+  connect(endpoint) {
+    this.synchronizer = this.connectHandler(this.engine, endpoint);
+    this.engine.actions.network.disconnectSelf();
+  }
+  disconnect() {
+    this.synchronizer.removeAllListeners();
+    this.synchronizer.connector.disconnect();
+    this.synchronizer = null;
+    this.engine.actions.network.disconnectSelf();
+    this.clients = [this.getId()];
+    this.engine.actions.network.connect(this.getId());
   }
 }

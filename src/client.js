@@ -7,11 +7,7 @@ import createEngine from './engine';
 import RendererSystem from './system/renderer';
 import CollisionPushSystem from './system/collisionPush';
 import BatteryManager from './util/batteryManager';
-
-import WebSocketClientConnector from
-  'locksmith-connector-ws/lib/webSocketClientConnector';
-import { Synchronizer } from 'locksmith';
-import jsonReplacer from './util/jsonReplacer';
+import createSynchronizer from './util/createSynchronizer';
 
 let engine = createEngine({}, {
   test: function TestSystem (engine) {
@@ -54,39 +50,12 @@ engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
     'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
 engine.addSystem('collisionPush', CollisionPushSystem);
 
-let connector = new WebSocketClientConnector(
-  new WebSocket('ws://localhost:23482'));
-connector.replacer = jsonReplacer;
+engine.systems.network.connectHandler = createSynchronizer;
 
-let synchronizer = new Synchronizer(engine.systems.network.machine, connector);
-connector.synchronizer = synchronizer;
-
-engine.systems.network.synchronizer = synchronizer;
+engine.systems.network.connect('ws://localhost:23482/');
 
 engine.start();
 engine.systems.test.init();
-
-connector.start();
-synchronizer.on('tick', () => {
-  engine.update(1/60);
-});
-synchronizer.on('connect', () => {
-  engine.actions.network.connectSelf();
-});
-synchronizer.on('disconnect', () => {
-  engine.actions.external.executeLocal('ui.setModal', {
-    title: 'Connection Closed',
-    data: 'The connection to the server has been closed.'
-  });
-  engine.actions.network.disconnectSelf();
-});
-synchronizer.on('error', (error) => {
-  engine.actions.external.executeLocal('ui.setModal', {
-    title: 'Network Error',
-    data: error.message || (typeof error === 'string' && error) ||
-      'An unknown error has occurred while doing network synchronization'
-  });
-});
 
 let domCounter = 0;
 let prevTime = -1;

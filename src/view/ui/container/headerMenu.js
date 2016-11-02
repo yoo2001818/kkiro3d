@@ -6,6 +6,7 @@ import ModalDialog from '../component/modal/dialog';
 import DropDown from '../component/ui/dropDown';
 
 import SceneLoadForm from './form/sceneLoadForm';
+import ConnectForm from './form/connectForm';
 
 class HeaderMenu extends Component {
   handleLoad() {
@@ -34,10 +35,12 @@ class HeaderMenu extends Component {
       JSON.stringify(this.props.engine.getState(), jsonReplacer);
   }
   handleConnect() {
-
+    this.props.executeLocal('ui.setModal',
+      <ConnectForm />
+    );
   }
   handleDisconnect() {
-    
+    this.props.engine.systems.network.disconnect();
   }
   render() {
     return (
