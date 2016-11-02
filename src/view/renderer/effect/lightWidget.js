@@ -65,16 +65,17 @@ export default function lightWidgetEffect(renderer) {
       if (entity.transform == null) return data;
       if (entity.light == null) return data;
       if (data != null) return data;
-      let selfData = engine.systems.editor.getSelf();
-      let isSelected = selfData.selectedType === 'entity' &&
-        entity.id === selfData.selected;
+      let isSelectedAll = engine.systems.editor.isSelectedAll(entity);
+      let isSelected = engine.systems.editor.isSelected(entity);
       let model = engine.systems.matrix.get(entity);
       switch (entity.light.type) {
       case 'point':
         return {
           uniforms: {
             uModel: model,
-            uColor: isSelected ? '#ffa400' : '#000000'
+            uColor: isSelectedAll ? (
+              isSelected ? '#ffa400' : '#0084ff'
+            ) : '#000000'
           },
           passes: [{
             uniforms: {

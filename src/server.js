@@ -77,5 +77,5 @@ engine.systems.test.init();
 connector.start();
 synchronizer.start();
 synchronizer.on('tick', () => {
-  if (engine.state.global.running) engine.update(1/60);
+  engine.update(1/60);
 });

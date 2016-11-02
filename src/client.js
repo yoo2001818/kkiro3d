@@ -72,9 +72,7 @@ function update(time) {
   prevTime = time;
   // timer += delta;
   // Run update if not connected
-  if (engine.systems.network.synchronizer == null &&
-    engine.state.global.running
-  ) {
+  if (engine.systems.network.synchronizer == null) {
     engine.update(delta);
   }
 

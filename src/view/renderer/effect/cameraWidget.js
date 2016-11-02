@@ -34,9 +34,9 @@ export default function cameraWidgetEffect(renderer) {
     entity: (data, entity) => {
       if (data != null) return data;
       if (entity.camera == null) return data;
-      let selfData = engine.systems.editor.getSelf();
-      let isSelected = selfData.selectedType === 'entity' &&
-        entity.id === selfData.selected;
+      let isSelectedAll = engine.systems.editor.isSelectedAll(entity);
+      let isSelected = engine.systems.editor.isSelected(entity);
+      let isCamera = engine.systems.editor.isCamera(entity);
       let model = engine.systems.matrix.get(entity);
       let aspect = engine.systems.cameraMatrix.getCurrentAspect(entity);
       let scale = [1, 1, 1];
@@ -52,7 +52,11 @@ export default function cameraWidgetEffect(renderer) {
         return tree.options.camera === entity ? null : {
           uniforms: {
             uModel: model,
-            uColor: isSelected ? '#ffa400' : '#000000',
+            uColor: isSelectedAll ? (
+              isSelected ? '#ffa400' : '#0084ff'
+            ) : (
+              isCamera ? '#00ff0a' :'#000000'
+            ),
             uScale: scale
           },
           shader: lineShader,

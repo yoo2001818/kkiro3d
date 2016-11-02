@@ -33,10 +33,14 @@ export default class EditorSystem {
             }
           });
         }
-        // Forcefully set the camera if it is joining client.
-        if (id === this.getId()) {
-          this.engine.actions.renderer.camera.set(camera);
-        }
+        this.engine.actions.editor.setCamera(id, camera);
+      },
+      'entity.delete:pre!': (args) => {
+        // Prevent camera deletion if being used
+        let entity = args[0];
+        if (entity == null) return args;
+        if (this.isCamera(entity)) return null;
+        return args;
       },
       'external.start:post@200!': ([isGlobal]) => {
         if (!isGlobal) return;
@@ -46,14 +50,12 @@ export default class EditorSystem {
           'camera', 'networkTemporary');
         family.entities.forEach(entity => {
           let owner = entity.networkTemporary.owner;
-          checkArr[owner] = true;
-          if (this.getId() === owner) {
-            this.engine.actions.renderer.camera.set(entity);
-          }
+          checkArr[owner] = entity;
         });
         this.engine.systems.network.clients.forEach(id => {
-          if (!checkArr[id]) {
-            let camera = this.engine.actions.entity.create({
+          let camera;
+          if (checkArr[id] == null) {
+            camera = this.engine.actions.entity.create({
               name: 'Editor Camera',
               transform: {
                 position: [0, 0, 5]
@@ -64,10 +66,10 @@ export default class EditorSystem {
                 owner: id
               }
             });
-            if (id === this.getId()) {
-              this.engine.actions.renderer.camera.set(camera);
-            }
+          } else {
+            camera = checkArr[id];
           }
+          this.engine.actions.editor.setCamera(id, camera);
         });
       }
     };
@@ -83,5 +85,24 @@ export default class EditorSystem {
   }
   get(id) {
     return this.engine.systems.network.getData(id);
+  }
+  isSelected(entity) {
+    let selfData = this.getSelf();
+    return selfData.selectedType === 'entity' &&
+      entity.id === selfData.selected;
+  }
+  isSelectedAll(entity) {
+    let notSelected = this.engine.systems.network.clients.every(id => {
+      let data = this.get(id);
+      return data.selected !== entity.id;
+    });
+    return !notSelected;
+  }
+  isCamera(entity) {
+    let notCamera = this.engine.systems.network.clients.every(id => {
+      let data = this.get(id);
+      return data.camera !== entity.id;
+    });
+    return !notCamera;
   }
 }

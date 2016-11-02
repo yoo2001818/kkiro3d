@@ -15,9 +15,9 @@ export default function selectWireframeEffect(renderer) {
       if (data == null) return;
       if (entity.transform == null) return data;
       if (entity.mesh == null) return data;
-      let selfData = engine.systems.editor.getSelf();
-      if (selfData.selectedType !== 'entity') return data;
-      if (entity.id !== selfData.selected) return data;
+      let isSelectedAll = engine.systems.editor.isSelectedAll(entity);
+      let isSelected = engine.systems.editor.isSelected(entity);
+      if (!isSelectedAll) return data;
       let geomName = entity.mesh.geometry;
       let geometry = wireframeGeoms[geomName];
       if (geometry == null) {
@@ -36,7 +36,7 @@ export default function selectWireframeEffect(renderer) {
       }
       data.passes.push({
         uniforms: {
-          uColor: '#ffa400'
+          uColor: isSelected ? '#ffa400' : '#0084ff'
         },
         shader: colorShaderHandler(data.shader, data.uniforms, webglue),
         geometry: geometry

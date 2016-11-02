@@ -8,7 +8,8 @@ export default {
   },
   schema: {
     owner: {
-      type: 'integer'
+      type: 'rawString',
+      readOnly: true
     }
   },
   actions: {

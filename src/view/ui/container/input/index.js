@@ -81,6 +81,10 @@ export const text = (value, callback, props) => (
   <CachedTextArea value={value} onChange={callback} {...props} />
 );
 
+export const rawString = (value, callback, props) => (
+  <input {...props} type='text' value={value} onChange={callback} />
+);
+
 export const color = (value, callback, props) => (
   <input type='color' value={value} onChange={callback} {...props} />
 );

@@ -32,6 +32,12 @@ export default {
     setType: signalRaw(function ([clientId, type]) {
       this.systems.editor.get(clientId).outlineType = type;
     }),
+    setCamera: signalRaw(function ([clientId, camera]) {
+      this.systems.editor.get(clientId).camera = camera.id;
+      if (this.systems.editor.getId() === clientId) {
+        this.actions.renderer.camera.set(camera);
+      }
+    }),
     load: signalRaw(function ([data]) {
       this.actions.external.stop(true);
       this.actions.external.load(data);
