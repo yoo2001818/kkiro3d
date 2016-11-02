@@ -43,6 +43,21 @@ function createSetEulerRotation(system, index) {
   };
 }
 
+function createInterpolator(getTime) {
+  return (offset, channel, prevIndex, index) => {
+    let input = channel.input[index];
+    let prevInput = channel.input[prevIndex];
+    let output = channel.output[index];
+    let prevOutput = channel.output[prevIndex];
+    if (prevInput === input) prevInput = input + 1;
+    // INTERPOLATE!!!!
+    let time = (offset - prevInput) / (input - prevInput);
+    if (offset > input) time = 1;
+    time = getTime(time);
+    return prevOutput + (output - prevOutput) * time;
+  };
+}
+
 export default class AnimationSystem {
   constructor() {
     this.hooks = {
@@ -69,17 +84,11 @@ export default class AnimationSystem {
         if (time > x) return y;
         return bezier.YfromX(time, xPrev, yPrev, xOut, yOut, xIn, yIn, x, y);
       },
-      'linear': (offset, channel, prevIndex, index) => {
-        let input = channel.input[index];
-        let prevInput = channel.input[prevIndex];
-        let output = channel.output[index];
-        let prevOutput = channel.output[prevIndex];
-        if (prevInput === input) prevInput = input + 1;
-        // INTERPOLATE!!!!
-        let time = (offset - prevInput) / (input - prevInput);
-        if (offset > input) time = 1;
-        return prevOutput + (output - prevOutput) * time;
-      }
+      'linear': createInterpolator(x => x),
+      'easeIn': createInterpolator(t => t*t*t),
+      'easeOut': createInterpolator(t => (--t)*t*t+1),
+      'easeInOut': createInterpolator(t => (t < 0.5) ? 4*t*t*t :
+        (t-1) * (2*t-2) * (2*t-2) + 1),
     };
     this.channels = {
       'transform.position.x': createSetPosition(this, 0),
@@ -123,7 +132,14 @@ export default class AnimationSystem {
         if (index === -1) index = channel.input.length - 1;
         let prevIndex = index - 1;
         if (prevIndex < 0) prevIndex = 0;
-        let interpolator = this.interpolators[channel.interpolation[prevIndex]];
+        let interpolator;
+        if (channel.interpolation != null) {
+          if (Array.isArray(channel.interpolation)) {
+            interpolator = this.interpolators[channel.interpolation[prevIndex]];
+          } else {
+            interpolator = this.interpolators[channel.interpolation];
+          }
+        }
         if (interpolator == null) interpolator = this.interpolators.linear;
         this.channels[channel.channel](entity,
           interpolator(offset, channel, prevIndex, index));
