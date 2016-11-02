@@ -26,8 +26,9 @@ export default function collisionEffect(renderer) {
     entity: (data, entity) => {
       if (entity.transform == null) return data;
       if (entity.collision == null) return data;
-      let isSelected = engine.state.global.selectedType === 'entity' &&
-        entity.id === engine.state.global.selected;
+      let selfData = engine.systems.editor.getSelf();
+      let isSelected = selfData.selectedType === 'entity' &&
+        entity.id === selfData.selected;
       if (!isSelected) return data;
       let max = engine.systems.collision.getAABBMax(entity);
       let min = engine.systems.collision.getAABBMin(entity);

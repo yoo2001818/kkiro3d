@@ -13,7 +13,8 @@ const TYPES = {
     name: 'Entities',
     component: <EntityList />,
     add: function() {
-      this.props.execute('editor.createEntity', undefined);
+      this.props.execute('editor.createEntity',
+        this.props.engine.systems.editor.getId(), undefined);
     }
   },
   /* component: {
@@ -66,13 +67,17 @@ class OutlinePane extends Component {
     outlineData.add.call(this);
   }
   handleType(type) {
-    this.props.execute('editor.setType', type);
+    this.props.execute('editor.setType',
+      this.props.engine.systems.editor.getId(), type);
   }
   handleSelect(selected) {
-    this.props.execute('editor.select', this.props.outlineType, selected);
+    this.props.execute('editor.select',
+      this.props.engine.systems.editor.getId(),
+      this.props.outlineType, selected);
   }
   render() {
     const { selected, selectedType, outlineType } = this.props;
+    if (outlineType == null) return false;
     const outlineData = TYPES[outlineType];
     return (
       <Pane className='outline-pane'
@@ -110,6 +115,7 @@ class OutlinePane extends Component {
 OutlinePane.propTypes = {
   execute: PropTypes.func,
   executeLocal: PropTypes.func,
+  engine: PropTypes.object,
   selected: PropTypes.any,
   selectedType: PropTypes.string,
   outlineType: PropTypes.string
@@ -117,11 +123,13 @@ OutlinePane.propTypes = {
 
 export default connect({
   'editor.setType': true,
-  'editor.select': true
+  'editor.select': true,
+  'network.connect': true
 }, (engine) => ({
   execute: engine.actions.external.execute,
   executeLocal: engine.actions.external.executeLocal,
-  selected: engine.state.global.selected,
-  selectedType: engine.state.global.selectedType,
-  outlineType: engine.state.global.outlineType
+  engine,
+  selected: engine.systems.editor.getSelf().selected,
+  selectedType: engine.systems.editor.getSelf().selectedType,
+  outlineType: engine.systems.editor.getSelf().outlineType
 }))(OutlinePane);

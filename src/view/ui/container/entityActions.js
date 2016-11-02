@@ -6,7 +6,8 @@ class EntityActions extends Component {
     this.props.execute('entity.delete', this.props.entity);
   }
   handleClone() {
-    this.props.execute('editor.createEntity', this.props.entity);
+    this.props.execute('editor.createEntity',
+      this.props.engine.systems.editor.getId(), this.props.entity);
   }
   render() {
     return (
@@ -22,9 +23,11 @@ class EntityActions extends Component {
 
 EntityActions.propTypes = {
   execute: PropTypes.func,
-  entity: PropTypes.object
+  entity: PropTypes.object,
+  engine: PropTypes.object
 };
 
 export default connect({}, (engine) => ({
-  execute: engine.actions.external.execute
+  execute: engine.actions.external.execute,
+  engine
 }))(EntityActions);

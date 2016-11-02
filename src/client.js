@@ -12,8 +12,6 @@ import WebSocketClientConnector from
   'locksmith-connector-ws/lib/webSocketClientConnector';
 import { Synchronizer } from 'locksmith';
 import jsonReplacer from './util/jsonReplacer';
-import ModalDialog from './view/ui/component/modal/dialog';
-import React from 'react';
 
 let engine = createEngine({}, {
   test: function TestSystem (engine) {
@@ -76,19 +74,18 @@ synchronizer.on('connect', () => {
   engine.actions.network.connectSelf();
 });
 synchronizer.on('disconnect', () => {
+  engine.actions.external.executeLocal('ui.setModal', {
+    title: 'Connection Closed',
+    data: 'The connection to the server has been closed.'
+  });
   engine.actions.network.disconnectSelf();
 });
 synchronizer.on('error', (error) => {
-  engine.actions.external.executeLocal('ui.setModal',
-    <ModalDialog title='Network Error' actions={[
-      {name: 'OK'}
-    ]}>
-      <p>
-      { error.message || (typeof error === 'string' && error) ||
-        'An unknown error has occurred while doing network synchronization' }
-      </p>
-    </ModalDialog>
-  );
+  engine.actions.external.executeLocal('ui.setModal', {
+    title: 'Network Error',
+    data: error.message || (typeof error === 'string' && error) ||
+      'An unknown error has occurred while doing network synchronization'
+  });
 });
 
 let domCounter = 0;

@@ -35,7 +35,7 @@ export default function collisionPush(engine) {
       tmpVec[2] = sign(tmpVec[2]);
       // Multiply sign
       vec3.multiply(tmpVec2, tmpVec2, tmpVec);
-      engine.actions.transform.translate(other, tmpVec2);
+      engine.actions.transform.translate(other, tmpVec2, true);
     }
   };
 }

@@ -19,6 +19,7 @@ const TYPES = {
 class PropertiesPane extends Component {
   render() {
     const { selected, selectedType } = this.props;
+    if (selectedType == null) return false;
     const Component = TYPES[selectedType];
     return (
       <Pane header='Properties' className='properties-pane'>
@@ -34,8 +35,9 @@ PropertiesPane.propTypes = {
 };
 
 export default connect({
-  'editor.select': true
-}, ({ state }) => ({
-  selected: state.global.selected,
-  selectedType: state.global.selectedType
+  'editor.select': true,
+  'network.connect': true
+}, (engine) => ({
+  selected: engine.systems.editor.getSelf().selected,
+  selectedType: engine.systems.editor.getSelf().selectedType
 }))(PropertiesPane);

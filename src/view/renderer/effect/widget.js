@@ -23,10 +23,10 @@ export default function widgetEffect(renderer) {
     translateWidget, widgetShader,
     world: (data) => {
       // Add widget to draw passes if an entity is selected
-      let entityId = engine.state.global.selected;
+      let entityId = engine.systems.editor.getSelf().selected;
       let entity = engine.state.entities[entityId];
       let matrixSystem = engine.systems.matrix;
-      if (engine.state.global.selectedType === 'entity' &&
+      if (engine.systems.editor.getSelf().selectedType === 'entity' &&
         entity != null && entity.transform != null
       ) {
         // Create model matrix for it (Sigh)
@@ -41,7 +41,7 @@ export default function widgetEffect(renderer) {
         });
       }
       // Or.. cursors.
-      let cursor = engine.state.global.cursor;
+      let cursor = engine.systems.editor.getSelf().cursor;
       if (cursor != null) {
         // Create model matrix for it too
         let model = mat4.create();

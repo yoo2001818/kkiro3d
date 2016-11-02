@@ -2,17 +2,19 @@ export default class NetworkSystem {
   constructor() {
     this.connected = false;
     this.clients = [];
+    this.clientData = [{}];
     this.synchronizer = null;
     this.machine = {
       getState: () => {
         let state = this.engine.getState();
-        return state.concat([this.clients]);
+        return state.concat([this.clients, this.clientData]);
       },
       loadState: (state) => {
         this.engine.stop();
         this.engine.actions.external.load(state);
         this.engine.start();
-        this.clients = state[state.length - 1];
+        this.clients = state[state.length - 2];
+        this.clientData = state[state.length - 1];
       },
       run: (action) => {
         // Remap arg
@@ -26,6 +28,12 @@ export default class NetworkSystem {
       }
     };
     this.hooks = {
+      'external.start!': () => {
+        if (this.synchronizer == null) {
+          this.clients = [this.getId()];
+          this.engine.actions.network.connect(this.getId());
+        }
+      },
       'external.execute:pre!': (args) => {
         if (this.synchronizer == null) return args;
         // Send it to the engine, while mapping the entity
@@ -50,8 +58,12 @@ export default class NetworkSystem {
       }
     };
   }
+  getData(id) {
+    return this.clientData[id];
+  }
   getId() {
     if (this.synchronizer == null) return 0;
+    if (this.synchronizer.meta == null) return 0;
     // Use upstream client ID
     return this.synchronizer.meta.id;
   }

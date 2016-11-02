@@ -1,5 +1,6 @@
-import { Component, PropTypes, cloneElement } from 'react';
+import React, { Component, PropTypes, cloneElement } from 'react';
 import connect from '../util/connect';
+import ModalDialog from '../component/modal/dialog';
 
 class ModalOverlay extends Component {
   handleClose() {
@@ -8,6 +9,17 @@ class ModalOverlay extends Component {
   render() {
     const { modal } = this.props;
     if (modal == null) return false;
+    if (modal.title) {
+      return (
+        <ModalDialog title={modal.title} actions={[
+          {name: 'OK'}
+        ]} onClose={this.handleClose.bind(this)}>
+          <p>
+            {modal.data}
+          </p>
+        </ModalDialog>
+      );
+    }
     if (typeof modal === 'function') {
       return modal(this.handleClose.bind(this));
     }

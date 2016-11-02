@@ -4,7 +4,8 @@ import connect from '../util/connect';
 
 class NetworkStatus extends Component {
   render() {
-    const { connected, clients } = this.props;
+    const { connected, clients, useNetwork } = this.props;
+    if (!useNetwork) return false;
     return (
       <div className={classNames('network-status', { connected })}>
         <i className='icon' />
@@ -20,7 +21,8 @@ class NetworkStatus extends Component {
 NetworkStatus.propTypes = {
   execute: PropTypes.func,
   connected: PropTypes.bool,
-  clients: PropTypes.array
+  clients: PropTypes.array,
+  useNetwork: PropTypes.bool
 };
 
 export default connect({
@@ -28,5 +30,6 @@ export default connect({
 }, (engine) => ({
   execute: engine.actions.external.execute,
   connected: engine.systems.network.connected,
-  clients: engine.systems.network.clients
+  clients: engine.systems.network.clients,
+  useNetwork: engine.systems.network.synchronizer != null
 }))(NetworkStatus);

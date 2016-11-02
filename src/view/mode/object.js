@@ -24,6 +24,9 @@ export default class ObjectAction {
   exit() {
 
   }
+  getState() {
+    return this.engine.systems.editor.getSelf();
+  }
   getCamera() {
     return this.engine.systems.renderer.viewportList[0].camera;
   }
@@ -35,7 +38,7 @@ export default class ObjectAction {
     if (this.rightHeld &&
       Math.sqrt(offsetX * offsetX + offsetY * offsetY) > 4
     ) {
-      const { selected, selectedType } = this.engine.state.global;
+      const { selected, selectedType } = this.getState();
       if (selectedType !== 'entity') return;
       let prevEntity = this.engine.state.entities[selected];
       if (prevEntity == null) return;
@@ -67,12 +70,14 @@ export default class ObjectAction {
       let entity = this.engine.state.entities[id];
       if (entity == null) return;
       this.rightHeld = true;
-      this.engine.actions.external.execute('editor.select', 'entity',
+      this.engine.actions.external.execute('editor.select',
+        this.engine.systems.editor.getId(),
+        'entity',
         entity.id);
       return;
     }
     if (e.button === 0) {
-      const { selected, selectedType } = this.engine.state.global;
+      const { selected, selectedType } = this.engine.systems.editor.getSelf();
       if (selectedType !== 'entity') return;
       let prevEntity = this.engine.state.entities[selected];
       if (prevEntity != null && prevEntity.transform != null) {
@@ -130,7 +135,7 @@ export default class ObjectAction {
       if (pos == null) {
         // Set the position to current XY, while preserving Z value
         // Of course, this requires previous cursor value
-        let prevPos = this.engine.state.global.cursor;
+        let prevPos = this.engine.systems.editor.getSelf().cursor;
         if (prevPos == null) return;
         let ndc = toNDC(this.mouseX, this.mouseY, this.renderer);
         let camera = this.getCamera();
@@ -151,7 +156,8 @@ export default class ObjectAction {
         // Tada
         pos = perspPos;
       }
-      this.engine.actions.external.execute('editor.cursor', pos);
+      this.engine.actions.external.execute('editor.cursor',
+        this.engine.systems.editor.getId(), pos);
     }
     if (e.button !== 1) return;
     this.mouseHeld = true;
@@ -212,7 +218,7 @@ export default class ObjectAction {
     }
     // Translate
     if (e.keyCode === 71) {
-      const { selected, selectedType } = this.engine.state.global;
+      const { selected, selectedType } = this.getState();
       if (selectedType !== 'entity') return;
       let prevEntity = this.engine.state.entities[selected];
       if (prevEntity == null) return;
@@ -222,7 +228,7 @@ export default class ObjectAction {
     }
     // Scale
     if (e.keyCode === 83) {
-      const { selected, selectedType } = this.engine.state.global;
+      const { selected, selectedType } = this.getState();
       if (selectedType !== 'entity') return;
       let prevEntity = this.engine.state.entities[selected];
       if (prevEntity == null) return;
@@ -232,7 +238,7 @@ export default class ObjectAction {
     }
     // Rotate
     if (e.keyCode === 82) {
-      const { selected, selectedType } = this.engine.state.global;
+      const { selected, selectedType } = this.getState();
       if (selectedType !== 'entity') return;
       let prevEntity = this.engine.state.entities[selected];
       if (prevEntity == null) return;
