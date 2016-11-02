@@ -45,7 +45,6 @@ export default class NetworkSystem {
       },
       'external.start:post@100!': () => {
         if (this.synchronizer == null) {
-          this.clients = [this.getId()];
           this.engine.actions.network.connect(this.getId());
         }
       },
@@ -101,7 +100,11 @@ export default class NetworkSystem {
     this.synchronizer.connector.disconnect();
     this.synchronizer = null;
     this.engine.actions.network.disconnectSelf();
-    this.clients = [this.getId()];
-    this.engine.actions.network.connect(this.getId());
+    // Simulate 'connecting to server'
+    this.engine.actions.external.stop(true);
+    this.clients = [];
+    this.clientData = [];
+    this.engine.actions.external.load(this.engine.getState());
+    this.engine.actions.external.start(true);
   }
 }

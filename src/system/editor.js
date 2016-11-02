@@ -13,17 +13,26 @@ export default class EditorSystem {
         });
         // TODO If target client is not editor, we shouldn't do this
         // Create a camera for the client
-        let camera = this.engine.actions.entity.create({
-          name: 'Editor Camera',
-          transform: {
-            position: [0, 0, 5]
-          },
-          camera: {},
-          blenderController: {},
-          networkTemporary: {
-            owner: id
-          }
+        let camera;
+        let family = this.engine.systems.family.get(
+          'camera', 'networkTemporary');
+        family.entities.forEach(entity => {
+          let owner = entity.networkTemporary.owner;
+          if (id === owner) camera = entity;
         });
+        if (camera == null) {
+          camera = this.engine.actions.entity.create({
+            name: 'Editor Camera',
+            transform: {
+              position: [0, 0, 5]
+            },
+            camera: {},
+            blenderController: {},
+            networkTemporary: {
+              owner: id
+            }
+          });
+        }
         // Forcefully set the camera if it is joining client.
         if (id === this.getId()) {
           this.engine.actions.renderer.camera.set(camera);
