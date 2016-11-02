@@ -6,10 +6,10 @@ const REGISTRY = {
   transform
 };
 
-export default function getComponent(name, schema) {
+export default function getComponent(name, data) {
   if (REGISTRY[name]) return REGISTRY[name];
-  if (schema != null) {
-    REGISTRY[name] = createView(name, schema);
+  if (data != null && data.schema != null) {
+    REGISTRY[name] = createView(name, data);
     return REGISTRY[name];
   }
   return null;

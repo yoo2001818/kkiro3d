@@ -32,7 +32,8 @@ export default {
       value: 'Use Camera',
       setValue: (entity) => ['renderer.camera.set', entity],
       noField: true,
-      className: 'properties-full-button green'
+      className: 'properties-full-button green',
+      local: true
     }
   },
   actions: {

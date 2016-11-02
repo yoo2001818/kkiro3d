@@ -2,11 +2,12 @@ import box from 'webglue/lib/geom/box';
 import channel from 'webglue/lib/geom/channel';
 import translateWidget from 'webglue/lib/geom/translateWidget';
 import calcNormals from 'webglue/lib/geom/calcNormals';
+import calcTangents from 'webglue/lib/geom/calcTangents';
 import loadOBJ from 'webglue/lib/loader/obj';
 
 export default {
   geometries: {
-    box: calcNormals(box()),
+    box: calcTangents(calcNormals(box())),
     teapot: channel(loadOBJ(require('./geom/wt-teapot.obj'))),
     door1: channel(loadOBJ(require('./geom/door1.obj'))),
     door: channel(loadOBJ(require('./geom/door.obj'))),

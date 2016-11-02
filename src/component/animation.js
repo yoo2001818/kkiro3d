@@ -27,7 +27,7 @@ export default {
       type: 'number'
     },
     repeat: {
-      type: 'number'
+      type: 'integer'
     },
     duration: {
       type: 'number'

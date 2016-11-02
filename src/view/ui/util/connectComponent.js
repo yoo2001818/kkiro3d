@@ -11,6 +11,7 @@ export default function connectComponent(actions, validator = VALIDATOR) {
     // This happens because fudge objects are mutable :/
     entity: propEntity,
     execute: engine.actions.external.execute,
+    executeLocal: engine.actions.external.executeLocal,
     engine
   }), undefined, {
     pure: true, updateEvent: 'external.domRender:post'

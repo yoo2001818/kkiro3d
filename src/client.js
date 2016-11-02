@@ -52,8 +52,6 @@ engine.addSystem('collisionPush', CollisionPushSystem);
 
 engine.systems.network.connectHandler = createSynchronizer;
 
-engine.systems.network.connect('ws://localhost:23482/');
-
 engine.start();
 engine.systems.test.init();
 
@@ -74,7 +72,9 @@ function update(time) {
   prevTime = time;
   // timer += delta;
   // Run update if not connected
-  if (engine.systems.network.synchronizer == null) {
+  if (engine.systems.network.synchronizer == null &&
+    engine.state.global.running
+  ) {
     engine.update(delta);
   }
 

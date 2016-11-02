@@ -26,6 +26,19 @@ export const number = (value, callback, props) => (
   />
 );
 
+export const integer = (value, callback, props) => (
+  <NumberInput
+    value={value}
+    onChange={e => callback({
+      target: {
+        value: parseInt(e.target.value)
+      }
+    })}
+    precision={0}
+    {...props}
+  />
+);
+
 export const degree = (value, callback, props) => (
   <NumberInput
     value={value / Math.PI * 180}

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import connectComponent from '../../util/connectComponent';
-import getHandler from '../../util/getComponentHandler';
+import getHandler, { getLocalHandler } from '../../util/getComponentHandler';
 
 import * as inputTypes from '../input';
 import EntityComponentSection from '../../component/entityComponentSection';
@@ -8,13 +8,14 @@ import Field from '../../component/ui/field';
 
 import capitalize from '../../../../util/capitalize';
 
-export default function createView(name, schema) {
+export default function createView(name, data) {
+  let { schema } = data;
   class ComponentView extends Component {
     render() {
       const { entity, execute, engine } = this.props;
       return (
         <EntityComponentSection className='entity-component-view'
-          header={capitalize(name)}
+          header={data.name || capitalize(name)}
           onRemove={() => execute(`entity.remove.${name}`, entity)}
         >
           {Object.keys(schema).map(key => {
@@ -30,7 +31,11 @@ export default function createView(name, schema) {
 
             let setter;
             if (entry.setValue) {
-              setter = getHandler(this, entry.setValue);
+              if (entry.local) {
+                setter = getLocalHandler(this, entry.setValue);
+              } else {
+                setter = getHandler(this, entry.setValue);
+              }
             } else {
               setter = getHandler(this, (entity, value) =>
                 [`${name}.set`, entity, {[key]: value}]);
@@ -53,6 +58,7 @@ export default function createView(name, schema) {
   ComponentView.propTypes = {
     entity: PropTypes.object,
     execute: PropTypes.func,
+    executeLocal: PropTypes.func,
     engine: PropTypes.object
   };
   ComponentView.displayName = `ComponentView<${name}>`;

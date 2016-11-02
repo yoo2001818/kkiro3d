@@ -74,7 +74,7 @@ export default {
     camera: {
       set: signalRawNoop(function ([camera]) {
         // We don't even need viewports for now... :/
-        this.systems.renderer.viewportList[0].camera = camera;
+        this.systems.renderer.viewportList = [{ camera }];
       })
     }
   }

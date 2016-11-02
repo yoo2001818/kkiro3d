@@ -88,6 +88,7 @@ export default class NumberInput extends Component {
     // Set the value
     let currentValue = this.dragValue - deltaY * 1 /
       Math.pow(10, precision / 2);
+    if (precision === 0) currentValue /= 10;
     this.setState({
       editValue: currentValue.toFixed(precision)
     });

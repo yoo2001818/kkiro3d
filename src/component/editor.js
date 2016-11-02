@@ -1,14 +1,6 @@
 import { signalRaw } from 'fudge';
 
 export default {
-  // It means that the entity should be cleaned up after reloading.
-  // (For cameras)
-  component: {
-    cleanUp: true
-  },
-  schema: {
-    cleanUp: 'checkbox'
-  },
   actions: {
     select: signalRaw(function ([clientId, type, id]) {
       let state = this.systems.editor.get(clientId);
@@ -41,9 +33,9 @@ export default {
       this.systems.editor.get(clientId).outlineType = type;
     }),
     load: signalRaw(function ([data]) {
-      this.actions.external.stop();
+      this.actions.external.stop(true);
       this.actions.external.load(data);
-      this.actions.external.start();
+      this.actions.external.start(true);
     })
   },
   global: {

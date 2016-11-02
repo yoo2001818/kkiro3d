@@ -50,8 +50,7 @@ class EntityProperties extends Component {
           // Get component metadata
           let metadata = engine.components.store[name];
           if (metadata == null) return false;
-          let schema = metadata.data.schema;
-          let Component = getComponent(name, schema);
+          let Component = getComponent(name, metadata.data);
           if (Component == null) return false;
           return (
             <Component entity={entity} key={name} />

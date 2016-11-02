@@ -11,11 +11,11 @@ export default class NetworkSystem {
         return state.concat([this.clients, this.clientData]);
       },
       loadState: (state) => {
+        this.clients = state[state.length - 2];
+        this.clientData = state[state.length - 1];
         this.engine.stop();
         this.engine.actions.external.load(state);
         this.engine.start();
-        this.clients = state[state.length - 2];
-        this.clientData = state[state.length - 1];
       },
       run: (action) => {
         // Remap arg
@@ -29,7 +29,21 @@ export default class NetworkSystem {
       }
     };
     this.hooks = {
-      'external.start!': () => {
+      'network.disconnect:post!': ([clientId]) => {
+        this.networkFamily.entities.forEach(entity => {
+          if (entity.networkTemporary.owner === clientId) {
+            this.engine.actions.entity.delete(entity);
+          }
+        });
+      },
+      'external.load:post!': () => {
+        this.networkFamily.entities.forEach(entity => {
+          if (this.getData(entity.networkTemporary.owner) == null) {
+            this.engine.actions.entity.delete(entity);
+          }
+        });
+      },
+      'external.start:post@100!': () => {
         if (this.synchronizer == null) {
           this.clients = [this.getId()];
           this.engine.actions.network.connect(this.getId());
@@ -73,10 +87,12 @@ export default class NetworkSystem {
   }
   attach(engine) {
     this.engine = engine;
+    this.networkFamily = this.engine.systems.family.get('networkTemporary');
     // NetworkSystem doesn't handle ticks and stuff - it should be done by
     // client entry code.
   }
   connect(endpoint) {
+    if (this.synchronizer != null) this.disconnect();
     this.synchronizer = this.connectHandler(this.engine, endpoint);
     this.engine.actions.network.disconnectSelf();
   }
