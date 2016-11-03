@@ -8,7 +8,6 @@ import loadOBJ from 'webglue/lib/loader/obj';
 export default {
   geometries: {
     box: calcTangents(calcNormals(box())),
-    teapot: channel(loadOBJ(require('./geom/wt-teapot.obj'))),
     door1: channel(loadOBJ(require('./geom/door1.obj'))),
     door: channel(loadOBJ(require('./geom/door.obj'))),
     translateWidget: translateWidget()
@@ -22,19 +21,6 @@ export default {
   textures: {
     '2': {
       source: require('./texture/2.png')
-    },
-    door: {
-      source: require('./texture/door.png')
-    },
-    skybox: {
-      source: [
-        require('./texture/stormyday/front.jpg'),
-        require('./texture/stormyday/back.jpg'),
-        require('./texture/stormyday/down.jpg'),
-        require('./texture/stormyday/up.jpg'),
-        require('./texture/stormyday/right.jpg'),
-        require('./texture/stormyday/left.jpg')
-      ]
     }
   },
   materials: {
