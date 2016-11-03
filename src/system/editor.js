@@ -4,6 +4,7 @@ export default class EditorSystem {
       'network.connect:post!': ([id]) => {
         // Fill up default data.
         let data = this.get(id);
+        if (data.type !== 'editor') return;
         Object.assign(data, {
           camera: -1, // :S
           selected: -1,
@@ -53,6 +54,7 @@ export default class EditorSystem {
           checkArr[owner] = entity;
         });
         this.engine.systems.network.clients.forEach(id => {
+          if (this.get(id).type !== 'editor') return;
           let camera;
           if (checkArr[id] == null) {
             camera = this.engine.actions.entity.create({

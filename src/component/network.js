@@ -2,11 +2,11 @@ import { signalRaw } from 'fudge';
 
 export default {
   actions: {
-    connect: signalRaw(function ([id]) {
+    connect: signalRaw(function ([id, data]) {
       let index = this.systems.network.clients.indexOf(id);
       if (index !== -1) return;
       this.systems.network.clients.push(id);
-      this.systems.network.clientData[id] = {};
+      this.systems.network.clientData[id] = data || {};
     }),
     disconnect: signalRaw(function ([id]) {
       let index = this.systems.network.clients.indexOf(id);

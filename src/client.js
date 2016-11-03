@@ -50,7 +50,10 @@ engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
     'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
 engine.addSystem('collisionPush', CollisionPushSystem);
 
-engine.systems.network.connectHandler = createSynchronizer;
+engine.systems.network.connectHandler = createSynchronizer.bind(null, 'editor');
+engine.systems.network.offlineMeta = {
+  type: 'editor'
+};
 
 engine.start();
 engine.systems.test.init();

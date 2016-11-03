@@ -57,10 +57,12 @@ connector, {
   freezeWait: 1000
 });
 synchronizer.connectionHandler = (data, clientId) => ({
-  id: clientId
+  id: clientId,
+  type: (data || {}).type
 });
 synchronizer.on('connect', (clientId) => {
-  engine.actions.external.execute('network.connect', clientId);
+  let data = synchronizer.clients[clientId].meta;
+  engine.actions.external.execute('network.connect', clientId, data);
   if (clientId === 0) engine.actions.network.connectSelf();
 });
 synchronizer.on('disconnect', (clientId) => {

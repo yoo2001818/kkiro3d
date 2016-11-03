@@ -5,6 +5,7 @@ export default class NetworkSystem {
     this.clientData = [{}];
     this.synchronizer = null;
     this.connectHandler = null;
+    this.offlineMeta = {};
     this.machine = {
       getState: () => {
         let state = this.engine.getState();
@@ -45,7 +46,7 @@ export default class NetworkSystem {
       },
       'external.start:post@100!': () => {
         if (this.synchronizer == null) {
-          this.engine.actions.network.connect(this.getId());
+          this.engine.actions.network.connect(this.getId(), this.offlineMeta);
         }
       },
       'external.execute:pre!': (args) => {

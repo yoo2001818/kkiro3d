@@ -3,7 +3,7 @@ import WebSocketClientConnector from
 import { Synchronizer } from 'locksmith';
 import jsonReplacer from './jsonReplacer';
 
-export default function createSynchronizer(engine, endpoint) {
+export default function createSynchronizer(type, engine, endpoint) {
   let connector = new WebSocketClientConnector(
     new WebSocket(endpoint));
   connector.replacer = jsonReplacer;
@@ -14,7 +14,7 @@ export default function createSynchronizer(engine, endpoint) {
 
   engine.systems.network.synchronizer = synchronizer;
 
-  connector.start();
+  connector.start({ type });
   synchronizer.on('tick', () => {
     engine.update(1/60);
   });
