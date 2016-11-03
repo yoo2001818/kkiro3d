@@ -42,7 +42,7 @@ export default class CachedTextArea extends Component {
           { locked }, className)}
       >
         <textarea
-          value={ locked ? editValue : value }
+          value={ locked ? editValue : (value || '') }
           onChange={this.handleChange.bind(this)}
           onFocus={this.handleFocus.bind(this)}
           onBlur={this.handleBlur.bind(this)}

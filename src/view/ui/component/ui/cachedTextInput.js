@@ -43,7 +43,7 @@ export default class CachedTextInput extends Component {
       >
         <input
           type={type}
-          value={ locked ? editValue : value }
+          value={ locked ? editValue : (value || '') }
           onChange={this.handleChange.bind(this)}
           onFocus={this.handleFocus.bind(this)}
           onBlur={this.handleBlur.bind(this)}
