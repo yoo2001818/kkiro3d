@@ -25,6 +25,11 @@ class HeaderMenu extends Component {
       </ModalDialog>
     );
   }
+  handleNew() {
+    this.props.execute('editor.load', [{
+      entityId: 0
+    }, [], []]);
+  }
   handleLoadCookie() {
     if (window.localStorage.savedData == null) return;
     this.props.execute('editor.load',
@@ -46,6 +51,9 @@ class HeaderMenu extends Component {
     return (
       <div className='header-menu'>
         <DropDown title='File' className='left no-caret'><ul>
+          <li><a href='#' onClick={this.handleNew.bind(this)}>
+            New
+          </a></li>
           <li><a href='#' onClick={this.handleLoad.bind(this)}>
             Load JSON...
           </a></li>
