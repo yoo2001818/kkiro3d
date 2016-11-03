@@ -16,7 +16,7 @@ export default class EditorSystem {
         // Create a camera for the client
         let camera;
         let family = this.engine.systems.family.get(
-          'camera', 'networkTemporary');
+          'camera', 'networkTemporary', 'blenderController');
         family.entities.forEach(entity => {
           let owner = entity.networkTemporary.owner;
           if (id === owner) camera = entity;
@@ -36,19 +36,12 @@ export default class EditorSystem {
         }
         this.engine.actions.editor.setCamera(id, camera);
       },
-      'entity.delete:pre!': (args) => {
-        // Prevent camera deletion if being used
-        let entity = args[0];
-        if (entity == null) return args;
-        if (this.isCamera(entity)) return null;
-        return args;
-      },
       'external.start:post@200!': ([isGlobal]) => {
         if (!isGlobal) return;
         // Everybody gets a camera if the player doesn't have one.
         let checkArr = [];
         let family = this.engine.systems.family.get(
-          'camera', 'networkTemporary');
+          'camera', 'networkTemporary', 'blenderController');
         family.entities.forEach(entity => {
           let owner = entity.networkTemporary.owner;
           checkArr[owner] = entity;

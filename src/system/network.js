@@ -31,18 +31,24 @@ export default class NetworkSystem {
     };
     this.hooks = {
       'network.disconnect:post!': ([clientId]) => {
-        this.networkFamily.entities.forEach(entity => {
+        let entities = this.networkFamily.entities;
+        for (let i = 0; i < entities.length; ++i) {
+          let entity = entities[i];
           if (entity.networkTemporary.owner === clientId) {
             this.engine.actions.entity.delete(entity);
+            i--;
           }
-        });
+        }
       },
       'external.load:post!': () => {
-        this.networkFamily.entities.forEach(entity => {
-          if (this.getData(entity.networkTemporary.owner) == null) {
+        let entities = this.networkFamily.entities;
+        for (let i = 0; i < entities.length; ++i) {
+          let entity = entities[i];
+          if (this.getData(entity.networkTemporary.owner) === null) {
             this.engine.actions.entity.delete(entity);
+            i--;
           }
-        });
+        }
       },
       'external.start:post@100!': () => {
         if (this.synchronizer == null) {
