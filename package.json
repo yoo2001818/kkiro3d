@@ -22,6 +22,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-eslint": "^3.0.1",
+    "gulp-sass-glob": "^1.0.6",
     "gulp-util": "^3.0.7",
     "html-webpack-plugin": "^2.22.0",
     "import-glob-loader": "^1.1.0",

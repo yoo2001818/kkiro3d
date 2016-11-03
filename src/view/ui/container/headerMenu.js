@@ -64,9 +64,11 @@ class HeaderMenu extends Component {
           <li><a href='#' onClick={this.handleConnect.bind(this)}>
             Connect...
           </a></li>
-          <li><a href='#' onClick={this.handleDisconnect.bind(this)}>
-            Disconnect
-          </a></li>
+          { this.props.useNetwork && (
+            <li><a href='#' onClick={this.handleDisconnect.bind(this)}>
+              Disconnect
+            </a></li>
+          ) }
         </ul></DropDown>
       </div>
     );
@@ -77,12 +79,16 @@ HeaderMenu.propTypes = {
   execute: PropTypes.func,
   executeLocal: PropTypes.func,
   ui: PropTypes.object,
-  engine: PropTypes.object
+  engine: PropTypes.object,
+  useNetwork: PropTypes.bool
 };
 
-export default connect({}, (engine) => ({
+export default connect({
+  'network.*': true
+}, (engine) => ({
   execute: engine.actions.external.execute,
   executeLocal: engine.actions.external.executeLocal,
   ui: engine.systems.ui,
-  engine: engine
+  engine: engine,
+  useNetwork: engine.systems.network.synchronizer != null
 }))(HeaderMenu);
