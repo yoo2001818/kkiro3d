@@ -1,10 +1,28 @@
 export default class ParentSystem {
   constructor() {
+    // Entities that doesn't have a parent.
+    this.root = [];
     // It's actually list of children... so... 'childrens' is right? Maybe?
     this.childrens = [];
     this.hooks = {
       'external.load!': () => {
+        this.root = [];
         this.childrens = [];
+      },
+      'entity.create:post!': (args) => {
+        let entity = args[args.length - 1];
+        if (entity.parent == null) this.addRoot(entity.id);
+      },
+      'entity.delete!': ([entity]) => {
+        if (entity.parent == null) this.removeRoot(entity.id);
+      },
+      'entity.add.parent:post!': ([entity]) => {
+        this.addChild(entity.parent, entity.id);
+        this.removeRoot(entity.id);
+      },
+      'entity.remove.parent!': ([entity, deleting]) => {
+        this.removeChild(entity.parent, entity.id);
+        if (!deleting) this.addRoot(entity.id);
       },
       'parent.*!': ([entity, parent]) => {
         this.removeChild(entity.parent, entity.id);
@@ -14,13 +32,14 @@ export default class ParentSystem {
   }
   attach(engine) {
     this.engine = engine;
-    this.family = engine.systems.family.get('parent');
-    this.family.onAdd.addRaw(([entity]) => {
-      this.addChild(entity.parent, entity.id);
-    });
-    this.family.onRemove.addRaw(([entity]) => {
-      this.removeChild(entity.parent, entity.id);
-    });
+  }
+  addRoot(entity) {
+    this.root.push(entity);
+  }
+  removeRoot(entity) {
+    let index = this.root.indexOf(entity);
+    if (index === -1) return;
+    this.root.splice(index, 1);
   }
   addChild(parent, child) {
     if (parent === -1) return;
