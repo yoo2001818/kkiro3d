@@ -12,17 +12,36 @@ const PLURAL = {
 };
 
 class RenderAssetList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      query: ''
+    };
+  }
+  handleChange(e) {
+    this.setState({
+      query: e.target.value
+    });
+  }
   handleSelect(asset) {
     if (this.props.onSelect) this.props.onSelect(asset);
   }
   render() {
+    const { query } = this.state;
     const { assets, selected } = this.props;
     return (
-      <FilterList data={ Object.keys(assets).map((asset) => ({
-        name: asset,
-        className: classNames({ selected: asset === selected }),
-        onClick: this.handleSelect.bind(this, asset)
-      }))} />
+      <FilterList onChange={this.handleChange.bind(this)} query={query}>
+        {Object.keys(assets).filter(asset =>
+          asset.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+        .map((asset, i) => (
+          <li key={i}
+            onClick={this.handleSelect.bind(this, asset)}
+            className={classNames({ selected: asset === selected })}
+          >
+            {asset}
+          </li>
+        ))}
+      </FilterList>
     );
   }
 }

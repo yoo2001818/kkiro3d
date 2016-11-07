@@ -1,35 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 
 export default class FilterList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      query: ''
-    };
-  }
-  handleChange(e) {
-    this.setState({
-      query: e.target.value
-    });
-  }
   render() {
-    const { query } = this.state;
-    const { data } = this.props;
+    const { query, children, onChange } = this.props;
     return (
       <div className='filter-list-component'>
         <div className='header'>
           <input type='text' value={query} placeholder='Search'
-            onChange={this.handleChange.bind(this)} />
+            onChange={onChange} />
         </div>
         <div className='content'>
           <ul>
-            {data.filter(e =>
-              e.name.toLowerCase().indexOf(query.toLowerCase()) !== -1)
-            .map((entry, i) => (
-              <li key={i} onClick={entry.onClick} className={entry.className}>
-                {entry.name}
-              </li>
-            ))}
+            { children }
           </ul>
         </div>
       </div>
@@ -38,5 +20,7 @@ export default class FilterList extends Component {
 }
 
 FilterList.propTypes = {
-  data: PropTypes.array
+  children: PropTypes.node,
+  query: PropTypes.string,
+  onChange: PropTypes.func
 };

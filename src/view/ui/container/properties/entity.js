@@ -6,9 +6,7 @@ import EntityComponentName from '../entity/component/name';
 import getComponent from '../entity/registry';
 
 import ModalContext from '../../component/modal/context';
-import FilterList from '../../component/filterList';
-
-import capitalize from '../../../../util/capitalize';
+import ComponentList from '../list/component';
 
 // let componentList = ['name', 'transform', 'mesh'];
 
@@ -25,15 +23,12 @@ class EntityProperties extends Component {
     return (
       <ModalContext alignTo={this.addOpen} onClose={onClose}>
         <div className='popup-menu'>
-          <FilterList data={
-            this.props.componentList.filter(name => entity[name] == null)
-            .map(name => ({
-              name: capitalize(name),
-              onClick: () => {
-                onClose();
-                this.handleAdd(name);
-              }
-            }))}
+          <ComponentList
+            filter={name => entity[name] == null}
+            onSelect={name => {
+              onClose();
+              this.handleAdd(name);
+            }}
           />
         </div>
       </ModalContext>
