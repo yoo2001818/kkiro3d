@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-// import connect from '../util/connect';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 
 import Header from '../component/header';
 import HeaderMenu from './headerMenu';
@@ -10,7 +11,7 @@ import OutlinePane from './outlinePane';
 import PropertiesPane from './propertiesPane';
 import ModalOverlay from './modalOverlay';
 
-export default class App extends Component {
+export class App extends Component {
   render() {
     // There's only one page in the app - there's no point using routers and
     // stuff.
@@ -37,13 +38,4 @@ export default class App extends Component {
   }
 }
 
-/*
-Index.propTypes = {
-  entities: PropTypes.array
-};
-
-export default connect({
-  'entity.*': true,
-  'transform.*': true
-}, ({ state }) => ({ entities: state.entities }))(Index);
-*/
+export default DragDropContext(HTML5Backend)(App);

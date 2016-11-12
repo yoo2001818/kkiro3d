@@ -31,16 +31,18 @@ class RenderAssetList extends Component {
     const { assets, selected } = this.props;
     return (
       <FilterList onChange={this.handleChange.bind(this)} query={query}>
-        {Object.keys(assets).filter(asset =>
-          asset.toLowerCase().indexOf(query.toLowerCase()) !== -1)
-        .map((asset, i) => (
-          <li key={i}
-            onClick={this.handleSelect.bind(this, asset)}
-            className={classNames('entry', { selected: asset === selected })}
-          >
-            {asset}
-          </li>
-        ))}
+        <ul>
+          {Object.keys(assets).filter(asset =>
+            asset.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+          .map((asset, i) => (
+            <li key={i}
+              onClick={this.handleSelect.bind(this, asset)}
+              className={classNames('entry', { selected: asset === selected })}
+            >
+              {asset}
+            </li>
+          ))}
+        </ul>
       </FilterList>
     );
   }

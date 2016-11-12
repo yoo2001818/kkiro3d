@@ -109,8 +109,15 @@
       }
     }
   }
+  &.dragging {
+    opacity: .50;
+  }
   &.selected > .title > .name {
     background-color: $blue-600;
     color: $blue-100;
   }
+}
+
+.entity-list.over {
+  background-color: $blue-200;
 }

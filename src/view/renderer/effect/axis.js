@@ -25,24 +25,22 @@ export default function axisEffect(renderer) {
       if (this.direction == null) return data;
       let direction = this.direction;
       let position = matrixSystem.getPosition(entity);
-      return Object.assign(data, {
-        passes: (data.passes || [{}]).concat([{
-          uniforms: {
-            uColor: this.color,
-            uModel: [
-              direction[0] * 1000, direction[1] * 1000, direction[2] * 1000, 0,
-              0, 0, 0, 0,
-              0, 0, 0, 0,
-              position[0],
-              position[1],
-              position[2],
-              1
-            ]
-          },
-          shader: axisShader,
-          geometry: axisGeom
-        }])
-      });
+      return [data, {
+        uniforms: {
+          uColor: this.color,
+          uModel: [
+            direction[0] * 1000, direction[1] * 1000, direction[2] * 1000, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            position[0],
+            position[1],
+            position[2],
+            1
+          ]
+        },
+        shader: axisShader,
+        geometry: axisGeom
+      }];
     }
   };
 }

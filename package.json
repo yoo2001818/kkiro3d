@@ -46,6 +46,8 @@
     "locksmith-connector-ws": "0.3.1",
     "lodash.merge": "^4.6.0",
     "react": "^15.3.2",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.3.2",
     "react-fudge": "^0.1.12",
     "react-hot-loader": "^1.2.9",

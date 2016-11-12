@@ -10,9 +10,7 @@ export default class FilterList extends Component {
             onChange={onChange} />
         </div>
         <div className='content'>
-          <ul>
-            { children }
-          </ul>
+          { children }
         </div>
       </div>
     );
