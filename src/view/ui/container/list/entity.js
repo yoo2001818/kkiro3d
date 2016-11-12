@@ -25,7 +25,11 @@ class EntityList extends Component {
     const { query } = this.state;
     const { engine, selected, allowNull } =
       this.props;
-    let hierarchy = createHierarchy(engine);
+    let hierarchy = createHierarchy(engine, entity => {
+      if (query === '') return true;
+      if (entity.name == null) return false;
+      return entity.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+    });
     return (
       <FilterList onChange={this.handleChange.bind(this)} query={query}>
         { allowNull && (
@@ -37,21 +41,10 @@ class EntityList extends Component {
             (None)
           </li>
         )}
-        {/* entities.filter(entity => {
-          let name = entity.name || '';
-          return name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-        }).map((entity, i) => (
-          <li key={i}
-            onClick={this.handleSelect.bind(this, entity.id)}
-            className={classNames({ selected: entity.id === selected })}
-          >
-            {entity.name}
-          </li>
-        )) */}
         { hierarchy.map((entity, key) => (
           <EntityNode
             selected={selected} onSelect={this.handleSelect}
-            entity={entity} key={key} />
+            entity={entity} key={key} searching={query !== ''} />
         ))}
       </FilterList>
     );

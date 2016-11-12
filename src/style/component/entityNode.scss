@@ -77,6 +77,16 @@
       }
     }
   }
+  &.matched {
+    & > .title > .name {
+      background-color: $orange-300;
+      color: $orange-800;
+      &:hover {
+        background-color: $blue-200;
+        color: $blue-800;
+      }
+    }
+  }
   &.orphan {
     & > .title > .name {
       background-color: $red-200;
