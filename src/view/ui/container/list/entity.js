@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import connect from '../../util/connect';
 import classNames from 'classnames';
 
-import EntityNode from '../../component/entityNode';
+import EntityNode, { createHierarchy } from '../../component/entityNode';
 import FilterList from '../../component/filterList';
 
 class EntityList extends Component {
@@ -23,8 +23,9 @@ class EntityList extends Component {
   }
   render() {
     const { query } = this.state;
-    const { root, orphans, childrens, entities, selected, allowNull } =
+    const { engine, selected, allowNull } =
       this.props;
+    let hierarchy = createHierarchy(engine);
     return (
       <FilterList onChange={this.handleChange.bind(this)} query={query}>
         { allowNull && (
@@ -47,15 +48,10 @@ class EntityList extends Component {
             {entity.name}
           </li>
         )) */}
-        { root.map((id, i) => (
-          <EntityNode entity={id} selected={selected} key={i}
-            entities={entities} childrens={childrens}
-            onSelect={this.handleSelect}/>
-        ))}
-        { orphans.map((id, i) => (
-          <EntityNode entity={id} selected={selected} key={i}
-            entities={entities} childrens={childrens} orphan
-            onSelect={this.handleSelect}/>
+        { hierarchy.map((entity, key) => (
+          <EntityNode
+            selected={selected} onSelect={this.handleSelect}
+            entity={entity} key={key} />
         ))}
       </FilterList>
     );
@@ -63,10 +59,7 @@ class EntityList extends Component {
 }
 
 EntityList.propTypes = {
-  entities: PropTypes.array,
-  childrens: PropTypes.array,
-  root: PropTypes.array,
-  orphans: PropTypes.array,
+  engine: PropTypes.object,
   selected: PropTypes.number,
   onSelect: PropTypes.func,
   allowNull: PropTypes.bool
@@ -82,8 +75,5 @@ export default connect({
   'name.set!': true,
   'parent.set!': true
 }, (engine) => ({
-  entities: engine.state.entities,
-  childrens: engine.systems.parent.childrens,
-  root: engine.systems.parent.root,
-  orphans: engine.systems.parent.orphans,
+  engine
 }))(EntityList);
