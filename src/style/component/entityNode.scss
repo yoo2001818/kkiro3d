@@ -4,11 +4,12 @@
     color: $grey-700;
     vertical-align: middle;
     display: table;
+    margin-right: 0.1em;
     & > .name {
       display: table-cell;
       width: 100%;
       border-radius: 0.1em;
-      padding: 0.3em 0.5em;
+      padding: 0.3em 0.3em;
       margin-left: 1.5em;
       vertical-align: middle;
       &:hover {
@@ -18,30 +19,53 @@
     }
     & > .handle {
       display: table-cell;
-      min-width: 1.3em;
-      padding: 0.7em 0.4em;
+      min-width: 2em;
+      padding: 0.3em 0;
       text-align: center;
       vertical-align: middle;
       font-size: 0.7em;
-      color: $blue-800;
+      color: $green-800;
       &:hover {
-        color: $blue-600;
+        color: $green-600;
       }
     }
   }
   & > .children {
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      border-left: 1px solid $grey-400;
+      top: 0;
+      left: -0.5px;
+      bottom: 0.7em;
+      z-index: 0;
+    }
+    position: relative;
     padding: 0;
     padding-left: 0.3em;
     margin: 0;
-    margin-left: 0.7em;
+    margin-left: 1.7em;
     list-style-type: none;
-    border-left: 1px solid $grey-400;
+    & > .entity-node {
+      margin-left: 0;
+      position: relative;
+      z-index: 1;
+      & > .children {
+        margin-left: 0.7em;
+      }
+      & > .title {
+        margin-left: -1em;
+      }
+    }
   }
   &.parent {
     & > .title > .handle {
       &:after {
         @include fa-icon();
         content: $fa-var-plus;
+        background-color: $grey-100;
+        padding: 0.1em 0;
       }
     }
     &.open {

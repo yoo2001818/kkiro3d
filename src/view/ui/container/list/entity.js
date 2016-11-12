@@ -75,6 +75,8 @@ EntityList.propTypes = {
 export default connect({
   'entity.create!': true,
   'entity.delete!': true,
+  'entity.add.parent!': true,
+  'entity.remove.parent!': true,
   'external.load!': true,
   'editor.select!': true,
   'name.set!': true,
