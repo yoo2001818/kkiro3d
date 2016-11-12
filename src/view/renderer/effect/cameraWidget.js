@@ -49,7 +49,7 @@ export default function cameraWidgetEffect(renderer) {
         scale[2] = -entity.camera.zoom;
       }
       return (tree) => {
-        return tree.options.camera === entity ? null : {
+        return tree.getOption('camera') === entity ? null : {
           uniforms: {
             uModel: model,
             uColor: isSelectedAll ? (

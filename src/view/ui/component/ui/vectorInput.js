@@ -13,6 +13,7 @@ export default class VectorInput extends Component {
   }
   handleFocus() {
     this.shouldLock = false;
+    this.valueCache = this.props.value.slice();
     this.setState({
       locked: true
     });
@@ -28,7 +29,12 @@ export default class VectorInput extends Component {
     }, 10);
   }
   handleChange(pos, e) {
-    let vec = this.props.value.slice();
+    let vec;
+    if (this.state.locked) {
+      vec = this.valueCache.slice();
+    } else {
+      vec = this.props.value.slice();
+    }
     vec[pos] = parseFloat(e.target.value);
     if (this.props.onChange) {
       this.props.onChange({

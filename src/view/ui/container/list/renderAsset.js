@@ -36,7 +36,7 @@ class RenderAssetList extends Component {
         .map((asset, i) => (
           <li key={i}
             onClick={this.handleSelect.bind(this, asset)}
-            className={classNames({ selected: asset === selected })}
+            className={classNames('entry', { selected: asset === selected })}
           >
             {asset}
           </li>
@@ -54,8 +54,8 @@ RenderAssetList.propTypes = {
 };
 
 export default connect({
-  'renderer.*': (args, { type }) => args[0] === type,
-  'external.load': true
+  'renderer.*!': (args, { type }) => args[0] === type,
+  'external.load!': true
 }, ({ systems }, { type }) => ({
   assets: systems.renderer[PLURAL[type]]
 }))(RenderAssetList);

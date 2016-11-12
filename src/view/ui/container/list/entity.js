@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import connect from '../../util/connect';
 import classNames from 'classnames';
 
+import EntityNode from '../../component/entityNode';
 import FilterList from '../../component/filterList';
 
 class EntityList extends Component {
@@ -10,6 +11,7 @@ class EntityList extends Component {
     this.state = {
       query: ''
     };
+    this.handleSelect = this.handleSelect.bind(this);
   }
   handleChange(e) {
     this.setState({
@@ -21,19 +23,20 @@ class EntityList extends Component {
   }
   render() {
     const { query } = this.state;
-    const { entities, selected, allowNull } = this.props;
+    const { root, orphans, childrens, entities, selected, allowNull } =
+      this.props;
     return (
       <FilterList onChange={this.handleChange.bind(this)} query={query}>
         { allowNull && (
           <li onClick={this.handleSelect.bind(this, null)}
-            className={classNames({
+            className={classNames('entry', {
               selected: selected === -1 || selected === null
             })}
           >
             (None)
           </li>
         )}
-        { entities.filter(entity => {
+        {/* entities.filter(entity => {
           let name = entity.name || '';
           return name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
         }).map((entity, i) => (
@@ -43,7 +46,17 @@ class EntityList extends Component {
           >
             {entity.name}
           </li>
-        )) }
+        )) */}
+        { root.map((id, i) => (
+          <EntityNode entity={id} selected={selected} key={i}
+            entities={entities} childrens={childrens}
+            onSelect={this.handleSelect}/>
+        ))}
+        { orphans.map((id, i) => (
+          <EntityNode entity={id} selected={selected} key={i}
+            entities={entities} childrens={childrens} orphan
+            onSelect={this.handleSelect}/>
+        ))}
       </FilterList>
     );
   }
@@ -51,17 +64,24 @@ class EntityList extends Component {
 
 EntityList.propTypes = {
   entities: PropTypes.array,
+  childrens: PropTypes.array,
+  root: PropTypes.array,
+  orphans: PropTypes.array,
   selected: PropTypes.number,
   onSelect: PropTypes.func,
   allowNull: PropTypes.bool
 };
 
 export default connect({
-  'entity.create': true,
-  'entity.delete': true,
-  'external.load': true,
-  'editor.select': true,
-  'name.set': true
-}, ({ state }) => ({
-  entities: state.entities.filter(v => v != null)
+  'entity.create!': true,
+  'entity.delete!': true,
+  'external.load!': true,
+  'editor.select!': true,
+  'name.set!': true,
+  'parent.set!': true
+}, (engine) => ({
+  entities: engine.state.entities,
+  childrens: engine.systems.parent.childrens,
+  root: engine.systems.parent.root,
+  orphans: engine.systems.parent.orphans,
 }))(EntityList);

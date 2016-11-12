@@ -50,6 +50,6 @@
     "react-fudge": "^0.1.12",
     "react-hot-loader": "^1.2.9",
     "shallowequal": "^0.2.2",
-    "webglue": "1.0.5"
+    "webglue": "1.0.8"
   }
 }

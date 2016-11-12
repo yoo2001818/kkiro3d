@@ -1,0 +1,82 @@
+.entity-node {
+  margin: 0.2em 0;
+  & > .title {
+    color: $grey-700;
+    vertical-align: middle;
+    display: table;
+    & > .name {
+      display: table-cell;
+      width: 100%;
+      border-radius: 0.1em;
+      padding: 0.3em 0.5em;
+      margin-left: 1.5em;
+      vertical-align: middle;
+      &:hover {
+        background-color: $blue-200;
+        color: $blue-800;
+      }
+    }
+    & > .handle {
+      display: table-cell;
+      min-width: 1.3em;
+      padding: 0.7em 0.4em;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 0.7em;
+      color: $blue-800;
+      &:hover {
+        color: $blue-600;
+      }
+    }
+  }
+  & > .children {
+    padding: 0;
+    padding-left: 0.3em;
+    margin: 0;
+    margin-left: 0.7em;
+    list-style-type: none;
+    border-left: 1px solid $grey-400;
+  }
+  &.parent {
+    & > .title > .handle {
+      &:after {
+        @include fa-icon();
+        content: $fa-var-plus;
+      }
+    }
+    &.open {
+      & > .title > .handle {
+        &:after {
+          @include fa-icon();
+          content: $fa-var-minus;
+        }
+      }
+    }
+  }
+  &.orphan {
+    & > .title > .name {
+      background-color: $red-200;
+      color: $red-800;
+      &:hover {
+        background-color: $red-300;
+        color: $red-800;
+      }
+      & > .orphan {
+        color: $red-500;
+        font-size: 0.8em;
+        padding-left: 0.2em;
+      }
+    }
+    &.selected > .title > .name {
+      background-color: $red-700;
+      color: $red-100;
+      & > .orphan {
+        color: $red-300;
+      }
+    }
+  }
+  &.selected > .title > .name {
+    background-color: $blue-600;
+    color: $blue-100;
+  }
+}

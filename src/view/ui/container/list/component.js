@@ -31,7 +31,8 @@ class ComponentList extends Component {
         .map((component, i) => (
           <li key={i}
             onClick={this.handleSelect.bind(this, component)}
-            className={classNames({ selected: component === selected })}
+            className={classNames('entry',
+              { selected: component === selected })}
           >
             {capitalize(component)}
           </li>
@@ -49,7 +50,7 @@ ComponentList.propTypes = {
 };
 
 export default connect({
-  'external.start': true
+  'external.start!': true
 }, (engine) => ({
   components: engine.components.list,
 }))(ComponentList);

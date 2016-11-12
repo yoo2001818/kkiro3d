@@ -50,12 +50,18 @@ export default class NumberInput extends Component {
   }
   handleBlur(e) {
     this.focus = false;
+    let value = e.target.value;
+    let evt = {
+      target: {
+        value
+      }
+    };
     this.setState({
       locked: false
     });
     // Emit change event
-    if (this.props.onBlur) this.props.onBlur(e);
-    if (this.props.onChange) this.props.onChange(e);
+    if (this.props.onBlur) this.props.onBlur(evt);
+    if (this.props.onChange) this.props.onChange(evt);
   }
   handleMouseDown(e) {
     if (e.button !== 0) return;
@@ -105,6 +111,7 @@ export default class NumberInput extends Component {
     if (this.focus) return;
     if (this.dragging) {
       this.dragging = false;
+      let value = this.input.value;
       // Apply the changes
       this.setState({
         locked: false
@@ -113,7 +120,7 @@ export default class NumberInput extends Component {
       if (this.props.onChange) {
         this.props.onChange({
           target: {
-            value: this.input.value
+            value
           }
         });
       }
