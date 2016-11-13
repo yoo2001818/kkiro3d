@@ -1,6 +1,8 @@
 #version 100
 #extension GL_OES_standard_derivatives : enable
 
+uniform lowp vec2 uRange;
+
 lowp vec3 encodeFloatToRGB(lowp float v) {
   lowp vec3 enc = vec3(1.0, 255.0, 65025.0) * v;
   enc = fract(enc);
@@ -16,7 +18,13 @@ lowp vec2 encodeFloatToRG(lowp float v) {
 }
 
 void main(void) {
-  lowp float intensity = gl_FragCoord.z / gl_FragCoord.w;
+  lowp float intensity;
+  if (gl_FragCoord.w == 1.0) {
+    intensity = gl_FragCoord.z;
+  } else {
+    intensity = (gl_FragCoord.z / gl_FragCoord.w - uRange.x) /
+      (uRange.y - uRange.x);
+  }
   lowp float dx = dFdx(intensity);
   lowp float dy = dFdy(intensity);
   lowp float moment = intensity * intensity + 0.25 * (dx * dx + dy * dy);

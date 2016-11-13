@@ -26,7 +26,7 @@ export default function lightShadowEffect(renderer) {
     format: gl.RGBA,
     type: gl.UNSIGNED_BYTE,
     params: {
-      minFilter: gl.LINEAR, // Why
+      minFilter: gl.LINEAR,
       mipmap: false
     }
   };
@@ -54,7 +54,7 @@ export default function lightShadowEffect(renderer) {
         // Pass 1: Draw the world (without any other fancy stuff)
         {
           options: {
-            clearColor: '#ffffff',
+            clearColor: [1, 0, 1, 0],
             clearDepth: 1,
             cull: gl.BACK,
             depth: gl.LEQUAL,
@@ -67,7 +67,8 @@ export default function lightShadowEffect(renderer) {
             uProjection: cameraMatrix.getProjection.bind(cameraMatrix,
               entity),
             uProjectionView: cameraMatrix.getProjectionView.bind(cameraMatrix,
-              entity)
+              entity),
+            uRange: [entity.camera.near, entity.camera.far]
           },
           passes: world
         },

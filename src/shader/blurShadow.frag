@@ -7,6 +7,7 @@ uniform sampler2D uTexture;
 uniform lowp vec2 uTextureOffset;
 
 lowp vec2 encodeFloatToRG(lowp float v) {
+  v = min(0.99999, v);
   lowp vec2 enc = vec2(1.0, 255.0) * v;
   enc = fract(enc);
   enc -= enc.yy * vec2(1.0 / 255.0, 0.0);

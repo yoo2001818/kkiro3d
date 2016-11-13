@@ -84,6 +84,7 @@ struct PointShadowLight {
   vec3 color;
   vec4 intensity;
 
+  vec2 range;
   mat4 shadowMat;
 };
 
@@ -93,6 +94,7 @@ struct DirectionalShadowLight {
   vec3 color;
   vec3 intensity;
 
+  vec2 range;
   mat4 shadowMat;
 };
 
@@ -211,10 +213,16 @@ float lerpShadow(float depth, float moment, float compare) {
   return clamp(max(p, pMax), 0.0, 1.0);
 }
 
-float calcShadow(sampler2D shadowMap, mat4 shadowMat) {
+float calcShadow(sampler2D shadowMap, mat4 shadowMat, vec2 range) {
   vec4 shadowCoord = shadowMat * vec4(vPosition, 1.0);
-  vec3 lightPos = shadowCoord.xyz / shadowCoord.w;
-  lightPos = lightPos * 0.5 + 0.5;
+  vec3 lightPos;
+  if (shadowCoord.w == 1.0) {
+    lightPos = shadowCoord.xyz / shadowCoord.w;
+    lightPos = lightPos * 0.5 + 0.5;
+  } else {
+    lightPos = vec3(shadowCoord.xy / shadowCoord.w * 0.5 + 0.5,
+      ((shadowCoord.z + shadowCoord.w) / 2.0 - range.x) / (range.y - range.x));
+  }
 
   float shadow;
 
@@ -323,7 +331,8 @@ void main(void) {
   for (int i = 0; i < POINT_SHADOW_LIGHT_SIZE; ++i) {
     PointShadowLight light = uPointShadowLight[i];
     vec4 phong = calcPoint(light.position, light.intensity.w, viewDir);
-    phong.xy *= calcShadow(uPointLightShadowMap[i], light.shadowMat);
+    phong.xy *= calcShadow(uPointLightShadowMap[i],
+      light.shadowMat, light.range);
     result += calcLight(matColor, light.color, light.intensity.rgb, phong);
   }
   #endif
@@ -338,7 +347,8 @@ void main(void) {
   for (int i = 0; i < DIRECTIONAL_SHADOW_LIGHT_SIZE; ++i) {
     DirectionalShadowLight light = uDirectionalShadowLight[i];
     vec4 phong = calcDirectional(light.direction, viewDir);
-    phong.xy *= calcShadow(uDirectionalLightShadowMap[i], light.shadowMat);
+    phong.xy *= calcShadow(uDirectionalLightShadowMap[i],
+      light.shadowMat, light.range);
     result += calcLight(matColor, light.color, light.intensity, phong);
   }
   #endif

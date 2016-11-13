@@ -35,6 +35,7 @@ export default function lightEffect(renderer) {
         if (shadowTexture != null) {
           world.uniforms.uPointLightShadowMap.push(shadowTexture);
           lightData.shadowMat = shadowMat;
+          lightData.range = [entity.camera.near, entity.camera.far];
           world.uniforms.uPointShadowLight.push(lightData);
         } else {
           world.uniforms.uPointLight.push(lightData);
@@ -56,6 +57,7 @@ export default function lightEffect(renderer) {
         if (shadowTexture != null) {
           world.uniforms.uDirectionalLightShadowMap.push(shadowTexture);
           lightData.shadowMat = shadowMat;
+          lightData.range = [entity.camera.near, entity.camera.far];
           world.uniforms.uDirectionalShadowLight.push(lightData);
         } else {
           world.uniforms.uDirectionalLight.push(lightData);

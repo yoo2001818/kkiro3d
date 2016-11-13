@@ -57,14 +57,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #define FXAA_SPAN_MAX     8.0
 #endif
 
-lowp vec2 encodeFloatToRG(lowp float v) {
-  lowp vec2 enc = vec2(1.0, 255.0) * v;
+vec2 encodeFloatToRG(float v) {
+  v = min(0.99999, v);
+  vec2 enc = vec2(1.0, 255.0) * v;
   enc = fract(enc);
   enc -= enc.yy * vec2(1.0 / 255.0, 0.0);
   return enc;
 }
 
-lowp float decodeRGToFloat(lowp vec2 v) {
+float decodeRGToFloat(vec2 v) {
   return dot(v, vec2(1.0, 1.0 / 255.0));
 }
 
@@ -75,14 +76,14 @@ vec2 shadowTex2D(sampler2D tex, vec2 fragCoord) {
 
 //optimized version for mobile, where dependent
 //texture reads can be a bottleneck
-vec2 fxaa(sampler2D tex, vec2 fragCoord, vec2 resolution) {
+vec2 fxaa(vec2 center, sampler2D tex, vec2 fragCoord, vec2 resolution) {
     vec2 rgbNW = shadowTex2D(tex, fragCoord + vec2(-1.0, -1.0) * resolution).xy;
     vec2 rgbNE = shadowTex2D(tex, fragCoord + vec2(1.0, -1.0) * resolution).xy;
     vec2 rgbSW = shadowTex2D(tex, fragCoord + vec2(-1.0, 1.0) * resolution).xy;
     vec2 rgbSE = shadowTex2D(tex, fragCoord + vec2(1.0, 1.0) * resolution).xy;
-    vec2 texColor = shadowTex2D(tex, fragCoord);
+    vec2 texColor = center;
     vec2 rgbM  = texColor;
-    vec2 luma = vec2(0.3, 0.3);
+    vec2 luma = vec2(0.5, 0.5);
     float lumaNW = dot(rgbNW, luma);
     float lumaNE = dot(rgbNE, luma);
     float lumaSW = dot(rgbSW, luma);
@@ -117,12 +118,14 @@ vec2 fxaa(sampler2D tex, vec2 fragCoord, vec2 resolution) {
         return rgbB;
 }
 
-varying lowp vec2 vTexCoord;
+varying vec2 vTexCoord;
 
 uniform sampler2D uTexture;
-uniform lowp vec2 uTextureOffset;
+uniform vec2 uTextureOffset;
 
 void main() {
-  vec2 values = fxaa(uTexture, vTexCoord, uTextureOffset);
+  vec2 center = shadowTex2D(uTexture, vTexCoord);
+  vec2 values = fxaa(center, uTexture, vTexCoord, uTextureOffset);
+  // values = min(center, values);
   gl_FragColor = vec4(encodeFloatToRG(values.x), encodeFloatToRG(values.y));
 }
