@@ -6,6 +6,12 @@ export default class RendererView {
     this.effects = {};
     for (let key in effects) this.effects[key] = effects[key](this);
 
+    webglue.shaders.governors.eqLength = {
+      checker: (shader, current) =>
+        shader === (current == null ? 0 : current.length),
+      allocator: current => current == null ? 0 : current.length
+    };
+
     // TODO This generates render tree every frame; it can be optimized.
     engine.signals.external.render.post.add(() => this.render());
   }

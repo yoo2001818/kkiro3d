@@ -7,7 +7,8 @@ export default {
     ambient: 0.3,
     diffuse: 1.0,
     specular: 1.0,
-    attenuation: 0.0001
+    attenuation: 0.0001,
+    shadow: false
   },
   schema: {
     type: {
@@ -36,6 +37,9 @@ export default {
       type: 'number',
       precision: 5,
       visible: entity => entity.light.type !== 'directional'
+    },
+    shadow: {
+      type: 'checkbox'
     }
   },
   actions: {
