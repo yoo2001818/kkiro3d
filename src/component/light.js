@@ -8,7 +8,8 @@ export default {
     diffuse: 1.0,
     specular: 1.0,
     attenuation: 0.0001,
-    shadow: false
+    shadow: false,
+    shadowRes: 256
   },
   schema: {
     type: {
@@ -40,6 +41,9 @@ export default {
     },
     shadow: {
       type: 'checkbox'
+    },
+    shadowRes: {
+      type: 'integer'
     }
   },
   actions: {

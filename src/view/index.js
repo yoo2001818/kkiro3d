@@ -10,6 +10,7 @@ import ModeManager from './modeManager';
 
 import mesh from './renderer/effect/mesh';
 import light from './renderer/effect/light';
+import lightShadow from './renderer/effect/lightShadow';
 
 import selectWireframe from './renderer/effect/selectWireframe';
 import mousePick from './renderer/effect/mousePick';
@@ -40,8 +41,8 @@ export default function initView(engine) {
   let renderer = new Renderer(gl);
 
   let rendererView = new RendererView(engine, renderer,
-    { mesh, light, selectWireframe, widget, mousePick, depthPick, axis,
-      lightWidget, cameraWidget, generalHandle, skybox, collision }
+    { mesh, light, lightShadow, selectWireframe, widget, mousePick, depthPick,
+      axis, lightWidget, cameraWidget, generalHandle, skybox, collision }
   );
   rendererView.canvas = canvas;
 

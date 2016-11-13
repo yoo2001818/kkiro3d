@@ -23,28 +23,13 @@ export default class RendererView {
     let currentEffects = (effects || rendererSystem.effectList)
       .map(v => this.effects[v]);
     const gl = this.webglue.gl;
-    // Create world graph first.
+    // First, init world graph.
     let world = {
       options: {},
       uniforms: {}
     };
-    world = currentEffects.reduce((data, v) => {
-      if (v.worldPre == null) return data;
-      return v.worldPre(data);
-    }, world);
     let worldPasses = [world];
-    world.passes = this.engine.state.entities.map(entity => {
-      if (entity == null) return null;
-      return currentEffects.reduce((data, v) => {
-        if (v.entity == null) return data;
-        return v.entity(data, entity, world, worldPasses);
-      }, null);
-    }).filter(v => v != null);
-    currentEffects.forEach(v => {
-      if (v.world == null) return;
-      return v.world(world, worldPasses);
-    });
-    // Last, make viewports.
+    // Then, create viewports.
     let cameraMatrix = this.engine.systems.cameraMatrix;
     let viewportPasses = viewports.map((viewport, index) => {
       let { camera } = viewport;
@@ -60,14 +45,6 @@ export default class RendererView {
           viewport: viewport.viewport,
           camera: camera
         },
-        textureHandler: (texture) => {
-          if (texture == null) return false;
-          if (typeof texture === 'string') {
-            let textureObj = this.getSystem().textures[texture];
-            return textureObj != null ? textureObj : false;
-          }
-          return texture;
-        },
         uniforms: {
           uView: cameraMatrix.getView(camera),
           uProjection: cameraMatrix.getProjection.bind(cameraMatrix,
@@ -78,6 +55,38 @@ export default class RendererView {
         passes: worldPasses
       });
     });
-    this.webglue.render(viewportPasses);
+    // Then.... populate the world data.
+    world = currentEffects.reduce((data, v) => {
+      if (v.worldPre == null) return data;
+      return v.worldPre(data);
+    }, world);
+    world.passes = this.engine.state.entities.map(entity => {
+      if (entity == null) return null;
+      return currentEffects.reduce((data, v) => {
+        if (v.entity == null) return data;
+        return v.entity(data, entity, world, {
+          world: worldPasses,
+          viewport: viewportPasses
+        });
+      }, null);
+    }).filter(v => v != null);
+    currentEffects.forEach(v => {
+      if (v.world == null) return;
+      return v.world(world, {
+        world: worldPasses,
+        viewport: viewportPasses
+      });
+    });
+    this.webglue.render({
+      textureHandler: (texture) => {
+        if (texture == null) return false;
+        if (typeof texture === 'string') {
+          let textureObj = this.getSystem().textures[texture];
+          return textureObj != null ? textureObj : false;
+        }
+        return texture;
+      },
+      passes: viewportPasses
+    });
   }
 }

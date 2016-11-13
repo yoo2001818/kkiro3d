@@ -64,13 +64,13 @@ export default function lightWidgetEffect(renderer) {
     entity: (data, entity) => {
       if (entity.transform == null) return data;
       if (entity.light == null) return data;
-      if (data != null) return data;
       let isSelectedAll = engine.systems.editor.isSelectedAll(entity);
       let isSelected = engine.systems.editor.isSelected(entity);
       let model = engine.systems.matrix.get(entity);
+      let out;
       switch (entity.light.type) {
       case 'point':
-        return {
+        out = {
           uniforms: {
             uModel: model,
             uColor: isSelectedAll ? (
@@ -91,8 +91,9 @@ export default function lightWidgetEffect(renderer) {
             geometry: point
           }, getLinePass(model)]
         };
+        break;
       case 'directional':
-        return {
+        out = {
           uniforms: {
             uModel: model,
             uColor: isSelected ? '#ffa400' : '#000000'
@@ -117,7 +118,10 @@ export default function lightWidgetEffect(renderer) {
             geometry: dottedLine
           }, getLinePass(model)]
         };
+        break;
       }
+      if (data == null) return out;
+      return [data, out];
     }
   };
 }

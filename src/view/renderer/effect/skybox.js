@@ -10,11 +10,11 @@ export default function skyboxEffect(renderer) {
   );
   let boxGeom = webglue.geometries.create(box());
   return {
-    entity: (data, entity, world, worldPasses) => {
+    entity: (data, entity, world, passes) => {
       if (entity.skybox == null) return data;
       // Too easy. maybe? :/
       world.uniforms.uEnvironmentMap = entity.skybox.texture;
-      worldPasses.push({
+      passes.world.push({
         options: {
           cull: gl.FRONT
         },

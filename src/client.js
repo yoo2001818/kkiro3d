@@ -46,7 +46,7 @@ let engine = createEngine({}, {
 
 let renderer = createView(engine);
 engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
-  ['mesh', 'light', 'selectWireframe', 'widget',
+  ['mesh', 'light', 'lightShadow', 'selectWireframe', 'widget',
     'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
 engine.addSystem('collisionPush', CollisionPushSystem);
 

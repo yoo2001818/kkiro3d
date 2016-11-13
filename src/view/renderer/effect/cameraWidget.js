@@ -32,7 +32,6 @@ export default function cameraWidgetEffect(renderer) {
   );
   return {
     entity: (data, entity) => {
-      if (data != null) return data;
       if (entity.camera == null) return data;
       let isSelectedAll = engine.systems.editor.isSelectedAll(entity);
       let isSelected = engine.systems.editor.isSelected(entity);
@@ -46,9 +45,9 @@ export default function cameraWidgetEffect(renderer) {
       } else {
         scale[0] = entity.camera.zoom * aspect;
         scale[1] = entity.camera.zoom;
-        scale[2] = -entity.camera.zoom;
+        scale[2] = -1;
       }
-      return (tree) => {
+      let out = (tree) => {
         return tree.getOption('camera') === entity ? null : {
           uniforms: {
             uModel: model,
@@ -63,6 +62,8 @@ export default function cameraWidgetEffect(renderer) {
           geometry: coneGeom
         };
       };
+      if (data == null) return out;
+      return [data, out];
     }
   };
 }
