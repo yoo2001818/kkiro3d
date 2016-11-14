@@ -1,3 +1,7 @@
+import circleLine from 'webglue/lib/geom/circleLine';
+import combine from 'webglue/lib/geom/combine';
+import transform from 'webglue/lib/geom/transform';
+
 function getLinePointerMatrix(entityMat) {
   let center = entityMat.subarray(12, 15);
   return [
@@ -32,6 +36,31 @@ export default function lightWidgetEffect(renderer) {
   let dottedLineShader = webglue.shaders.create(
     require('../../../shader/dottedLine.vert'),
     require('../../../shader/dottedLine.frag')
+  );
+  let spotLine = webglue.geometries.create(combine([{
+    attributes: { aPosition: [
+      [0, 0, 0], [1, 0, 0], [1, 1, 0], [1, -1, 0], [1, 2, 0], [1, -2, 0]
+    ] },
+    indices: [0, 1, 0, 2, 0, 3, 0, 4, 0, 5],
+    mode: gl.LINES
+  }, transform(circleLine(24), {
+    aPosition: [
+      0, 0, 1, 0,
+      0, 1, 0, 0,
+      0, 0, 0, 0,
+      1, 0, 0, 1
+    ]
+  }), transform(circleLine(24), {
+    aPosition: [
+      0, 0, 2, 0,
+      0, 2, 0, 0,
+      0, 0, 0, 0,
+      1, 0, 0, 1
+    ]
+  })]));
+  let spotLineShader = webglue.shaders.create(
+    require('../../../shader/spotLine.vert'),
+    require('../../../shader/monoColor.frag')
   );
   let pointLightShader = webglue.shaders.create(
     require('../../../shader/point.vert'),
@@ -125,6 +154,39 @@ export default function lightWidgetEffect(renderer) {
             },
             shader: dottedLineShader,
             geometry: dottedLine
+          }, getLinePass(model)]
+        };
+        break;
+      case 'spot':
+        out = {
+          options: {
+            widget: true
+          },
+          uniforms: {
+            uModel: model,
+            uColor: isSelected ? '#ffa400' : '#000000'
+          },
+          passes: [{
+            uniforms: {
+              uWidth: 1.1/25,
+              uFill: 6/25,
+              uLine1: 18/25,
+              uLine2: 25/25,
+              uRadius: 25,
+              uResolution: shader =>
+                [1 / shader.renderer.width, 1 / shader.renderer.height]
+            },
+            shader: pointLightShader,
+            geometry: point
+          }, {
+            uniforms: {
+              uSize: [20,
+                Math.tan(Math.acos(entity.light.angle[0])),
+                Math.tan(Math.acos(entity.light.angle[1])),
+              ]
+            },
+            shader: spotLineShader,
+            geometry: spotLine
           }, getLinePass(model)]
         };
         break;
