@@ -21,7 +21,7 @@ export default function lightEffect(renderer) {
       let shadowTexture, shadowMat;
       let { lightShadow } = renderer.effects;
       if (lightShadow && entity.light.shadow && entity.camera != null) {
-        shadowTexture = lightShadow.textures[entity.id];
+        shadowTexture = lightShadow.textures[lightShadow.count];
         shadowMat = cameraMatrix.getProjectionView(entity);
       }
       switch (entity.light.type) {

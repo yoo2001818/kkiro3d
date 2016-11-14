@@ -6,7 +6,8 @@ export default {
     near: 0.3,
     far: 100,
     fov: Math.PI / 180 * 70,
-    zoom: 1
+    zoom: 1,
+    aspect: 0
   },
   schema: {
     type: {
@@ -26,6 +27,9 @@ export default {
     zoom: {
       type: 'number',
       visible: entity => entity.camera.type === 'ortho'
+    },
+    aspect: {
+      type: 'number'
     },
     use: {
       type: 'button',

@@ -47,10 +47,12 @@ export default class RendererView {
         },
         uniforms: {
           uView: cameraMatrix.getView(camera),
-          uProjection: cameraMatrix.getProjection.bind(cameraMatrix,
-            camera),
-          uProjectionView: cameraMatrix.getProjectionView.bind(cameraMatrix,
-            camera)
+          uProjection: camera.camera.aspect === 0 ?
+            cameraMatrix.getProjection.bind(cameraMatrix, camera) :
+            cameraMatrix.getProjection(camera, camera.camera.aspect),
+          uProjectionView: camera.camera.aspect === 0 ?
+            cameraMatrix.getProjectionView.bind(cameraMatrix, camera) :
+            cameraMatrix.getProjectionView(camera, camera.camera.aspect)
         },
         passes: worldPasses
       });

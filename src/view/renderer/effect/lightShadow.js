@@ -39,19 +39,24 @@ export default function lightShadowEffect(renderer) {
     color: tempTexture,
     depth: gl.DEPTH_COMPONENT16 // Automatically use renderbuffer
   });
-  // TODO Currently textures are not garbage-collected!!!! It should.
   let textures = [];
-  return {
+  let lightShadow = {
     textures,
+    count: 0,
+    worldPre: (world) => {
+      lightShadow.count = 0;
+      return world;
+    },
     entity: (data, entity, world, passes) => {
       if (entity.transform == null) return data;
       if (entity.light == null) return data;
       if (!entity.light.shadow) return data;
       if (entity.camera == null) return data;
-      if (textures[entity.id] == null) {
-        textures[entity.id] = webglue.textures.create(null, shadowMapOptions);
+      if (textures[lightShadow.count] == null) {
+        textures.push(webglue.textures.create(null, shadowMapOptions));
       }
-      let texture = textures[entity.id];
+      let texture = textures[lightShadow.count];
+      lightShadow.count ++;
       // Then we add viewport passes BEFORE the main rendering pass
       // (Shadow maps must be baked before rendering to screen)
       passes.viewport.unshift([
@@ -68,10 +73,12 @@ export default function lightShadowEffect(renderer) {
           shaderHandler: shadowShaderHandler,
           uniforms: {
             uView: cameraMatrix.getView(entity),
-            uProjection: cameraMatrix.getProjection.bind(cameraMatrix,
-              entity),
-            uProjectionView: cameraMatrix.getProjectionView.bind(cameraMatrix,
-              entity),
+            uProjection: entity.camera.aspect === 0 ?
+              cameraMatrix.getProjection.bind(cameraMatrix, entity) :
+              cameraMatrix.getProjection(entity, entity.camera.aspect),
+            uProjectionView: entity.camera.aspect === 0 ?
+              cameraMatrix.getProjectionView.bind(cameraMatrix, entity) :
+              cameraMatrix.getProjectionView(entity, entity.camera.aspect),
             uRange: [entity.camera.near, entity.camera.far]
           },
           passes: world
@@ -82,6 +89,15 @@ export default function lightShadowEffect(renderer) {
         blurFilter.get(tempTexture, texture)
         // All done! It'd be usable by other shaders.
       ]);
+    },
+    world: (data) => {
+      // Clean up unused textures
+      for (let i = textures.length - 1; i >= lightShadow.count; --i) {
+        textures[i].dispose();
+        textures.pop();
+      }
+      return data;
     }
   };
+  return lightShadow;
 }
