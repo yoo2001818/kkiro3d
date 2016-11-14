@@ -9,10 +9,13 @@ export default function lightEffect(renderer) {
     worldPre: (world) => {
       world.uniforms.uDirectionalLight = [];
       world.uniforms.uPointLight = [];
+      world.uniforms.uSpotLight = [];
       world.uniforms.uDirectionalShadowLight = [];
       world.uniforms.uDirectionalLightShadowMap = [];
       world.uniforms.uPointShadowLight = [];
       world.uniforms.uPointLightShadowMap = [];
+      world.uniforms.uSpotShadowLight = [];
+      world.uniforms.uSpotLightShadowMap = [];
       return world;
     },
     entity: (data, entity, world) => {
@@ -61,6 +64,29 @@ export default function lightEffect(renderer) {
           world.uniforms.uDirectionalShadowLight.push(lightData);
         } else {
           world.uniforms.uDirectionalLight.push(lightData);
+        }
+        return data;
+      }
+      case 'spot': {
+        // TODO same for directional light
+        let ray = vec4.fromValues(0, 0, 1, 0);
+        vec4.transformMat4(ray, ray, matrixSystem.get(entity));
+        vec3.normalize(ray, ray);
+        let lightData = {
+          position: matrixSystem.getPosition(entity),
+          direction: ray.subarray(0, 3),
+          angle: entity.light.angle,
+          color: entity.light.color,
+          intensity: [entity.light.ambient, entity.light.diffuse,
+            entity.light.specular, entity.light.attenuation]
+        };
+        if (shadowTexture != null) {
+          world.uniforms.uSpotLightShadowMap.push(shadowTexture);
+          lightData.shadowMat = shadowMat;
+          lightData.range = [entity.camera.near, entity.camera.far];
+          world.uniforms.uSpotShadowLight.push(lightData);
+        } else {
+          world.uniforms.uSpotLight.push(lightData);
         }
         return data;
       }

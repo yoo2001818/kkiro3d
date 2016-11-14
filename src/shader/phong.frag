@@ -5,8 +5,10 @@
 #pragma webglue: feature(USE_HEIGHT_MAP, uHeightMap)
 #pragma webglue: count(POINT_LIGHT_SIZE, uPointLight, eqLength)
 #pragma webglue: count(DIRECTIONAL_LIGHT_SIZE, uDirectionalLight, eqLength)
+#pragma webglue: count(SPOT_LIGHT_SIZE, uSpotLight, eqLength)
 #pragma webglue: count(POINT_SHADOW_LIGHT_SIZE, uPointShadowLight, eqLength)
 #pragma webglue: count(DIRECTIONAL_SHADOW_LIGHT_SIZE, uDirectionalShadowLight, eqLength)
+#pragma webglue: count(SPOT_SHADOW_LIGHT_SIZE, uSpotShadowLight, eqLength)
 // TODO We'll handle shadows later
 // #pragma webglue: feature(USE_DIRECTIONAL_LIGHT_SHADOW_MAP, uDirectionalLightShadowMap)
 
@@ -22,12 +24,20 @@
 #define DIRECTIONAL_LIGHT_SIZE 0
 #endif
 
+#ifndef SPOT_LIGHT_SIZE
+#define SPOT_LIGHT_SIZE 0
+#endif
+
 #ifndef POINT_SHADOW_LIGHT_SIZE
 #define POINT_SHADOW_LIGHT_SIZE 0
 #endif
 
 #ifndef DIRECTIONAL_SHADOW_LIGHT_SIZE
 #define DIRECTIONAL_SHADOW_LIGHT_SIZE 0
+#endif
+
+#ifndef SPOT_SHADOW_LIGHT_SIZE
+#define SPOT_SHADOW_LIGHT_SIZE 0
 #endif
 
 precision lowp float;
@@ -76,8 +86,27 @@ struct DirectionalLight {
   vec3 intensity;
 };
 
+struct SpotLight {
+  // position.w contains 'near' angle, while direction.w contains 'far' angle.
+  // Why are we doing this? It'd be best to reduce uniform vectors.
+  // (Max vector size is very limited in mobile devices. Reasonably 221 vectors
+  // are good to use for general PC, however, mobile devices only support up to
+  // 64)
+  // TODO We'd have to use deferred lighting or deferred rendering or storing
+  // light information on textures (This will probably slow down the performance
+  // in mobile devices, however, it'll support multiple lights.)
+  vec3 position;
+  vec3 direction;
+  vec2 angle;
+
+  vec3 color;
+  vec4 intensity;
+};
+
 // TODO Can't we merge the structs? Sadly, GLSL doesn't support struct
 // inheritance :S
+// TODO PointShadowLight should support omni-directional shadows using cubemap
+// (However, it'd be very expensive since OpenGL ES lacks geometry shader.)
 struct PointShadowLight {
   vec3 position;
 
@@ -98,12 +127,28 @@ struct DirectionalShadowLight {
   mat4 shadowMat;
 };
 
+struct SpotShadowLight {
+  vec3 position;
+  vec3 direction;
+  vec2 angle;
+
+  vec3 color;
+  vec4 intensity;
+
+  vec2 range;
+  mat4 shadowMat;
+};
+
 #if POINT_LIGHT_SIZE > 0
   uniform PointLight uPointLight[POINT_LIGHT_SIZE];
 #endif
 
 #if DIRECTIONAL_LIGHT_SIZE > 0
   uniform DirectionalLight uDirectionalLight[DIRECTIONAL_LIGHT_SIZE];
+#endif
+
+#if SPOT_LIGHT_SIZE > 0
+  uniform SpotLight uSpotLight[SPOT_LIGHT_SIZE];
 #endif
 
 #if POINT_SHADOW_LIGHT_SIZE > 0
@@ -115,6 +160,11 @@ struct DirectionalShadowLight {
   uniform DirectionalShadowLight uDirectionalShadowLight[
     DIRECTIONAL_SHADOW_LIGHT_SIZE];
   uniform sampler2D uDirectionalLightShadowMap[DIRECTIONAL_SHADOW_LIGHT_SIZE];
+#endif
+
+#if SPOT_SHADOW_LIGHT_SIZE > 0
+  uniform SpotShadowLight uSpotShadowLight[SPOT_SHADOW_LIGHT_SIZE];
+  uniform sampler2D uSpotLightShadowMap[SPOT_SHADOW_LIGHT_SIZE];
 #endif
 
 uniform Material uMaterial;
@@ -178,6 +228,35 @@ vec4 calcDirectional(vec3 direction, vec3 viewDir) {
   lightDir = lightDir / distance;
 
   return vec4(calcPhong(lightDir, viewDir), 1.0);
+}
+
+vec4 calcSpot(vec3 position, vec3 direction, float attenu, vec2 range,
+  vec3 viewDir
+) {
+  #ifdef USE_TANGENT_SPACE
+    vec3 lightDir = tangent * position - fragPos;
+    vec3 spotDir = tangent * direction;
+  #else
+    vec3 lightDir = position - fragPos;
+    vec3 spotDir = direction;
+  #endif
+
+  float distance = length(lightDir);
+  lightDir = lightDir / distance;
+
+  // Attenuation
+  float attenuation = 1.0 / ( 1.0 +
+    attenu * (distance * distance));
+
+  vec3 phong = calcPhong(lightDir, viewDir);
+
+  // Spotlight
+  lowp float theta = dot(lightDir, normalize(spotDir));
+  lowp float epsilon = range.x - range.y;
+  phong *= clamp((theta - range.y) / epsilon,
+    0.0, 1.0);
+
+  return vec4(phong, attenuation);
 }
 
 vec3 calcLight(MaterialColor matColor, vec3 color, vec3 intensity, vec4 phong) {
@@ -331,7 +410,7 @@ void main(void) {
   for (int i = 0; i < POINT_SHADOW_LIGHT_SIZE; ++i) {
     PointShadowLight light = uPointShadowLight[i];
     vec4 phong = calcPoint(light.position, light.intensity.w, viewDir);
-    phong.xy *= calcShadow(uPointLightShadowMap[i],
+    phong.xyz *= calcShadow(uPointLightShadowMap[i],
       light.shadowMat, light.range);
     result += calcLight(matColor, light.color, light.intensity.rgb, phong);
   }
@@ -347,9 +426,27 @@ void main(void) {
   for (int i = 0; i < DIRECTIONAL_SHADOW_LIGHT_SIZE; ++i) {
     DirectionalShadowLight light = uDirectionalShadowLight[i];
     vec4 phong = calcDirectional(light.direction, viewDir);
-    phong.xy *= calcShadow(uDirectionalLightShadowMap[i],
+    phong.xyz *= calcShadow(uDirectionalLightShadowMap[i],
       light.shadowMat, light.range);
     result += calcLight(matColor, light.color, light.intensity, phong);
+  }
+  #endif
+  #if SPOT_LIGHT_SIZE > 0
+  for (int i = 0; i < SPOT_LIGHT_SIZE; ++i) {
+    SpotLight light = uSpotLight[i];
+    result += calcLight(matColor, light.color, light.intensity.rgb,
+      calcSpot(light.position, light.direction, light.intensity.w,
+        light.angle, viewDir));
+  }
+  #endif
+  #if SPOT_SHADOW_LIGHT_SIZE > 0
+  for (int i = 0; i < SPOT_SHADOW_LIGHT_SIZE; ++i) {
+    SpotShadowLight light = uSpotShadowLight[i];
+    vec4 phong = calcSpot(light.position, light.direction,
+      light.intensity.w, light.angle, viewDir);
+    phong.xyz *= calcShadow(uSpotLightShadowMap[i],
+      light.shadowMat, light.range);
+    result += calcLight(matColor, light.color, light.intensity.rgb, phong);
   }
   #endif
   gl_FragColor = vec4(result, 1.0);

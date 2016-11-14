@@ -14,6 +14,18 @@ export const vector = (value, callback, props) => (
   <VectorInput value={value} onChange={callback} {...props} />
 );
 
+export const vectorAngle = (value, callback, props) => (
+  <VectorInput value={value.map(v => v / Math.PI * 180)}
+    onChange={e => callback({
+      target: {
+        value: e.target.value.map(v => v * Math.PI / 180)
+      }
+    })}
+    className='degree'
+    {...props}
+  />
+);
+
 export const number = (value, callback, props) => (
   <NumberInput
     value={value}

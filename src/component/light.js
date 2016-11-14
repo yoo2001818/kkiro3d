@@ -8,6 +8,7 @@ export default {
     diffuse: 1.0,
     specular: 1.0,
     attenuation: 0.0001,
+    angle: [Math.cos(22.5 * Math.PI / 180), Math.cos(27.5 * Math.PI / 180)],
     shadow: false
   },
   schema: {
@@ -15,7 +16,8 @@ export default {
       type: 'select',
       options: [
         {value: 'point', label: 'Point'},
-        {value: 'directional', label: 'Directional'}
+        {value: 'directional', label: 'Directional'},
+        {value: 'spot', label: 'Spot'}
       ]
     },
     color: {
@@ -37,6 +39,15 @@ export default {
       type: 'number',
       precision: 5,
       visible: entity => entity.light.type !== 'directional'
+    },
+    angle: {
+      type: 'vectorAngle',
+      precision: 2,
+      visible: entity => entity.light.type === 'spot',
+      getValue: (entity) => entity.light.angle.map(v => Math.acos(v) * 2),
+      setValue: (entity, value) => ['light.set', entity, {
+        angle: value.map(v => Math.cos(v / 2))
+      }]
     },
     shadow: {
       type: 'checkbox'
