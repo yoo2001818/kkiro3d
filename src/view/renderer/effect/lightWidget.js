@@ -71,6 +71,9 @@ export default function lightWidgetEffect(renderer) {
       switch (entity.light.type) {
       case 'point':
         out = {
+          options: {
+            widget: true
+          },
           uniforms: {
             uModel: model,
             uColor: isSelectedAll ? (
@@ -78,6 +81,9 @@ export default function lightWidgetEffect(renderer) {
             ) : '#000000'
           },
           passes: [{
+            options: {
+              widget: true
+            },
             uniforms: {
               uWidth: 1.1/25,
               uFill: 6/25,
@@ -94,6 +100,9 @@ export default function lightWidgetEffect(renderer) {
         break;
       case 'directional':
         out = {
+          options: {
+            widget: true
+          },
           uniforms: {
             uModel: model,
             uColor: isSelected ? '#ffa400' : '#000000'

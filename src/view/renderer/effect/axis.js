@@ -26,6 +26,9 @@ export default function axisEffect(renderer) {
       let direction = this.direction;
       let position = matrixSystem.getPosition(entity);
       return [data, {
+        options: {
+          widget: true
+        },
         uniforms: {
           uColor: this.color,
           uModel: [

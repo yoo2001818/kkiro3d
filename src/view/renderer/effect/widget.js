@@ -33,6 +33,9 @@ export default function widgetEffect(renderer) {
         let model = mat4.create();
         model.set(matrixSystem.getPosition(entity), 12);
         data.passes.push({
+          options: {
+            widget: true
+          },
           uniforms: {
             uModel: model
           },
@@ -47,6 +50,9 @@ export default function widgetEffect(renderer) {
         let model = mat4.create();
         model.set(cursor, 12);
         data.passes.push({
+          options: {
+            widget: true
+          },
           uniforms: {
             uModel: model,
             uCross: '#000000',

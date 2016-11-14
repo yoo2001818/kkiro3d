@@ -35,6 +35,9 @@ export default function selectWireframeEffect(renderer) {
         }];
       }
       data.passes.push({
+        options: {
+          widget: true
+        },
         uniforms: {
           uColor: isSelected ? '#ffa400' : '#0084ff'
         },

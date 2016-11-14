@@ -7,9 +7,13 @@ export default function lightShadowEffect(renderer) {
   const webglue = renderer.webglue;
   const gl = webglue.gl;
   let cameraMatrix = engine.systems.cameraMatrix;
-  let shadowShaderHandler = createShaderHandler(
+  let shadowShaderHandlerRaw = createShaderHandler(
     require('../../../shader/shadow.frag')
   );
+  let shadowShaderHandler = (shader, node, renderer) => {
+    if (node.getOption('widget')) return null;
+    return shadowShaderHandlerRaw(shader, node, renderer);
+  };
   let fxaaFilter = new Filter(webglue,
     require('../../../shader/fxaaShadow.frag'), {
       uTextureOffset: [1/256, 1/256]

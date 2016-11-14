@@ -21,6 +21,9 @@ export default function generalHandleEffect(renderer) {
         entity.id === selfData.selected;
       let model = engine.systems.matrix.get(entity);
       return {
+        options: {
+          widget: true
+        },
         uniforms: {
           uModel: model,
           uColor: isSelected ? '#ffa400' : '#000000',

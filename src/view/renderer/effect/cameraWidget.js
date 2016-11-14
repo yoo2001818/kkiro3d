@@ -49,6 +49,9 @@ export default function cameraWidgetEffect(renderer) {
       }
       let out = (tree) => {
         return tree.getOption('camera') === entity ? null : {
+          options: {
+            widget: true
+          },
           uniforms: {
             uModel: model,
             uColor: isSelectedAll ? (

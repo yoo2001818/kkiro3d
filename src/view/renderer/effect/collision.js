@@ -42,7 +42,8 @@ export default function collisionEffect(renderer) {
       if (data == null) data = {};
       data.passes = (data.passes || [{}]).concat({
         options: {
-          polygonOffset: [2, 0]
+          polygonOffset: [2, 0],
+          widget: true
         },
         uniforms: {
           uModel: matrix,
