@@ -57,6 +57,9 @@ export default {
     remove: signalRaw(([entity, index]) => {
       entity.animation.channels.splice(index, 1);
     }),
+    clear: signalRaw(([entity]) => {
+      entity.animation.channels = [];
+    }),
     start: signalRaw(function ([entity, duration, repeat]) {
       entity.animation.playing = true;
       entity.animation.duration = duration;

@@ -129,7 +129,11 @@ export default class AnimationSystem {
       let offset = this.engine.state.global.time - animation.start;
       let loops = offset / animation.duration;
       offset %= animation.duration;
-      if (animation.repeat > 0 && loops >= animation.repeat) return;
+      if (animation.repeat > 0 && loops >= animation.repeat) {
+        // Stop the animation
+        this.engine.actions.animation.stop(entity);
+        return;
+      }
       // Pre-handle Euler rotation
       // Why do we need this? Because the engine only uses quaternion,
       // we have to convert it to Euler degrees / and convert it back.

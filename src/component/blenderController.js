@@ -80,6 +80,7 @@ export default {
         interpolation: 'easeInOut'
       };
       if (entity.animation == null) this.actions.entity.add.animation(entity);
+      this.actions.animation.clear(entity);
       this.actions.animation.add(entity, animData);
       this.actions.animation.start(entity, 0.5, 1);
     },
@@ -94,6 +95,7 @@ export default {
         interpolation: 'easeInOut'
       };
       if (entity.animation == null) this.actions.entity.add.animation(entity);
+      this.actions.animation.clear(entity);
       this.actions.animation.add(entity, animData);
       this.actions.animation.start(entity, 0.5, 1);
     }
