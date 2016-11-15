@@ -18,6 +18,15 @@ export default {
       type: 'number'
     }
   },
+  channels: {
+    center: {
+      stride: 3,
+      exec: function (entity, a, b, t) {
+        vec3.lerp(vecTemp, a, b, t);
+        this.actions.blenderController.setCenter(entity, vecTemp);
+      }
+    }
+  },
   actions: {
     rotate: function (entity, x, y) {
       quat.identity(rotTemp);
@@ -61,12 +70,32 @@ export default {
       Object.assign(entity.blenderController, data);
     }),
     lerpCenter: function (entity, pos) {
-      // TODO
-      this.actions.blenderController.setCenter(entity, pos);
+      let data = new Float32Array(6);
+      data.set(entity.blenderController.center, 0);
+      data.set(pos, 3);
+      let animData = {
+        channel: 'blenderController.center',
+        input: [0, 0.3],
+        output: data,
+        interpolation: 'easeInOut'
+      };
+      if (entity.animation == null) this.actions.entity.add.animation(entity);
+      this.actions.animation.add(entity, animData);
+      this.actions.animation.start(entity, 0.5, 1);
     },
     lerpRotation: function (entity, rotation) {
-      // TODO
-      this.actions.transform.setRotation(entity, rotation);
+      let data = new Float32Array(8);
+      data.set(entity.transform.rotation, 0);
+      data.set(rotation, 4);
+      let animData = {
+        channel: 'transform.rotation',
+        input: [0, 0.3],
+        output: data,
+        interpolation: 'easeInOut'
+      };
+      if (entity.animation == null) this.actions.entity.add.animation(entity);
+      this.actions.animation.add(entity, animData);
+      this.actions.animation.start(entity, 0.5, 1);
     }
   }
 };

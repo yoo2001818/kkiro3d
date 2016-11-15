@@ -6,12 +6,17 @@ let tmpQuat = quat.create();
 let useEuler = false;
 let eulerData = null;
 
+function lerp(a, b, t) {
+  return a + t * (b - a);
+}
+
 function createSetPosition(system, index) {
   return {
     stride: 1,
-    exec: (entity, value) => {
+    exec: (entity, a, b, t) => {
       // Interpolate! Sort of.
       vec3.copy(tmpVec3, entity.transform.position);
+      let value = lerp(a, b, t);
       if (tmpVec3[index] === value) return;
       tmpVec3[index] = value;
       system.engine.actions.transform.setPosition(entity, tmpVec3);
@@ -22,9 +27,10 @@ function createSetPosition(system, index) {
 function createSetScale(system, index) {
   return {
     stride: 1,
-    exec: (entity, value) => {
+    exec: (entity, a, b, t) => {
       // Interpolate! Sort of.
       vec3.copy(tmpVec3, entity.transform.scale);
+      let value = lerp(a, b, t);
       if (tmpVec3[index] === value) return;
       tmpVec3[index] = value;
       system.engine.actions.transform.setScale(entity, tmpVec3);
@@ -35,8 +41,9 @@ function createSetScale(system, index) {
 function createSetRotation(system, index) {
   return {
     stride: 1,
-    exec: (entity, value) => {
+    exec: (entity, a, b, t) => {
       quat.copy(tmpQuat, entity.transform.rotation);
+      let value = lerp(a, b, t);
       if (tmpQuat[index] === value) return;
       tmpQuat[index] = value;
       system.engine.actions.transform.setRotation(entity, tmpQuat);
@@ -47,22 +54,12 @@ function createSetRotation(system, index) {
 function createSetEulerRotation(system, index) {
   return {
     stride: 1,
-    exec: (entity, value) => {
+    exec: (entity, a, b, t) => {
+      let value = lerp(a, b, t);
       // AnimationSystem will handle this :)
       useEuler = true;
       eulerData[index] = value;
     }
-  };
-}
-
-function createInterpolator(getTime) {
-  return (offset, prevInput, prevOutput, input, output) => {
-    if (prevInput === input) prevInput = input + 1;
-    // INTERPOLATE!!!!
-    let time = (offset - prevInput) / (input - prevInput);
-    if (offset > input) time = 1;
-    time = getTime(time);
-    return prevOutput + (output - prevOutput) * time;
   };
 }
 
@@ -73,33 +70,48 @@ export default class AnimationSystem {
         this.update();
       }
     };
-    // Why can't we generalize it? Because COLLADA format requires
-    // 'absolute' position for intangent / outtangent
     this.interpolators = {
-      'bezier': (time, xPrev, yPrev, x, y, xOut, yOut, xIn, yIn) => {
-        if (x === xPrev) return y;
-        // Ugh...
-        if (time < xPrev) return yPrev;
-        if (time > x) return y;
-        return bezier.YfromX(time, xPrev, yPrev, xOut, yOut, xIn, yIn, x, y);
+      'bezier': (time, xOut, yOut, xIn, yIn) => {
+        return bezier.YfromX(time, 0, 0, xOut, yOut, xIn, yIn, 1, 1);
       },
-      'linear': createInterpolator(x => x),
-      'easeIn': createInterpolator(t => t*t*t),
-      'easeOut': createInterpolator(t => (--t)*t*t+1),
-      'easeInOut': createInterpolator(t => (t < 0.5) ? 4*t*t*t :
-        (t-1) * (2*t-2) * (2*t-2) + 1),
+      'linear': x => x,
+      'easeIn': t => t*t*t,
+      'easeOut': t => (--t)*t*t+1,
+      'easeInOut': t => (t < 0.5) ? 4*t*t*t :
+        (t-1) * (2*t-2) * (2*t-2) + 1,
     };
     this.channels = {
       'transform.position.x': createSetPosition(this, 0),
       'transform.position.y': createSetPosition(this, 1),
       'transform.position.z': createSetPosition(this, 2),
+      'transform.position': {
+        stride: 3,
+        exec: (entity, a, b, t) => {
+          vec3.lerp(tmpVec3, a, b, t);
+          this.engine.actions.transform.setPosition(entity, tmpVec3);
+        }
+      },
       'transform.scale.x': createSetScale(this, 0),
       'transform.scale.y': createSetScale(this, 1),
       'transform.scale.z': createSetScale(this, 2),
+      'transform.scale': {
+        stride: 3,
+        exec: (entity, a, b, t) => {
+          vec3.lerp(tmpVec3, a, b, t);
+          this.engine.actions.transform.setScale(entity, tmpVec3);
+        }
+      },
       'transform.rotation.x': createSetRotation(this, 0),
       'transform.rotation.y': createSetRotation(this, 1),
       'transform.rotation.z': createSetRotation(this, 2),
       'transform.rotation.w': createSetRotation(this, 3),
+      'transform.rotation': {
+        stride: 4,
+        exec: (entity, a, b, t) => {
+          quat.slerp(tmpQuat, a, b, t);
+          this.engine.actions.transform.setRotation(entity, tmpQuat);
+        }
+      },
       'transform.rotation.eulerX': createSetEulerRotation(this, 0),
       'transform.rotation.eulerY': createSetEulerRotation(this, 1),
       'transform.rotation.eulerZ': createSetEulerRotation(this, 2),
@@ -141,32 +153,59 @@ export default class AnimationSystem {
         }
         if (interpolator == null) interpolator = this.interpolators.linear;
         let channelOp = this.channels[channel.channel];
-        if (channelOp == null) return;
+        if (channelOp == null) {
+          // Draw channel operator from component library
+          let pos = channel.channel.indexOf('.');
+          let name = channel.channel.slice(0, pos);
+          let data = channel.channel.slice(pos + 1);
+          // Get component metadata
+          let metadata = this.engine.components.store[name];
+          if (metadata == null) return;
+          if (metadata.data == null) return;
+          if (metadata.data.channels == null) return;
+          channelOp = metadata.data.channels[data];
+          if (channelOp == null) return;
+          // Store it back to system specific library
+          this.channels[channel.channel] = channelOp;
+        }
         let stride = channelOp.stride;
-        // Pull output / inTangent / outTangent (Run for each stride)
-        let outArray;
-        if (stride === 1) outArray = 0;
-        else outArray = new Float32Array(stride);
-        for (let i = 0; i < stride; ++i) {
-          let idx = index * stride + i;
-          let prevIdx = prevIndex * stride + i;
-          let input = channel.input[index];
-          let prevInput = channel.input[prevIndex];
+        // Pull time value
+        // TODO: inTangent / outTangent should be processed per-index
+        let input = channel.input[index];
+        let prevInput = channel.input[prevIndex];
+        let idx = index * stride;
+        let prevIdx = prevIndex * stride;
+        let xDiff = input - prevInput;
+        let inX, inY, outX, outY;
+        if (interpolator === this.interpolators.bezier) {
+          inX = channel.inTangent && channel.inTangent[idx * 2];
+          inY = channel.inTangent && channel.inTangent[idx * 2 + 1];
+          outX = channel.outTangent && channel.outTangent[prevIdx * 2];
+          outY = channel.outTangent && channel.outTangent[prevIdx * 2 + 1];
           let output = channel.output[idx];
           let prevOutput = channel.output[prevIdx];
-          // This isn't specified by COLLADA spec...
-          // It's like: [1xX 1xY 1yX 1yY 2xX 2xY 2yX 2yY]
-          let inX = channel.inTangent && channel.inTangent[idx * 2];
-          let inY = channel.inTangent && channel.inTangent[idx * 2 + 1];
-          let outX = channel.outTangent && channel.outTangent[prevIdx * 2];
-          let outY = channel.outTangent && channel.outTangent[prevIdx * 2 + 1];
-          // Interpolate plz
-          let value = interpolator(offset, prevInput, prevOutput,
-            input, output, outX, outY, inX, inY);
-          if (stride === 1) outArray = value;
-          else outArray[i] = value;
+          let yDiff = output - prevOutput;
+          inX = (inX - prevInput) / xDiff;
+          outX = (outX - prevInput) / xDiff;
+          inY = (inY - prevOutput) / yDiff;
+          outY = (outY - prevOutput) / yDiff;
         }
-        channelOp.exec(entity, outArray);
+        let value;
+        if (xDiff !== 0 && offset < input) {
+          let time = (offset - prevInput) / xDiff;
+          value = interpolator(time, outX, outY, inX, inY);
+        } else {
+          value = 1;
+        }
+        if (stride !== 1) {
+          let prev = channel.output.slice(prevIndex * stride, index * stride);
+          let current = channel.output.slice(index * stride,
+            index * stride + stride);
+          channelOp.exec.call(this.engine, entity, prev, current, value);
+        } else {
+          channelOp.exec.call(this.engine, entity, channel.output[prevIndex],
+            channel.output[index], value);
+        }
       };
       // Update every channel....
       // If parent is available, use them. :)

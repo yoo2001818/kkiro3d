@@ -45,14 +45,22 @@ export default {
       Object.assign(entity.animation, data);
     }),
     add: signalRaw(([entity, channel]) => {
-      entity.animation.channels.push(channel);
+      // Override channel with matching name
+      let channels = entity.animation.channels;
+      let index = channels.findIndex(v => v.channel === channel.channel);
+      if (index !== -1) {
+        channels[index] = channel;
+      } else {
+        channels.push(channel);
+      }
     }),
     remove: signalRaw(([entity, index]) => {
       entity.animation.channels.splice(index, 1);
     }),
-    start: signalRaw(function ([entity, repeat]) {
+    start: signalRaw(function ([entity, duration, repeat]) {
       entity.animation.playing = true;
-      entity.animation.start = this.systems.animation.time;
+      entity.animation.duration = duration;
+      entity.animation.start = this.state.global.time;
       entity.animation.repeat = repeat;
     }),
     stop: signalRaw(function ([entity]) {
