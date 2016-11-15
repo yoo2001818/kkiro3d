@@ -7,48 +7,56 @@ let useEuler = false;
 let eulerData = null;
 
 function createSetPosition(system, index) {
-  return (entity, value) => {
-    // Interpolate! Sort of.
-    vec3.copy(tmpVec3, entity.transform.position);
-    if (tmpVec3[index] === value) return;
-    tmpVec3[index] = value;
-    system.engine.actions.transform.setPosition(entity, tmpVec3);
+  return {
+    stride: 1,
+    exec: (entity, value) => {
+      // Interpolate! Sort of.
+      vec3.copy(tmpVec3, entity.transform.position);
+      if (tmpVec3[index] === value) return;
+      tmpVec3[index] = value;
+      system.engine.actions.transform.setPosition(entity, tmpVec3);
+    }
   };
 }
 
 function createSetScale(system, index) {
-  return (entity, value) => {
-    // Interpolate! Sort of.
-    vec3.copy(tmpVec3, entity.transform.scale);
-    if (tmpVec3[index] === value) return;
-    tmpVec3[index] = value;
-    system.engine.actions.transform.setScale(entity, tmpVec3);
+  return {
+    stride: 1,
+    exec: (entity, value) => {
+      // Interpolate! Sort of.
+      vec3.copy(tmpVec3, entity.transform.scale);
+      if (tmpVec3[index] === value) return;
+      tmpVec3[index] = value;
+      system.engine.actions.transform.setScale(entity, tmpVec3);
+    }
   };
 }
 
 function createSetRotation(system, index) {
-  return (entity, value) => {
-    quat.copy(tmpQuat, entity.transform.rotation);
-    if (tmpQuat[index] === value) return;
-    tmpQuat[index] = value;
-    system.engine.actions.transform.setRotation(entity, tmpQuat);
+  return {
+    stride: 1,
+    exec: (entity, value) => {
+      quat.copy(tmpQuat, entity.transform.rotation);
+      if (tmpQuat[index] === value) return;
+      tmpQuat[index] = value;
+      system.engine.actions.transform.setRotation(entity, tmpQuat);
+    }
   };
 }
 
 function createSetEulerRotation(system, index) {
-  return (entity, value) => {
-    // AnimationSystem will handle this :)
-    useEuler = true;
-    eulerData[index] = value;
+  return {
+    stride: 1,
+    exec: (entity, value) => {
+      // AnimationSystem will handle this :)
+      useEuler = true;
+      eulerData[index] = value;
+    }
   };
 }
 
 function createInterpolator(getTime) {
-  return (offset, channel, prevIndex, index) => {
-    let input = channel.input[index];
-    let prevInput = channel.input[prevIndex];
-    let output = channel.output[index];
-    let prevOutput = channel.output[prevIndex];
+  return (offset, prevInput, prevOutput, input, output) => {
     if (prevInput === input) prevInput = input + 1;
     // INTERPOLATE!!!!
     let time = (offset - prevInput) / (input - prevInput);
@@ -68,18 +76,9 @@ export default class AnimationSystem {
     // Why can't we generalize it? Because COLLADA format requires
     // 'absolute' position for intangent / outtangent
     this.interpolators = {
-      'bezier': (offset, channel, prevIndex, index) => {
-        let x = channel.input[index];
-        let y = channel.output[index];
-        let xPrev = channel.input[prevIndex];
-        let yPrev = channel.output[prevIndex];
-        let xIn = channel.inTangent[index * 2];
-        let yIn = channel.inTangent[index * 2 + 1];
-        let xOut = channel.outTangent[prevIndex * 2];
-        let yOut = channel.outTangent[prevIndex * 2 + 1];
+      'bezier': (time, xPrev, yPrev, x, y, xOut, yOut, xIn, yIn) => {
         if (x === xPrev) return y;
         // Ugh...
-        let time = offset;
         if (time < xPrev) return yPrev;
         if (time > x) return y;
         return bezier.YfromX(time, xPrev, yPrev, xOut, yOut, xIn, yIn, x, y);
@@ -141,8 +140,33 @@ export default class AnimationSystem {
           }
         }
         if (interpolator == null) interpolator = this.interpolators.linear;
-        this.channels[channel.channel](entity,
-          interpolator(offset, channel, prevIndex, index));
+        let channelOp = this.channels[channel.channel];
+        if (channelOp == null) return;
+        let stride = channelOp.stride;
+        // Pull output / inTangent / outTangent (Run for each stride)
+        let outArray;
+        if (stride === 1) outArray = 0;
+        else outArray = new Float32Array(stride);
+        for (let i = 0; i < stride; ++i) {
+          let idx = index * stride + i;
+          let prevIdx = prevIndex * stride + i;
+          let input = channel.input[index];
+          let prevInput = channel.input[prevIndex];
+          let output = channel.output[idx];
+          let prevOutput = channel.output[prevIdx];
+          // This isn't specified by COLLADA spec...
+          // It's like: [1xX 1xY 1yX 1yY 2xX 2xY 2yX 2yY]
+          let inX = channel.inTangent && channel.inTangent[idx * 2];
+          let inY = channel.inTangent && channel.inTangent[idx * 2 + 1];
+          let outX = channel.outTangent && channel.outTangent[prevIdx * 2];
+          let outY = channel.outTangent && channel.outTangent[prevIdx * 2 + 1];
+          // Interpolate plz
+          let value = interpolator(offset, prevInput, prevOutput,
+            input, output, outX, outY, inX, inY);
+          if (stride === 1) outArray = value;
+          else outArray[i] = value;
+        }
+        channelOp.exec(entity, outArray);
       };
       // Update every channel....
       // If parent is available, use them. :)

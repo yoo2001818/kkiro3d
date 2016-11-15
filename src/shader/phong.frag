@@ -286,7 +286,7 @@ float linstep(float low, float high, float v) {
 float lerpShadow(float depth, float moment, float compare) {
   if (compare <= depth) return 1.0;
   float p = smoothstep(compare - 0.02, compare, moment);
-  float variance = max(moment - depth * depth, 0.00025);
+  float variance = max(moment - depth * depth, 1.0 / 65536.0);
   float d = compare - depth;
   float pMax = linstep(0.2, 1.0, variance / (variance + d * d));
   return clamp(max(p, pMax), 0.0, 1.0);
