@@ -22,8 +22,12 @@ void main(void) {
   if (gl_FragCoord.w == 1.0) {
     intensity = gl_FragCoord.z;
   } else {
-    intensity = (gl_FragCoord.z / gl_FragCoord.w - uRange.x) /
-      (uRange.y - uRange.x);
+    // http://stackoverflow.com/a/6657284/3317669
+    lowp float z_b = gl_FragCoord.z;
+    lowp float z_n = 2.0 * z_b - 1.0;
+    lowp float z_e = 2.0 * uRange.x * uRange.y / (uRange.x + uRange.y - z_n *
+      (uRange.y - uRange.x));
+    intensity = (z_e - uRange.x) / (uRange.y - uRange.x);
   }
   lowp float dx = dFdx(intensity);
   lowp float dy = dFdy(intensity);

@@ -285,10 +285,10 @@ float linstep(float low, float high, float v) {
 
 float lerpShadow(float depth, float moment, float compare) {
   if (compare <= depth) return 1.0;
-  float p = smoothstep(compare - 0.02, compare, moment);
+  float p = compare <= moment ? 1.0 : 0.0;
   float variance = max(moment - depth * depth, 1.0 / 65536.0);
   float d = compare - depth;
-  float pMax = linstep(0.2, 1.0, variance / (variance + d * d));
+  float pMax = smoothstep(0.2, 1.0, variance / (variance + d * d));
   return clamp(max(p, pMax), 0.0, 1.0);
 }
 
@@ -299,8 +299,12 @@ float calcShadow(sampler2D shadowMap, mat4 shadowMat, vec2 range) {
     lightPos = shadowCoord.xyz / shadowCoord.w;
     lightPos = lightPos * 0.5 + 0.5;
   } else {
-    lightPos = vec3(shadowCoord.xy / shadowCoord.w * 0.5 + 0.5,
-      ((shadowCoord.z + shadowCoord.w) / 2.0 - range.x) / (range.y - range.x));
+    shadowCoord /= shadowCoord.w;
+    // http://stackoverflow.com/a/6657284/3317669
+    lowp float z_e = 2.0 * range.x * range.y / (range.x + range.y -
+      shadowCoord.z * (range.y - range.x));
+    lightPos = vec3(shadowCoord.xy * 0.5 + 0.5,
+      (z_e - range.x) / (range.y - range.x));
   }
 
   float shadow;
