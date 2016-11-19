@@ -49,9 +49,7 @@ export default class ModalContext extends Component {
           }}
           ref={node => this.node = node}
         >
-          { cloneElement(children, {
-            onClose: handleClose
-          }) }
+          {children}
         </div>
       </div>
     );

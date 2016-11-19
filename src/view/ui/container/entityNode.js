@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from 'react';
 import classNames from 'classnames';
 
 import { DragSource, DropTarget } from 'react-dnd';
@@ -37,7 +37,7 @@ const nodeTarget = {
   }
 };
 
-class EntityNode extends Component {
+class EntityNode extends PureComponent {
   constructor(props) {
     super(props);
   }

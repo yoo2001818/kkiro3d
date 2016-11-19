@@ -16,9 +16,7 @@ export default class ModalDialog extends Component {
     return (
       <FullOverlay filter>
         <Dialog title={title}>
-          { cloneElement(children, {
-            onClose: this.handleClose.bind(this)
-          }) }
+          { children }
           <Controls>
             { actions.map((choice, key) => (
               <button onClick={this.handleClose.bind(this, key)}
