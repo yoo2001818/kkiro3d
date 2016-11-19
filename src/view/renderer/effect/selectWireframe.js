@@ -1,16 +1,16 @@
-import createShaderHandler from '../../../util/createShaderHandler';
 import wireframe from 'webglue/lib/geom/wireframe';
 
 export default function selectWireframeEffect(renderer) {
-  // TODO We should share this between effects...
-  let colorShaderHandler = createShaderHandler(
-    require('../../../shader/monoColor.frag')
-  );
   let wireframeGeoms = {};
   const engine = renderer.engine;
   const webglue = renderer.webglue;
+  // TODO We should share this between effects...
+  let colorShader = webglue.shaders.create(
+    require('../../../shader/minimalBias.vert'),
+    require('../../../shader/monoColor.frag')
+  );
   return {
-    colorShaderHandler, wireframeGeoms,
+    colorShader, wireframeGeoms,
     entity: (data, entity) => {
       if (data == null) return;
       if (entity.transform == null) return data;
@@ -20,7 +20,6 @@ export default function selectWireframeEffect(renderer) {
       if (!isSelectedAll) return data;
       let material = renderer.getSystem().materials[entity.mesh.material];
       if (material == null) return data;
-      let shader = renderer.getSystem().shaders[material.shader];
       let geomName = entity.mesh.geometry;
       let geometry = wireframeGeoms[geomName];
       if (geometry == null) {
@@ -32,14 +31,14 @@ export default function selectWireframeEffect(renderer) {
       }
       return [data, {
         options: {
-          widget: true,
-          polygonOffset: [-1, 0]
+          widget: true
         },
         uniforms: {
           uColor: isSelected ? '#ffa400' : '#0084ff',
-          uModel: engine.systems.matrix.get(entity)
+          uModel: engine.systems.matrix.get(entity),
+          uBias: 0.001
         },
-        shader: colorShaderHandler(shader, {}, webglue),
+        shader: colorShader,
         geometry: geometry
       }];
     }

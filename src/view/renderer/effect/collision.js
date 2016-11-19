@@ -18,7 +18,7 @@ export default function collisionEffect(renderer) {
     mode: gl.LINES
   });
   let boxShader = webglue.shaders.create(
-    require('../../../shader/minimal.vert'),
+    require('../../../shader/minimalBias.vert'),
     require('../../../shader/monoColor.frag')
   );
   return {
@@ -39,20 +39,18 @@ export default function collisionEffect(renderer) {
         0, 0, (max[2] - min[2]) / 2, 0,
         (max[0] + min[0]) / 2, (max[1] + min[1]) / 2, (max[2] + min[2]) / 2, 1
       ];
-      if (data == null) data = {};
-      data.passes = (data.passes || [{}]).concat({
+      return [data, {
         options: {
-          polygonOffset: [2, 0],
           widget: true
         },
         uniforms: {
+          uBias: 0.002,
           uModel: matrix,
           uColor: '#6FFF93'
         },
         shader: boxShader,
         geometry: box
-      });
-      return data;
+      }];
     }
   };
 }
