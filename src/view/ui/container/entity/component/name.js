@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import connectComponent from '../../../util/connectComponent';
+import CachedTextInput from '../../../component/ui/cachedTextInput';
 
 class EntityComponentName extends Component {
   handleChange(e) {
@@ -11,7 +12,7 @@ class EntityComponentName extends Component {
     const { entity } = this.props;
     return (
       <div className='entity-component entity-component-name'>
-        <input type='text' value={entity.name}
+        <CachedTextInput type='text' value={entity.name}
           onChange={this.handleChange.bind(this)}
         />
       </div>
