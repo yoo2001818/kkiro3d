@@ -4,19 +4,19 @@ function packColor(id) {
   // Get R, G, B, A (using little endian)
   // Why do we use Float32Array? Because it's OpenGL.
   let output = new Float32Array(4);
-  output[0] = (id & 0xFF) / 256;
-  output[1] = ((id >>> 8) & 0xFF) / 256;
-  output[2] = ((id >>> 16) & 0xFF) / 256;
-  output[3] = ((id >>> 24) & 0xFF) / 256;
+  output[0] = (id & 0x7F) / 256;
+  output[1] = ((id >>> 7) & 0x7F) / 256;
+  output[2] = ((id >>> 14) & 0x7F) / 256;
+  output[3] = ((id >>> 21) & 0x7F) / 256;
   return output;
 }
 
 function unpackColor(data) {
   let output = 0;
   output |= data[0];
-  output |= data[1] << 8;
-  output |= data[2] << 16;
-  output |= data[3] << 24;
+  output |= data[1] << 7;
+  output |= data[2] << 14;
+  output |= data[3] << 21;
   return output;
 }
 
