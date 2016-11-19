@@ -13,11 +13,20 @@ let engine = createEngine({}, {
   test: function TestSystem (engine) {
     this.entities = engine.systems.family.get('transform').entities;
     this.init = () => {
-      engine.actions.entity.create({
-        name: 'Box',
-        transform: {},
-        mesh: { geometry: 'box', material: 'test2' }
-      });
+      // 1000 Boxes
+      for (let x = 0; x < 10; ++x) {
+        for (let y = 0; y < 10; ++y) {
+          for (let z = 0; z < 10; ++z) {
+            engine.actions.entity.create({
+              name: 'Box',
+              transform: {
+                position: [x * 2, y * 2, z * 2]
+              },
+              mesh: { geometry: 'box', material: 'test' }
+            });
+          }
+        }
+      }
       engine.actions.entity.create({
         name: 'Camera',
         transform: {
@@ -46,7 +55,7 @@ let engine = createEngine({}, {
 
 let renderer = createView(engine);
 engine.addSystem('renderer', new RendererSystem(renderer, rendererAssets,
-  ['mesh', 'light', 'lightShadow', 'selectWireframe', 'widget',
+  ['meshInstanced', 'mesh', 'light', 'lightShadow', 'selectWireframe', 'widget',
     'lightWidget', 'cameraWidget', 'generalHandle', 'skybox', 'collision']));
 engine.addSystem('collisionPush', CollisionPushSystem);
 

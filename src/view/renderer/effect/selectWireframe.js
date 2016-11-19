@@ -18,6 +18,9 @@ export default function selectWireframeEffect(renderer) {
       let isSelectedAll = engine.systems.editor.isSelectedAll(entity);
       let isSelected = engine.systems.editor.isSelected(entity);
       if (!isSelectedAll) return data;
+      let material = renderer.getSystem().materials[entity.mesh.material];
+      if (material == null) return data;
+      let shader = renderer.getSystem().shaders[material.shader];
       let geomName = entity.mesh.geometry;
       let geometry = wireframeGeoms[geomName];
       if (geometry == null) {
@@ -27,24 +30,18 @@ export default function selectWireframeEffect(renderer) {
           webglue.geometries.create(
             wireframe(renderer.getSystem().geometries[geomName]));
       }
-      if (data.passes == null) {
-        data.passes = [{
-          options: {
-            polygonOffset: [1, 0]
-          }
-        }];
-      }
-      data.passes.push({
+      return [data, {
         options: {
-          widget: true
+          widget: true,
+          polygonOffset: [-1, 0]
         },
         uniforms: {
-          uColor: isSelected ? '#ffa400' : '#0084ff'
+          uColor: isSelected ? '#ffa400' : '#0084ff',
+          uModel: engine.systems.matrix.get(entity)
         },
-        shader: colorShaderHandler(data.shader, data.uniforms, webglue),
+        shader: colorShaderHandler(shader, {}, webglue),
         geometry: geometry
-      });
-      return data;
+      }];
     }
   };
 }

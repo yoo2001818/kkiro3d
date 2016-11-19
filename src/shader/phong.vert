@@ -1,6 +1,8 @@
 #version 100
 #pragma webglue: feature(USE_NORMAL_MAP, uNormalMap)
 #pragma webglue: feature(USE_HEIGHT_MAP, uHeightMap)
+#pragma webglue: feature(USE_INSTANCING, uInstanced)
+#define INSTANCING
 #if defined(USE_NORMAL_MAP) || defined(USE_HEIGHT_MAP)
   #define USE_TANGENT_SPACE
 #endif
@@ -12,7 +14,12 @@ attribute vec3 aNormal;
 attribute vec3 aPosition;
 attribute vec4 aTangent;
 
-attribute vec3 aInstPos;
+#ifdef USE_INSTANCING
+  attribute vec4 aInstanced1;
+  attribute vec4 aInstanced2;
+  attribute vec4 aInstanced3;
+  attribute vec4 aInstanced4;
+#endif
 
 varying lowp vec3 vPosition;
 varying lowp vec2 vTexCoord;
@@ -37,13 +44,23 @@ vec3 getViewPosWorld() {
 }
 
 void main() {
-  vec4 fragPos = uModel * vec4(aPosition, 1.0) + vec4(aInstPos, 0.0);
+  #ifdef USE_INSTANCING
+    vec4 fragPos =
+      mat4(aInstanced1, aInstanced2, aInstanced3, aInstanced4) *
+      vec4(aPosition, 1.0);
+  #else
+    vec4 fragPos = uModel * vec4(aPosition, 1.0);
+  #endif
   gl_Position = uProjectionView * fragPos;
   vTexCoord = aTexCoord;
   #ifdef USE_TANGENT_SPACE
     vTangent = aTangent;
   #endif
   vPosition = fragPos.xyz;
-  vNormal = uNormal * aNormal;
+  #ifdef USE_INSTANCING
+    vNormal = mat3(aInstanced1.xyz, aInstanced2.xyz, aInstanced3.xyz) * aNormal;
+  #else
+    vNormal = uNormal * aNormal;
+  #endif
   vViewPos = getViewPosWorld();
 }

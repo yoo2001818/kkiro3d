@@ -8,6 +8,7 @@ import initUI from './ui';
 import ObjectMode from './mode/object';
 import ModeManager from './modeManager';
 
+import meshInstanced from './renderer/effect/meshInstanced';
 import mesh from './renderer/effect/mesh';
 import light from './renderer/effect/light';
 import lightShadow from './renderer/effect/lightShadow';
@@ -41,7 +42,8 @@ export default function initView(engine) {
   let renderer = new Renderer(gl);
 
   let rendererView = new RendererView(engine, renderer,
-    { mesh, light, lightShadow, selectWireframe, widget, mousePick, depthPick,
+    { meshInstanced, mesh, light, lightShadow, selectWireframe, widget,
+      mousePick, depthPick,
       axis, lightWidget, cameraWidget, generalHandle, skybox, collision }
   );
   rendererView.canvas = canvas;
