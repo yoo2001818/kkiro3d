@@ -14,9 +14,9 @@ let engine = createEngine({}, {
     this.entities = engine.systems.family.get('transform').entities;
     this.init = () => {
       // 1000 Boxes
-      for (let x = 0; x < 16; ++x) {
-        for (let y = 0; y < 1; ++y) {
-          for (let z = 0; z < 16; ++z) {
+      for (let x = 0; x < 10; ++x) {
+        for (let y = 0; y < 10; ++y) {
+          for (let z = 0; z < 10; ++z) {
             engine.actions.entity.create({
               name: 'Box',
               transform: {

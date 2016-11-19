@@ -53,16 +53,18 @@ class EntityNode extends Component {
   }
   render() {
     const { open } = this.state;
-    const { entity, selected, onSelect, searching, onDrag, connectDragSource,
-      connectDropTarget, dragging, over, canDrop } = this.props;
+    const { entity, selected, onSelect, searching, connectDragSource,
+      connectDropTarget, dragging, over, canDrop, style } = this.props;
     let orphan = entity.orphan;
-    let children = entity.children;
-    let hasChildren = children != null && children.length > 0;
+    let parent = entity.parent;
+    let level = entity.level;
     return (
       <li className={classNames('entity-node', {
-        parent: hasChildren, open, orphan, dragging,
+        parent, open, orphan, dragging,
         matched: searching && entity.matched,
         selected: canDrop ? over : selected === entity.id
+      })} style={Object.assign(style, {
+        paddingLeft: level + 'em'
       })}>
         <div className='title'>
           <div className='handle' onClick={this.handleOpen.bind(this)}/>
@@ -77,16 +79,6 @@ class EntityNode extends Component {
             </div>
           ))}
         </div>
-        { open && hasChildren && (
-          <ul className='children'>
-            {children.map((child, key) => (
-              <DropEntityNode
-                selected={selected} onSelect={onSelect}
-                onDrag={onDrag}
-                entity={child} key={key} searching={searching} />
-            ))}
-          </ul>
-        )}
       </li>
     );
   }
@@ -102,7 +94,8 @@ EntityNode.propTypes = {
   connectDropTarget: PropTypes.func,
   dragging: PropTypes.bool,
   canDrop: PropTypes.bool,
-  over: PropTypes.bool
+  over: PropTypes.bool,
+  style: PropTypes.object
 };
 
 const DragEntityNode = DragSource('entityNode', nodeSource,

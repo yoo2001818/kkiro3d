@@ -1,33 +1,41 @@
-export function createEntityNode(engine, filter, entity, override) {
+export function createEntityNode(engine, filter, nodes, level, entity,
+  override, orphan
+) {
   // Create entity hierarchy
   let { childrens } = engine.systems.parent;
   let children = childrens[entity.id];
   let entities = engine.state.entities;
   let matched = filter(entity);
   if (children == null || children.length === 0) {
-    if (!override && filter != null && !matched) return null;
-    return {
+    if (!override && filter != null && !matched) return false;
+    nodes.push({
       id: entity.id,
       name: entity.name || ('Unnamed ' + entity.id),
-      matched: matched
-    };
+      matched: matched,
+      orphan, level
+    });
+    return true;
   }
-  let nodes = [];
+  let childrenNodes = [];
   for (let i = 0; i < children.length; ++i) {
     let child = entities[children[i]];
     if (child == null) continue;
-    let childNode = createEntityNode(engine, filter, child,
+    createEntityNode(engine, filter, childrenNodes, level + 1, child,
       override || matched);
-    if (childNode == null) continue;
-    nodes.push(childNode);
   }
-  if (nodes.length === 0) return null;
-  return {
+  console.log(nodes, childrenNodes);
+  if (childrenNodes.length === 0) return false;
+  nodes.push({
     id: entity.id,
     name: entity.name || ('Unnamed ' + entity.id),
-    children: nodes,
-    matched: matched
-  };
+    orphan, level,
+    matched: matched,
+    parent: true
+  });
+  for (let i = 0; i < childrenNodes.length; ++i) {
+    nodes.push(childrenNodes[i]);
+  }
+  return true;
 }
 
 export default function createHierarchy(engine, filter) {
@@ -37,17 +45,12 @@ export default function createHierarchy(engine, filter) {
   for (let i = 0; i < root.length; ++i) {
     let child = entities[root[i]];
     if (child == null) continue;
-    let childNode = createEntityNode(engine, filter, child);
-    if (childNode == null) continue;
-    nodes.push(childNode);
+    createEntityNode(engine, filter, nodes, 0, child);
   }
   for (let i = 0; i < orphans.length; ++i) {
     let child = entities[orphans[i]];
     if (child == null) continue;
-    let childNode = createEntityNode(engine, filter, child);
-    if (childNode == null) continue;
-    childNode.orphan = true;
-    nodes.push(childNode);
+    createEntityNode(engine, filter, nodes, 0, child, false, true);
   }
   return nodes;
 }

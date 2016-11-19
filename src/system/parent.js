@@ -37,7 +37,6 @@ export default class ParentSystem {
         this.addChild(parent, entity.id);
         if (entity.parent === -1 && parent !== -1) this.removeRoot(entity.id);
         if (entity.parent !== -1 && parent === -1) this.addRoot(entity.id);
-        console.log(this);
       }
     };
   }
@@ -80,7 +79,6 @@ export default class ParentSystem {
     // It must be guarrented that it should only be called once
     children.push(child);
     // Validate if the parent exists
-    console.log(parent, this.engine.state.entities[parent]);
     if (this.engine.state.entities[parent] == null) {
       this.orphans.push(child);
     }

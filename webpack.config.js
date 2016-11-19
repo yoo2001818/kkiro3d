@@ -36,6 +36,12 @@ module.exports = {
     filename: 'bundle.js',
     chunkFilename: '[id].js'
   },
+  // Temp fix for react-hot-loader
+  resolve: {
+    alias: {
+      'react/lib/ReactMount': 'react-dom/lib/ReactMount'
+    }
+  },
   plugins: plugins,
   node: {
     fs: 'empty',

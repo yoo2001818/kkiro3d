@@ -1,5 +1,8 @@
 .entity-node {
   margin: 0.2em 0;
+  overflow: hidden;
+  // :(
+  height: 30px;
   & > .title {
     color: $grey-700;
     vertical-align: middle;

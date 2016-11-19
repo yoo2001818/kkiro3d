@@ -1,7 +1,10 @@
-.entity-list {
+.filter-list-component > .content .entity-list {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 100%;
   & > li {
   }
 }
