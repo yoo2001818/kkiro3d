@@ -38,16 +38,14 @@ export default {
         this.actions.renderer.camera.set(camera);
       }
     }),
+    setOpen: signalRaw(function ([clientId, id, toggle]) {
+      // What
+      this.systems.editor.get(clientId).open[id] = toggle;
+    }),
     load: signalRaw(function ([data]) {
       this.actions.external.stop(true);
       this.actions.external.load(data);
       this.actions.external.start(true);
     })
-  },
-  global: {
-    selected: -1,
-    selectedType: 'entity',
-    outlineType: 'entity',
-    cursor: [0, 0, 0],
   }
 };

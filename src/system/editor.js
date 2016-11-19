@@ -11,6 +11,7 @@ export default class EditorSystem {
           selectedType: 'entity',
           outlineType: 'entity',
           cursor: [0, 0, 0],
+          open: []
         });
         // TODO If target client is not editor, we shouldn't do this
         // Create a camera for the client

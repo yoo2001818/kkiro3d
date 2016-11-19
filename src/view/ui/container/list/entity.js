@@ -74,6 +74,7 @@ class EntityList extends Component {
     };
     this.handleSelect = this.handleSelect.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
     this.renderRow = this.renderRow.bind(this);
   }
   handleChange(e) {
@@ -83,6 +84,11 @@ class EntityList extends Component {
   }
   handleSelect(entity) {
     if (this.props.onSelect) this.props.onSelect(entity);
+  }
+  handleOpen(entity, state) {
+    // Uh...
+    this.props.engine.actions.external.execute('editor.setOpen',
+      this.props.engine.systems.editor.getId(), entity, state);
   }
   handleDrag(id, targetId) {
     let { engine } = this.props;
@@ -113,7 +119,7 @@ class EntityList extends Component {
       if (query === '') return true;
       if (entity.name == null) return false;
       return entity.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-    });
+    }, engine.systems.editor.getSelf().open);
   }
   componentWillUpdate(nextProps, nextState) {
     const { query } = nextState;
@@ -122,7 +128,7 @@ class EntityList extends Component {
       if (query === '') return true;
       if (entity.name == null) return false;
       return entity.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-    });
+    }, engine.systems.editor.getSelf().open);
   }
   renderRow({ key, index, style }) {
     const { query } = this.state;
@@ -131,6 +137,7 @@ class EntityList extends Component {
     return (
       <EntityNode
         selected={selected} onSelect={this.handleSelect}
+        onOpen={this.handleOpen}
         onDrag={this.handleDrag}
         entity={hierarchy[index]} key={key} searching={query !== ''}
         style={style}
@@ -181,6 +188,7 @@ export default connect({
   'entity.remove.parent!': true,
   'external.load!': true,
   'editor.select!': true,
+  'editor.setOpen!': true,
   'name.set!': true,
   'parent.set!': true
 }, (engine) => ({
