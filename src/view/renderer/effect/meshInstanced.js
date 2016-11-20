@@ -198,7 +198,7 @@ export default function meshEffect(renderer) {
       if (entity.mesh == null || !entity.mesh.visible) return data;
       let entry = cache[entityCache[entity.id]];
       if (entry == null || entry.buffer == null) return null;
-      return false;
+      return -1;
     }
   };
 }

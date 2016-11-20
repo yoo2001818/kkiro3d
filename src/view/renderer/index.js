@@ -64,13 +64,18 @@ export default class RendererView {
     }, world);
     world.passes = this.engine.state.entities.map(entity => {
       if (entity == null) return null;
-      return currentEffects.reduce((data, v) => {
-        if (v.entity == null) return data;
-        return v.entity(data, entity, world, {
+      let data = null;
+      for (let i = 0; i < currentEffects.length; ++i) {
+        let v = currentEffects[i];
+        if (v.entity == null) continue;
+        data = v.entity(data, entity, world, {
           world: worldPasses,
           viewport: viewportPasses
         });
-      }, null);
+        // Force stop if null is given
+        if (data === false) return null;
+      }
+      return data;
     }).filter(v => v != null);
     currentEffects.forEach(v => {
       if (v.world == null) return;
