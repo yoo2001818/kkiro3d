@@ -5,40 +5,9 @@ export default function meshEffect(renderer) {
   const gl = renderer.webglue.gl;
   let cache = {};
   let entityCache = [];
+  let addQueue = [];
   function handleAdd(entity) {
-    if (!renderer.checkers.every(v => v(entity))) return null;
-    if (!entity.mesh.visible) return;
-    let material = renderer.getSystem().materials[entity.mesh.material];
-    if (material == null) return;
-    let shader = renderer.getSystem().shaders[material.shader];
-    // Read the vertex shader - Does it support instancing?
-    if (shader.instancing == null) {
-      shader.instancing =
-        shader.source.vert.indexOf('#define INSTANCING') !== -1;
-    }
-    // Bail out if it doesn't support instancing
-    if (shader.instancing === false) return;
-    let geometry = renderer.getSystem().geometries[entity.mesh.geometry];
-    if (geometry == null) return;
-    let mirror = entity.mesh.mirror ? 'F' : 'B';
-    let key = mirror + entity.mesh.geometry + '_' + entity.mesh.material;
-    if (cache[key] == null) {
-      cache[key] = {
-        buffer: null,
-        geom: null,
-        list: [],
-        invalid: true,
-        mirror: entity.mesh.mirror,
-        invalidList: [],
-        geometry: geometry,
-        shader: renderer.getSystem().shaders[material.shader],
-        material: material
-      };
-    }
-    entityCache[entity.id] = key;
-    cache[key].list.push(entity);
-    // Do complete reupload
-    cache[key].invalid = true;
+    addQueue.push(entity);
   }
   function handleRemove(entity) {
     let keyEntry = entityCache[entity.id];
@@ -96,6 +65,42 @@ export default function meshEffect(renderer) {
   });
   return {
     worldPre: (world) => {
+      while (addQueue.length !== 0) {
+        let entity = addQueue.shift();
+        if (!renderer.checkers.every(v => v(entity))) continue;
+        if (!entity.mesh.visible) continue;
+        let material = renderer.getSystem().materials[entity.mesh.material];
+        if (material == null) continue;
+        let shader = renderer.getSystem().shaders[material.shader];
+        // Read the vertex shader - Does it support instancing?
+        if (shader.instancing == null) {
+          shader.instancing =
+            shader.source.vert.indexOf('#define INSTANCING') !== -1;
+        }
+        // Bail out if it doesn't support instancing
+        if (shader.instancing === false) continue;
+        let geometry = renderer.getSystem().geometries[entity.mesh.geometry];
+        if (geometry == null) continue;
+        let mirror = entity.mesh.mirror ? 'F' : 'B';
+        let key = mirror + entity.mesh.geometry + '_' + entity.mesh.material;
+        if (cache[key] == null) {
+          cache[key] = {
+            buffer: null,
+            geom: null,
+            list: [],
+            invalid: true,
+            mirror: entity.mesh.mirror,
+            invalidList: [],
+            geometry: geometry,
+            shader: renderer.getSystem().shaders[material.shader],
+            material: material
+          };
+        }
+        entityCache[entity.id] = key;
+        cache[key].list.push(entity);
+        // Do complete reupload
+        cache[key].invalid = true;
+      }
       // Update / create VBO
       for (let key in cache) {
         let entry = cache[key];
