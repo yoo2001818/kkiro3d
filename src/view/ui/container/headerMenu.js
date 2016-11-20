@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
 import jsonReplacer from '../../../util/jsonReplacer';
+import download from '../util/download';
 
 import ModalDialog from '../component/modal/dialog';
 import DropDown from '../component/ui/dropDown';
@@ -22,7 +23,13 @@ class HeaderMenu extends Component {
   }
   handleExport() {
     this.props.executeLocal('ui.setModal',
-      <ModalDialog title='Scene graph (JSON)' actions={[{name: 'OK'}]}>
+      <ModalDialog title='Scene graph (JSON)' actions={[
+        {name: 'OK'},
+        {name: 'Download...', type: 'green', onClick: () => {
+          download(JSON.stringify(this.props.engine.getState(), jsonReplacer),
+            'scene.json');
+        }}
+      ]}>
         <textarea className='code'
           defaultValue={JSON.stringify(this.props.engine.getState(),
             jsonReplacer, 2)}
@@ -64,7 +71,7 @@ class HeaderMenu extends Component {
             Load JSON...
           </a></li>
           <li><a href='#' onClick={this.handleExport.bind(this)}>
-            Export JSON...
+            Save JSON...
           </a></li>
           <hr />
           <li><a href='#' onClick={this.handleLoadEntity.bind(this)}>

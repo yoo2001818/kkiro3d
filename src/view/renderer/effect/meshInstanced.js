@@ -17,15 +17,19 @@ export default function meshEffect(renderer) {
     }
     // Bail out if it doesn't support instancing
     if (shader.instancing === false) return;
-    let key = entity.mesh.geometry + '_' + entity.mesh.material;
+    let geometry = renderer.getSystem().geometries[entity.mesh.geometry];
+    if (geometry == null) return;
+    let mirror = entity.mesh.mirror ? 'F' : 'B';
+    let key = mirror + entity.mesh.geometry + '_' + entity.mesh.material;
     if (cache[key] == null) {
       cache[key] = {
         buffer: null,
         geom: null,
         list: [],
         invalid: true,
+        mirror: entity.mesh.mirror,
         invalidList: [],
-        geometry: renderer.getSystem().geometries[entity.mesh.geometry],
+        geometry: geometry,
         shader: renderer.getSystem().shaders[material.shader],
         material: material
       };
@@ -175,6 +179,10 @@ export default function meshEffect(renderer) {
         let entry = cache[key];
         if (entry.geom == null) continue;
         world.passes.push(Object.assign({}, entry.material, {
+          options: entry.mirror && {
+            // TODO Wouldn't it be a problem?
+            cull: gl.FRONT
+          },
           uniforms: Object.assign({}, entry.material.uniforms, {
             uInstanced: 1
           }),

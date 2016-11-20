@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
 import jsonReplacer from '../../../util/jsonReplacer';
+import download from '../util/download';
 
 import ModalDialog from '../component/modal/dialog';
 
@@ -17,7 +18,13 @@ class EntityActions extends Component {
   }
   handleJSON() {
     this.props.executeLocal('ui.setModal',
-      <ModalDialog title='Entity JSON' actions={[{name: 'OK'}]}>
+      <ModalDialog title='Entity JSON' actions={[
+        {name: 'OK'},
+        {name: 'Download...', type: 'green', onClick: () => {
+          download(JSON.stringify(this.props.entity, jsonReplacer),
+            'entity.json');
+        }}
+      ]}>
         <textarea className='code'
           defaultValue={JSON.stringify(this.props.entity,
             jsonReplacer, 2)}
@@ -29,7 +36,14 @@ class EntityActions extends Component {
   handleHierarchyJSON() {
     let parentSystem = this.props.engine.systems.parent;
     this.props.executeLocal('ui.setModal',
-      <ModalDialog title='Hierarchy JSON' actions={[{name: 'OK'}]}>
+      <ModalDialog title='Hierarchy JSON' actions={[
+        {name: 'OK'},
+        {name: 'Download...', type: 'green', onClick: () => {
+          download(JSON.stringify(parentSystem.getHierarchy(
+              this.props.entity
+            ), jsonReplacer), 'entity.json');
+        }}
+      ]}>
         <textarea className='code'
           defaultValue={JSON.stringify(parentSystem.getHierarchy(
               this.props.entity

@@ -7,7 +7,9 @@ export default class ModalDialog extends Component {
   handleClose(key) {
     if (key != null) {
       let onClick = this.props.actions[key].onClick;
-      if (onClick) onClick();
+      let result = true;
+      if (onClick) result = onClick();
+      if (result === false) return;
     }
     if (this.props.onClose) this.props.onClose();
   }
