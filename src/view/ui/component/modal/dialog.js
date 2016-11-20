@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, cloneElement } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import Dialog, { Controls } from '../../component/ui/dialog';
 import FullOverlay from '../../component/ui/fullOverlay';

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, cloneElement } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export default class ModalContext extends Component {
   constructor(props) {
