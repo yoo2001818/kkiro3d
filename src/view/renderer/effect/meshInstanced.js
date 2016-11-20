@@ -19,7 +19,7 @@ export default function meshEffect(renderer) {
       entry.list.splice(offset, 1);
     }
     entry.invalid = true;
-    if (entry.list.length === 0) {
+    if (entry.list.length === 0 && entry.buffer != null) {
       // Dispose
       entry.buffer.dispose();
       entry.geom.dispose();

@@ -1,6 +1,6 @@
 {
   "name": "kkiro3d",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "3D game engine written in JavaScript",
   "main": "lib/index.js",
   "scripts": {

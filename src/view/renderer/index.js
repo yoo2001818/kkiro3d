@@ -35,7 +35,7 @@ export default class RendererView {
     let viewportPasses = viewports.map((viewport, index) => {
       let { camera } = viewport;
       return currentEffects.reduce((data, v) => {
-        if (v.viewport == null) return data;
+        if (v == null || v.viewport == null) return data;
         return v.viewport(data, viewport, index, world, worldPasses);
       }, {
         options: {
@@ -60,7 +60,7 @@ export default class RendererView {
     });
     // Then.... populate the world data.
     world = currentEffects.reduce((data, v) => {
-      if (v.worldPre == null) return data;
+      if (v == null || v.worldPre == null) return data;
       return v.worldPre(data);
     }, world);
     world.passes = this.engine.state.entities.map(entity => {
@@ -69,7 +69,7 @@ export default class RendererView {
       let data = null;
       for (let i = 0; i < currentEffects.length; ++i) {
         let v = currentEffects[i];
-        if (v.entity == null) continue;
+        if (v == null || v.entity == null) continue;
         data = v.entity(data, entity, world, {
           world: worldPasses,
           viewport: viewportPasses
@@ -80,7 +80,7 @@ export default class RendererView {
       return data;
     }).filter(v => v != null);
     currentEffects.forEach(v => {
-      if (v.world == null) return;
+      if (v == null || v.world == null) return;
       return v.world(world, {
         world: worldPasses,
         viewport: viewportPasses
