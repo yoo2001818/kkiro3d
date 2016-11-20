@@ -22,10 +22,15 @@ export default {
           }
         };
       }
-      let entity = this.actions.entity.create(Object.assign({}, data, {
-        name: data.name ? data.name : 'New Entity',
-        id: null
-      }), true);
+      let entity;
+      if (Array.isArray(data)) {
+        entity = this.actions.parent.createHierarchy(data);
+      } else {
+        entity = this.actions.entity.create(Object.assign({}, data, {
+          name: data.name ? data.name : 'New Entity',
+          id: null
+        }), true);
+      }
       this.actions.editor.select(clientId, 'entity', entity.id);
       return entity;
     },

@@ -99,6 +99,28 @@ export default class ParentSystem {
   getChildren(parent) {
     return this.childrens[parent.id];
   }
+  // This shouldn't reside in here, but whatever.
+  getHierarchy(entity) {
+    let entities = [];
+    const traverseEntity = (entity, parentId) => {
+      let newId = entities.length;
+      if (parentId != null) {
+        entities.push(Object.assign({}, entity, {
+          parent: parentId
+        }));
+      } else {
+        entities.push(Object.assign({}, entity));
+      }
+      let children = this.getChildren(entity);
+      if (children == null) return;
+      children.forEach(id => {
+        let child = this.engine.state.entities[id];
+        traverseEntity(child, newId);
+      });
+    };
+    traverseEntity(entity, null);
+    return entities;
+  }
   isConnected(parent, child) {
     if (child === parent) return true;
     if (parent == null || child == null) return false;

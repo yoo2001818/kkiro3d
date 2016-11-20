@@ -164,6 +164,7 @@ export default function meshEffect(renderer) {
           if (entity == null) continue;
           let mat = engine.systems.matrix.get(entity);
           let index = entry.list.indexOf(entity);
+          if (index === -1) continue;
           entry.buffer.updateSub(mat, index * 16);
         }
       }

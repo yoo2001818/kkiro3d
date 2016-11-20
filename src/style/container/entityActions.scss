@@ -20,4 +20,11 @@
       font-size: 0.9em;
     }
   }
+  & > .hierarchy-button {
+    &:after {
+      @include fa-icon();
+      content: $fa-var-sitemap;
+      font-size: 0.9em;
+    }
+  }
 }

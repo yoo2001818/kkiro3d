@@ -6,12 +6,18 @@ import ModalDialog from '../component/modal/dialog';
 import DropDown from '../component/ui/dropDown';
 
 import SceneLoadForm from './form/sceneLoadForm';
+import EntityLoadForm from './form/entityLoadForm';
 import ConnectForm from './form/connectForm';
 
 class HeaderMenu extends Component {
   handleLoad() {
     this.props.executeLocal('ui.setModal',
       <SceneLoadForm />
+    );
+  }
+  handleLoadEntity() {
+    this.props.executeLocal('ui.setModal',
+      <EntityLoadForm />
     );
   }
   handleExport() {
@@ -59,6 +65,10 @@ class HeaderMenu extends Component {
           </a></li>
           <li><a href='#' onClick={this.handleExport.bind(this)}>
             Export JSON...
+          </a></li>
+          <hr />
+          <li><a href='#' onClick={this.handleLoadEntity.bind(this)}>
+            Load Entity...
           </a></li>
           <hr />
           <li><a href='#' onClick={this.handleLoadCookie.bind(this)}>
