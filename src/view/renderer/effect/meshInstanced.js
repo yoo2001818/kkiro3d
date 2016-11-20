@@ -6,6 +6,7 @@ export default function meshEffect(renderer) {
   let cache = {};
   let entityCache = [];
   function handleAdd(entity) {
+    if (!renderer.checkers.every(v => v(entity))) return null;
     if (!entity.mesh.visible) return;
     let material = renderer.getSystem().materials[entity.mesh.material];
     if (material == null) return;

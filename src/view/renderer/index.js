@@ -3,6 +3,7 @@ export default class RendererView {
     this.webglue = webglue;
     this.engine = engine;
 
+    this.checkers = [];
     this.effects = {};
     for (let key in effects) this.effects[key] = effects[key](this);
 
@@ -64,6 +65,7 @@ export default class RendererView {
     }, world);
     world.passes = this.engine.state.entities.map(entity => {
       if (entity == null) return null;
+      if (!this.checkers.every(v => v(entity))) return null;
       let data = null;
       for (let i = 0; i < currentEffects.length; ++i) {
         let v = currentEffects[i];
