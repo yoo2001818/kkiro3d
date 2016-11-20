@@ -35,7 +35,7 @@ export default class NetworkSystem {
         for (let i = 0; i < entities.length; ++i) {
           let entity = entities[i];
           if (entity.networkTemporary.owner === clientId) {
-            this.engine.actions.entity.delete(entity);
+            this.engine.actions.parent.deleteHierarchy(entity);
             i--;
           }
         }
@@ -45,7 +45,7 @@ export default class NetworkSystem {
         for (let i = 0; i < entities.length; ++i) {
           let entity = entities[i];
           if (this.getData(entity.networkTemporary.owner) === null) {
-            this.engine.actions.entity.delete(entity);
+            this.engine.actions.parent.deleteHierarchy(entity);
             i--;
           }
         }
