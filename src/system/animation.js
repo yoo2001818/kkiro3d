@@ -125,12 +125,20 @@ export default class AnimationSystem {
     // Update all entities :(
     this.family.entities.forEach(entity => {
       let animation = entity.animation;
-      if (animation == null || !animation.playing) return;
-      let offset = this.engine.state.global.time - animation.start;
-      let loops = offset / animation.duration;
-      offset %= animation.duration;
-      if (animation.repeat > 0 && loops >= animation.repeat) {
-        // Stop the animation
+      if (animation == null) return;
+      let timing = animation;
+      if (animation.parent != null) {
+        let parent = this.engine.state.entities[animation.parent];
+        // Should we continue updating animation if parent is null?
+        if (parent != null) timing = parent.animation;
+        else return;
+      }
+      if (!timing.playing) return;
+      let offset = this.engine.state.global.time - timing.start;
+      let loops = offset / timing.duration;
+      offset %= timing.duration;
+      if (timing.repeat > 0 && loops >= timing.repeat) {
+        // Stop the animation (...why?)
         this.engine.actions.animation.stop(entity);
         return;
       }
@@ -211,15 +219,6 @@ export default class AnimationSystem {
             channel.output[index], value);
         }
       };
-      // Update every channel....
-      // If parent is available, use them. :)
-      // (Actually parent is just a method to copy animation frames.)
-      if (animation.parent) {
-        let parentEntity = this.engine.state.entities[animation.parent];
-        if (parentEntity != null && parentEntity.animation) {
-          parentEntity.animation.channels.forEach(handleChannel);
-        }
-      }
       if (animation.channels != null) animation.channels.forEach(handleChannel);
       // Now, process the Euler degrees.
       if (useEuler) {
