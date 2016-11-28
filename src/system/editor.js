@@ -13,15 +13,8 @@ export default class EditorSystem {
           cursor: [0, 0, 0],
           open: []
         });
-        // TODO If target client is not editor, we shouldn't do this
         // Create a camera for the client
-        let camera;
-        let family = this.engine.systems.family.get(
-          'camera', 'networkTemporary', 'blenderController');
-        family.entities.forEach(entity => {
-          let owner = entity.networkTemporary.owner;
-          if (id === owner) camera = entity;
-        });
+        let camera = this.engine.systems.network.find(id, 'editor');
         if (camera == null) {
           camera = this.engine.actions.entity.create({
             name: 'Editor Camera',
@@ -31,7 +24,8 @@ export default class EditorSystem {
             camera: {},
             blenderController: {},
             networkTemporary: {
-              owner: id
+              owner: id,
+              type: 'editor'
             }
           });
         }
@@ -39,18 +33,10 @@ export default class EditorSystem {
       },
       'external.start:post@200!': ([isGlobal]) => {
         if (!isGlobal) return;
-        // Everybody gets a camera if the player doesn't have one.
-        let checkArr = [];
-        let family = this.engine.systems.family.get(
-          'camera', 'networkTemporary', 'blenderController');
-        family.entities.forEach(entity => {
-          let owner = entity.networkTemporary.owner;
-          checkArr[owner] = entity;
-        });
         this.engine.systems.network.clients.forEach(id => {
           if (this.get(id).type !== 'editor') return;
-          let camera;
-          if (checkArr[id] == null) {
+          let camera = this.engine.systems.network.find(id, 'editor');
+          if (camera == null) {
             camera = this.engine.actions.entity.create({
               name: 'Editor Camera',
               transform: {
@@ -59,11 +45,10 @@ export default class EditorSystem {
               camera: {},
               blenderController: {},
               networkTemporary: {
-                owner: id
+                owner: id,
+                type: 'editor'
               }
             });
-          } else {
-            camera = checkArr[id];
           }
           this.engine.actions.editor.setCamera(id, camera);
         });

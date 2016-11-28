@@ -44,15 +44,13 @@ export default class NetworkSystem {
         let entities = this.networkFamily.entities;
         for (let i = 0; i < entities.length; ++i) {
           let entity = entities[i];
-          if (this.getData(entity.networkTemporary.owner) === null) {
+          let data = this.getData(entity.networkTemporary.owner);
+          // Delete mismatched entities
+          // This way, we must match client type and entity type
+          if (data == null || data.type !== entity.networkTemporary.type) {
             this.engine.actions.parent.deleteHierarchy(entity);
             i--;
           }
-        }
-      },
-      'external.start:post@100!': () => {
-        if (this.synchronizer == null) {
-          this.engine.actions.network.connect(this.getId(), this.offlineMeta);
         }
       },
       'external.execute:pre!': (args) => {
@@ -87,6 +85,13 @@ export default class NetworkSystem {
     if (this.synchronizer.meta == null) return 0;
     // Use upstream client ID
     return this.synchronizer.meta.id;
+  }
+  find(id, type) {
+    // Find an entity with matching ID and type
+    return this.networkFamily.entities.find(({ networkTemporary }) => {
+      return networkTemporary.owner === id && networkTemporary.type === type;
+    });
+    // :P
   }
   setSynchronizer(synchronizer) {
     this.synchronizer = synchronizer;
