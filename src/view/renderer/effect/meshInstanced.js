@@ -10,6 +10,8 @@ export default function meshEffect(renderer) {
     addQueue.push(entity);
   }
   function handleRemove(entity) {
+    let addQueueIndex = addQueue.indexOf(entity);
+    if (addQueueIndex !== -1) addQueue.splice(entity, 1);
     let keyEntry = entityCache[entity.id];
     if (keyEntry == null) return;
     let entry = cache[keyEntry];
@@ -51,6 +53,8 @@ export default function meshEffect(renderer) {
         entry.buffer.dispose();
       }
     }
+    addQueue = [];
+    entityCache = [];
     cache = {};
   });
   engine.attachHook('mesh.*:post!', ([entity]) => {
