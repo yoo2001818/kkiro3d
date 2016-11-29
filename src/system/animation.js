@@ -165,7 +165,7 @@ export default class AnimationSystem {
         }
         if (interpolator == null) interpolator = this.interpolators.linear;
         let channelOp = this.channels[channel.channel];
-        if (channelOp == null) {
+        if (channelOp === undefined) {
           // Draw channel operator from component library
           let pos = channel.channel.indexOf('.');
           let name = channel.channel.slice(0, pos);
@@ -175,11 +175,11 @@ export default class AnimationSystem {
           if (metadata == null) return;
           if (metadata.data == null) return;
           if (metadata.data.channels == null) return;
-          channelOp = metadata.data.channels[data];
-          if (channelOp == null) return;
+          channelOp = metadata.data.channels[data] || null;
           // Store it back to system specific library
           this.channels[channel.channel] = channelOp;
         }
+        if (channelOp == null) return;
         let stride = channelOp.stride;
         // Pull time value
         // TODO: inTangent / outTangent should be processed per-index

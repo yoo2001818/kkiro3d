@@ -15,7 +15,7 @@ export default {
         parent.id : parent;
     }),
     createHierarchy: function (entities) {
-      let ids = [];
+      let createdEntities = [];
       let rootEntity;
       // Spawn each entity, while restoring parent pointers
       entities.forEach((template, i) => {
@@ -23,10 +23,29 @@ export default {
         let templateCopy = Object.assign({}, template, {
           id: null
         });
-        if (i > 0) templateCopy.parent = ids[template.parent];
+        if (i > 0) templateCopy.parent = createdEntities[template.parent].id;
         let entity = this.actions.entity.create(templateCopy);
         if (i === 0) rootEntity = entity;
-        ids[i] = entity.id;
+        createdEntities[i] = entity;
+      });
+      // Then restore other data types.
+      createdEntities.forEach(entity => {
+        for (let key in entity) {
+          let parentFields = this.systems.parent.getParentFields(key);
+          if (parentFields == null) continue;
+          let component = entity[key];
+          let applied = {};
+          let changed = false;
+          parentFields.forEach(v => {
+            let id = component[v];
+            if (isNaN(id) || id >= -1) return;
+            id = -id - 2;
+            applied[v] = createdEntities[id].id;
+            changed = true;
+          });
+          // Then.... apply it.
+          if (changed) this.actions[key].set(entity, applied);
+        }
       });
       return rootEntity;
     },

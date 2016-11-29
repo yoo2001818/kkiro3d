@@ -6,6 +6,9 @@ export default class ParentSystem {
     this.childrens = [];
     // List of entities with wrong parent ID
     this.orphans = [];
+    // Components with entity schema. This'll be generated automatically when
+    // getHierarchy, createHierarchy is called.
+    this.parentFields = {};
     this.hooks = {
       'external.load!': () => {
         this.root = [];
@@ -42,6 +45,27 @@ export default class ParentSystem {
   }
   attach(engine) {
     this.engine = engine;
+  }
+  getParentFields(name) {
+    if (name === 'parent') return null;
+    if (this.parentFields[name] !== undefined) return this.parentFields[name];
+    let fields = [];
+    this.parentFields[name] = null;
+    // Retrieve schema of the component
+    let metadata = this.engine.components.store[name];
+    if (metadata == null) return;
+    if (metadata.data == null) return;
+    if (metadata.data.schema == null) return;
+    let schema = metadata.data.schema;
+    for (let key in schema) {
+      if (schema[key].type === 'entity') fields.push(key);
+    }
+    if (fields.length > 0) {
+      this.parentFields[name] = fields;
+      return fields;
+    } else {
+      return null;
+    }
   }
   addRoot(entity) {
     this.root.push(entity);
@@ -101,6 +125,8 @@ export default class ParentSystem {
   }
   // This shouldn't reside in here, but whatever.
   getHierarchy(entity) {
+    // :S
+    let reverseLookup = {};
     let entities = [];
     const traverseEntity = (entity, parentId) => {
       let newId = entities.length;
@@ -111,6 +137,7 @@ export default class ParentSystem {
       } else {
         entities.push(Object.assign({}, entity));
       }
+      reverseLookup[entity.id] = entities.length - 1;
       let children = this.getChildren(entity);
       if (children == null) return;
       children.forEach(id => {
@@ -119,6 +146,24 @@ export default class ParentSystem {
       });
     };
     traverseEntity(entity, null);
+    // We need traverse each entity and detect parent fields, then change them
+    // to relative IDs.
+    // TODO Isn't this horribly slow?
+    entities.forEach(entity => {
+      for (let key in entity) {
+        let parentFields = this.getParentFields(key);
+        if (parentFields == null) continue;
+        let component = Object.assign({}, entity[key]);
+        entity[key] = component;
+        parentFields.forEach(v => {
+          if (reverseLookup[component[v]] != null) {
+            // Flip the sign to indicate that it's relative. Additionally,
+            // subtract 2 to prevent problems.
+            component[v] = -2 - reverseLookup[component[v]];
+          }
+        });
+      }
+    });
     return entities;
   }
   isConnected(parent, child) {

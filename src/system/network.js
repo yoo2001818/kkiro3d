@@ -53,6 +53,11 @@ export default class NetworkSystem {
           }
         }
       },
+      'external.start:post@100!': () => {
+        if (this.synchronizer == null) {
+          this.engine.actions.network.connect(this.getId(), this.offlineMeta);
+        }
+      },
       'external.execute:pre!': (args) => {
         if (this.synchronizer == null) return args;
         // Send it to the engine, while mapping the entity
